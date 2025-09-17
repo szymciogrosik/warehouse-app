@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-firebase-accelerator": {
+    "warehouse-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -120,16 +120,16 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "ftp": {
-              "buildTarget": "angular-firebase-accelerator:build:ftp"
+              "buildTarget": "warehouse-app:build:ftp"
             },
             "firebase": {
-              "buildTarget": "angular-firebase-accelerator:build:firebase"
+              "buildTarget": "warehouse-app:build:firebase"
             },
             "gh-pages": {
-              "buildTarget": "angular-firebase-accelerator:build:gh-pages"
+              "buildTarget": "warehouse-app:build:gh-pages"
             },
             "local": {
-              "buildTarget": "angular-firebase-accelerator:build:local"
+              "buildTarget": "warehouse-app:build:local"
             }
           },
           "defaultConfiguration": "local"
@@ -138,7 +138,7 @@
           "builder": "@angular/build:extract-i18n",
           "options": {
             "outputPath": "src/i18n",
-            "buildTarget": "angular-firebase-accelerator:build"
+            "buildTarget": "warehouse-app:build"
           }
         },
         "test": {

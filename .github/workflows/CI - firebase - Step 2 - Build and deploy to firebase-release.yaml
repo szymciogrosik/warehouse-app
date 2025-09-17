@@ -16,7 +16,7 @@ jobs:
 
       - name: Replace site name in firebase configurations
         run: |
-          sed -i "s/SITE_NAME/angular-firebase-accelerator/g" firebase.json
+          sed -i "s/SITE_NAME/warehouse-app/g" firebase.json
 
       - name: Replace scss variable properties
         run: cp -f ${GITHUB_WORKSPACE}/src/environments/firebase/variables.scss ${GITHUB_WORKSPACE}/src/environments/variables.scss
@@ -57,4 +57,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ANGULAR_FIREBASE_ACCELERATOR }}
           channelId: live
-          projectId: angular-firebase-accelerator
+          projectId: warehouse-app

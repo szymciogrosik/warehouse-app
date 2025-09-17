@@ -4,8 +4,8 @@ Fast Angular app with Firebase Auth + Firestore, deployed to both GitHub Pages a
 
 **Live:**
 
-- GitHub Pages: https://szymciogrosik.github.io/angular-firebase-accelerator/
-- Firebase Hosting: https://angular-firebase-accelerator.web.app/
+- GitHub Pages: https://szymciogrosik.github.io/warehouse-app/
+- Firebase Hosting: https://warehouse-app.web.app/
 
 ---
 
@@ -146,7 +146,7 @@ firebase login
    # Public directory: Enter (keep default)
    # Single-page app rewrite to /index.html: Yes
    # Set up automatic builds and deploys with GitHub: Yes
-   # Provide user/repository (i.e. szymciogrosik/angular-firebase-accelerator)
+   # Provide user/repository (i.e. szymciogrosik/warehouse-app)
    # Run a build script before deploy? No
    # Automatic deployment when a PR is merged? No
    ```
@@ -184,7 +184,7 @@ firebase login
 
 ## Repo strings to update
 
-Replace every `angular-firebase-accelerator` with your local app name. 
+Replace every `warehouse-app` with your local app name. 
 
 In those files, provide a Firebase app ID:
 - `.firebaserc`
