@@ -192,7 +192,7 @@ In those files, provide a Firebase app ID:
 - `README.md` link to Firebase Hosting
 
 Rename the secret env var:
-- `FIREBASE_SERVICE_ACCOUNT_ANGULAR_FIREBASE_ACCELERATOR` → use your generated secret name from GitHub.
+- `FIREBASE_SERVICE_ACCOUNT_WAREHOUSE_APP_3333` → use your generated secret name from GitHub.
 
 ---
 
