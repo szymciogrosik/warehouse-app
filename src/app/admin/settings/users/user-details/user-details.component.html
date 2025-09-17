@@ -1,0 +1,71 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title class="dialog-font dialog-title">{{ 'admin.panel.users.header' | translate }}</h1>
+
+  <form [formGroup]="userForm" #userFormDirective (ngSubmit)="onSubmit()">
+    <mat-dialog-content class="mat-typography dialog-font dialog-content-container">
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registration.enterEmail' | translate }}</mat-label>
+          <input matInput formControlName="email" type="email"
+                 placeholder="{{ 'registration.exampleEmail' | translate }}" required>
+          <mat-error>{{this.getErrorMessage('email')}}</mat-error>
+        </mat-form-field>
+      </p>
+      @if (data.userDetailsType === UserDetailsType.CREATE) {
+        <p>
+          <mat-form-field appearance="outline" class="user-details-bigger-error">
+            <mat-label>{{ 'login.enterPassword' | translate }}</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+            <button mat-icon-button matSuffix class="register-button"
+                    (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error>{{this.getErrorMessage('password')}}</mat-error>
+          </mat-form-field>
+        </p>
+      }
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.panel.users.firstName' | translate }}</mat-label>
+          <input matInput type="text" formControlName="firstName" required>
+          <mat-error>{{this.getErrorMessage('firstName')}}</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.panel.users.lastName' | translate }}</mat-label>
+          <input matInput type="text" formControlName="lastName" required>
+          <mat-error>{{this.getErrorMessage('lastName')}}</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.panel.users.roles' | translate }}</mat-label>
+          <mat-select formControlName="roles" multiple>
+            @for (role of accessRoleValues; track role) {
+              <mat-option [value]="role">{{ role }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>{{this.getErrorMessage('roles')}}</mat-error>
+        </mat-form-field>
+      </p>
+    </mat-dialog-content>
+    <button type="submit" style="display: none;" #submitBtn></button>
+  </form>
+
+  <mat-dialog-actions align="end">
+    <div class="button-wrapper dialog-actions">
+      <button mat-raised-button color="warn" class="action-button" (click)="onCancelClick()" cdkFocusInitial>
+        {{ 'registeredUsers.details.cancel' | translate }}
+      </button>
+      <button mat-raised-button color="primary" class="action-button" (click)="onApproveClick()">
+        @if (data.userDetailsType === UserDetailsType.CREATE) {
+          {{ 'registeredUsers.details.create' | translate }}
+        } @else {
+          {{ 'registeredUsers.details.save' | translate }}
+        }
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>

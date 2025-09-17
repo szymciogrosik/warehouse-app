@@ -1,0 +1,66 @@
+@use "src/styles.scss" as *;
+
+.dialog-font {
+  font-size: 1.2rem;
+}
+
+.dialog-button {
+  width: 100%;
+  margin: 16px;
+}
+
+.dialog-content-container {
+  padding-bottom: 0;
+}
+
+.user-details-bigger-error {
+  margin-bottom: 10px;
+}
+
+.dialog-title {
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.dialog-image {
+  text-align: center;
+
+  mat-icon {
+    font-size: 8rem;
+    height: 8rem;
+    width: 8rem;
+  }
+}
+
+.dialog-success-image {
+  color: $app-green-color;
+}
+
+.dialog-warning-image{
+  color: $app-accent-color;
+}
+
+.dialog-error-image{
+  color: $app-red-color;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.action-button {
+  flex: 1;
+}
+
+.button-wrapper {
+  width: 100%;
+  margin: 10px;
+}
+
+@media (min-width: 470px)   {
+  .dialog-container {
+    width: 450px;
+  }
+}

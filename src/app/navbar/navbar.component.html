@@ -1,0 +1,63 @@
+<mat-toolbar class="navbar-style navbar-home-page navbar-shadow" color="primary">
+
+  <button mat-button routerLink="{{ rp.SEP + rp.HOME }}">
+    <mat-icon>beach_access</mat-icon>&nbsp;{{ 'navbar.tab.applicationName' | translate }}
+  </button>
+  <!--   This fills the remaining space of the current row-->
+  <span class="fill-remaining-space"></span>
+
+  <!-- Full menu navbar -->
+  <div class="full-menu">
+    <!-- Add new link here part 1/2 -->
+    @if (isAdmin$ | async) {
+      <button mat-button class="navbar-button" (click)="navigateToAdminPanel()">
+        {{ 'navbar.tab.button.adminPanel' | translate }}
+      </button>
+    }
+    @if (this.authService.isAuthenticated() | async) {
+      <button mat-button class="navbar-button" (click)="logout()">
+        {{ 'navbar.tab.button.logout' | translate }}
+      </button>
+    }
+    <!-- Choose language tab -->
+    <button mat-button class="navbar-button" [matMenuTriggerFor]="languageMenu">
+      <mat-icon style="margin: 0;">language</mat-icon>
+    </button>
+  </div>
+
+  <!-- Short menu navbar -->
+  <div class="short-menu">
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon style="margin: 0;">menu</mat-icon>
+    </button>
+  </div>
+
+</mat-toolbar>
+
+<mat-menu xPosition="before" #menu="matMenu">
+  <!-- Add new link here part 2/2 -->
+  @if (isAdmin$ | async) {
+    <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToAdminPanel()">
+      {{ 'navbar.tab.button.adminPanel' | translate }}
+    </button>
+  }
+  @if (this.authService.isAuthenticated() | async) {
+    <button mat-menu-item class="navbar-button-burger-menu" (click)="logout()">
+      {{ 'navbar.tab.button.logout' | translate }}
+    </button>
+  }
+  <!-- Choose language tab -->
+  <button mat-menu-item class="navbar-button-burger-menu"
+          [matMenuTriggerFor]="languageMenu"><mat-icon>language</mat-icon>
+  </button>
+</mat-menu>
+
+<!-- Language sub-menu -->
+<mat-menu xPosition="before" #languageMenu="matMenu">
+  <button mat-menu-item class="navbar-button-burger-menu"
+          (click)="this.translateService.setLanguage(LanguageEnum.POLISH)">{{ 'language.polish' | translate }}
+  </button>
+  <button mat-menu-item class="navbar-button-burger-menu"
+          (click)="this.translateService.setLanguage(LanguageEnum.ENGLISH)">{{ 'language.english' | translate }}
+  </button>
+</mat-menu>

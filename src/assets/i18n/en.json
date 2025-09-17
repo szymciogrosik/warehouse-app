@@ -1,0 +1,86 @@
+{
+  "language.english": "English",
+  "language.polish": "Polski",
+
+  "datePicker.formatHint": "MM/DD/YYYY",
+  "datePicker.chooseDate": "Select date",
+  "datePicker.chooseDateAndTime": "Provide date and time",
+
+  "navbar.tab.applicationName": "Angular accelerator app",
+  "navbar.tab.button.logout": "Logout",
+  "navbar.tab.button.adminPanel": "Admin panel",
+
+  "snackbar.default.dismiss": "Dismiss",
+
+  "registration.enterEmail": "Enter your email",
+  "registration.exampleEmail": "pat@example.com",
+  "registration.fillField": "Fill field",
+  "registration.select.noOptionSelected": "-- None --",
+
+  "registration.validation.mandatoryField": "Field is mandatory",
+  "registration.validation.invalidEmail": "Invalid email",
+  "registration.validation.minLength": "Required minimum length: ",
+  "registration.validation.invalidPasswordSecurity": "Required at least 1 of each: uppercase, lowercase, digit, special character",
+
+  "status.lastBuildTime": "Last deploy date",
+
+  "nonProdMode.warning": "This application is in non-production mode. Changes provided in this application are not connected with production database.",
+
+  "login.header": "LOGIN",
+  "login.header2": "to application",
+  "login.enterEmail": "Enter email",
+  "login.exampleEmail": "example@gmail.com",
+  "login.enterPassword": "Enter password",
+  "login.approve.button": "Login",
+  "login.googleSso": "Login with Google",
+  "login.validation.mandatoryField": "Field is mandatory",
+  "login.validation.invalidEmail": "Email is invalid",
+  "login.error.internal": "Internal error occurred.",
+  "login.error.emailAlreadyUsed": "This email is already in use by another user. Check the details in the Firebase console.",
+  "login.error.invalidUser": "This user does not have rights to be logged into this application!",
+  "login.error.unsupportedAction": "This option is not supported currently.",
+  "login.error.informationHeader": "Information",
+  "login.error.information.notSupportedEmbeddedBrowser1": "The browser built into the application ",
+  "login.error.information.notSupportedEmbeddedBrowser2": " does not support this function. Please open this page in other browser or copy and paste a link.",
+  "login.error.information.copy": "Copy link",
+
+  "registeredUsers.details.title": "Details",
+  "registeredUsers.details.save": "Save",
+  "registeredUsers.details.create": "Create",
+  "registeredUsers.details.confirm": "Confirm",
+  "registeredUsers.details.cancel": "Cancel",
+
+  "admin.panel.header": "ADMIN PANEL",
+  "admin.panel.helloMessage": "Hello, ",
+
+  "admin.panel.tab.header.settings": "Settings",
+
+  "admin.panel.tab.header.settings.users": "Users",
+
+  "admin.panel.table.filter": "Filter",
+  "admin.panel.table.filter.placeholder": "Ex. Adam",
+  "admin.panel.table.filter.noResult": "No data matching the filter",
+
+  "admin.panel.table.header.no": "Number",
+  "admin.panel.table.header.name": "Name",
+  "admin.panel.table.header.email": "Email",
+  "admin.panel.table.header.role": "Role",
+  "admin.panel.table.header.age": "Age",
+  "admin.panel.table.header.details": "Details",
+  "admin.panel.table.header.delete": "Delete",
+  "admin.panel.table.header.modify": "Modify",
+
+  "admin.panel.settings.warning.popupWarning": "Warning",
+
+  "admin.panel.settings.users.addNewUser": "Add new user",
+  "admin.panel.settings.users.deletedSuccessfully": "User deleted successfully",
+  "admin.panel.settings.users.updatedSuccessfully": "User updated successfully",
+  "admin.panel.settings.users.addedSuccessfully": "User added successfully, in a second you will be switched to newly created account. Please confirm if newly created user have not to much rights.",
+
+  "admin.panel.users.header": "User details",
+  "admin.panel.users.firstName": "First name",
+  "admin.panel.users.lastName": "Last name",
+  "admin.panel.users.roles": "Roles",
+  "admin.panel.users.select": "-- None --",
+  "admin.panel.users.warning.removedUser": "Please note, once a user is deleted, it will not be possible to add a new user for the same email number unless it is deleted from the Firebase authentication console."
+}

@@ -1,0 +1,60 @@
+@use "src/styles.scss" as *;
+
+.short-page-content {
+  max-width: 1200px;
+  padding-top: 0;
+}
+
+.admin-div {
+  margin: 20px 20px 0 20px;
+  font-size: 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.admin-tab-content {
+  margin: 20px 15px;
+}
+
+.sticky-toggle-group {
+  margin: 0 0 20px 0;
+  border-radius: 50px;
+  overflow-y: auto;
+}
+
+.sticky-toggle-group .mat-button-toggle-checked {
+  background-color: $app-accent-color;  // Change to your desired background color
+  flex-grow: 1;
+}
+
+.enable-vertical-scrolling {
+  overflow-y: auto; // Enables vertical scrolling
+  width: 100%; // Ensures the container is full-width
+}
+
+.button-toggle-row {
+  display: flex;
+  align-items: center; // Aligns items vertically in the center
+  gap: 10px; // Optional: adds space between the label and button group
+
+  .button-toggle-label {
+    margin-right: 10px; // Adds some space between the label and the toggle buttons
+    white-space: nowrap; // Prevents the label from wrapping
+  }
+}
+
+@media (max-width: 600px) {
+  .button-toggle-row {
+    flex-direction: column; // Stacks the flex items vertically on small screens
+    align-items: flex-start; // Aligns items to the start of the flex container
+  }
+  .button-toggle-label {
+    margin-bottom: 0;
+  }
+}

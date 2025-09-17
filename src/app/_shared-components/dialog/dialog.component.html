@@ -1,0 +1,45 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title class="dialog-font dialog-title">{{ this.data.title }}</h1>
+
+  <mat-dialog-content class="mat-typography dialog-font dialog-content-container">
+    @if (this.data.popupType !== null) {
+      <div class="dialog-image">
+        @if (this.data.popupType === DialogType.CONFIRMATION) {
+          <div class="dialog-success-image">
+            <mat-icon>sentiment_satisfied_alt</mat-icon>
+          </div>
+        }
+        @if (this.data.popupType === DialogType.WARNING) {
+          <div class="dialog-warning-image">
+            <mat-icon>sentiment_dissatisfied</mat-icon>
+          </div>
+        }
+        @if (this.data.popupType === DialogType.ERROR) {
+          <div class="dialog-error-image">
+            <mat-icon>sentiment_very_dissatisfied</mat-icon>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="dialog-text">
+      {{ this.data.message }}
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <div class="button-wrapper dialog-actions">
+      @if (this.data.cancelButtonText) {
+        <button mat-raised-button color="warn" class="action-button"
+                (click)="onCancelClick()">
+          {{ this.data.cancelButtonText }}
+        </button>
+      }
+      <button mat-raised-button color="primary" class="action-button"
+              (click)="onApproveClick()" cdkFocusInitial>
+        {{ this.data.confirmButtonText }}
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>
+

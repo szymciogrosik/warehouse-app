@@ -1,0 +1,24 @@
+<div class="admin-div">
+  <mat-card class="short-page-content">
+    <mat-card-title>
+      <h1>{{ 'admin.panel.header' | translate }}</h1>
+      <h5>{{ 'admin.panel.helloMessage' | translate }}{{ this.loggedUserName }}!</h5>
+    </mat-card-title>
+    <mat-card-content>
+      @if (!environment.production) {
+        <div class="alert alert-warning" role="alert" style="margin-bottom: 30px;">
+          {{ 'nonProdMode.warning' | translate }}
+        </div>
+      }
+      <mat-tab-group dynamicHeight>
+        @if (settingsVisible) {
+          <mat-tab label="{{ 'admin.panel.tab.header.settings' | translate }}">
+            <div class="admin-tab-content">
+              <app-settings></app-settings>
+            </div>
+          </mat-tab>
+        }
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

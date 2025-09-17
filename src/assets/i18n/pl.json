@@ -1,0 +1,86 @@
+{
+  "language.english": "English",
+  "language.polish": "Polski",
+
+  "datePicker.formatHint": "DD.MM.YYYY",
+  "datePicker.chooseDate": "Wybierz datę",
+  "datePicker.chooseDateAndTime": "Wpisz datę i czas",
+
+  "navbar.tab.applicationName": "Angular accelerator app",
+  "navbar.tab.button.logout": "Wyloguj",
+  "navbar.tab.button.adminPanel": "Panel administratora",
+
+  "snackbar.default.dismiss": "Zamknij",
+
+  "registration.enterEmail": "Wprowadź email",
+  "registration.exampleEmail": "adam@gmail.com",
+  "registration.fillField": "Uzupełnij pole",
+  "registration.select.noOptionSelected": "-- Brak --",
+
+  "registration.validation.mandatoryField": "Pole jest obowiązkowe",
+  "registration.validation.invalidEmail": "Email jest niepoprawny",
+  "registration.validation.minLength": "Wymagana minimalna liczba znaków: ",
+  "registration.validation.invalidPasswordSecurity": "Wymagana jest co najmniej 1 wielka litera, 1 mała litera, 1 cyfra, 1 znak specjalny",
+
+  "status.lastBuildTime": "Data ostatniego wdrożenia",
+
+  "nonProdMode.warning": "Ta aplikacja nie jest w trybie produkcyjnym. Wprowadzone zmiany nie będą miały wpływu na produkcyjną bazę danych.",
+
+  "login.header": "LOGOWANIE",
+  "login.header2": "do aplikacji",
+  "login.enterEmail": "Wprowadź email",
+  "login.exampleEmail": "example@gmail.com",
+  "login.enterPassword": "Wprowadź hasło",
+  "login.approve.button": "Zatwierdź",
+  "login.googleSso": "Zaloguj przez Google",
+  "login.validation.mandatoryField": "Pole jest obowiązkowe",
+  "login.validation.invalidEmail": "Email jest nieprawidłowy",
+  "login.error.internal": "Wystąpił błąd wewnętrzny.",
+  "login.error.emailAlreadyUsed": "Ten email jest już używany przez innego użytkownika. Sprawdź szczegóły w konsoli Firebase.",
+  "login.error.invalidUser": "Ten użytkownik nie ma praw by zalogować się do aplikacji.",
+  "login.error.unsupportedAction": "Ta opcja obecnie nie jest wspierana.",
+  "login.error.informationHeader": "Informacja",
+  "login.error.information.notSupportedEmbeddedBrowser1": "Przeglądarka wbudowana w aplikacje ",
+  "login.error.information.notSupportedEmbeddedBrowser2": " nie wspiera tej funkcji. Otwórz stronę w innej przeglądarce lub skopiuj i wklej link.",
+  "login.error.information.copy": "Kopiuj link",
+
+  "registeredUsers.details.title": "Szczegóły",
+  "registeredUsers.details.save": "Zapisz",
+  "registeredUsers.details.create": "Utwórz",
+  "registeredUsers.details.confirm": "Potwierdź",
+  "registeredUsers.details.cancel": "Anuluj",
+
+  "admin.panel.header": "ADMIN PANEL",
+  "admin.panel.helloMessage": "Witaj, ",
+
+  "admin.panel.tab.header.settings": "Ustawienia",
+
+  "admin.panel.tab.header.settings.users": "Użytkownicy",
+
+  "admin.panel.table.filter": "Filtr",
+  "admin.panel.table.filter.placeholder": "Np. Kasia",
+  "admin.panel.table.filter.noResult": "Brak danych pasujących do filtra",
+
+  "admin.panel.table.header.no": "Numer",
+  "admin.panel.table.header.name": "Imię i nazwisko",
+  "admin.panel.table.header.email": "Email",
+  "admin.panel.table.header.role": "Rola",
+  "admin.panel.table.header.age": "Wiek",
+  "admin.panel.table.header.details": "Szczegóły",
+  "admin.panel.table.header.delete": "Usuń",
+  "admin.panel.table.header.modify": "Zmień",
+
+  "admin.panel.settings.warning.popupWarning": "Ostrzeżenie",
+
+  "admin.panel.settings.users.addNewUser": "Dodaj nowego użytkownika",
+  "admin.panel.settings.users.deletedSuccessfully": "Użytkownik usunięty pomyślnie",
+  "admin.panel.settings.users.updatedSuccessfully": "Użytkownik zaktualizowany pomyślnie",
+  "admin.panel.settings.users.addedSuccessfully": "Użytkownik dodany pomyślnie, za chwilę nastąpi przełączenie na nowo utworzone konto. Sprawdź, czy nowo utworzony użytkownik nie ma zbyt dużych uprawnień.",
+
+  "admin.panel.users.header": "Szczegóły użytkownika",
+  "admin.panel.users.firstName": "Imię",
+  "admin.panel.users.lastName": "Nazwisko",
+  "admin.panel.users.roles": "Role",
+  "admin.panel.users.select": "-- Brak --",
+  "admin.panel.users.warning.removedUser": "Uwaga, po usunięciu użytkownika, nie będzie możliwe dodanie nowego użytkownika dla tego samego numer email, chyba że zostanie on usunięty z konsoli autentykacyjnej Firebase."
+}

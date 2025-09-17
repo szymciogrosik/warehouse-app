@@ -1,0 +1,30 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title class="dialog-font dialog-title">{{ 'login.error.informationHeader' | translate }}</h1>
+
+  <mat-dialog-content class="mat-typography dialog-font dialog-content-container">
+    <div class="dialog-image">
+      <div class="dialog-warning-image">
+        <mat-icon>sentiment_dissatisfied</mat-icon>
+      </div>
+    </div>
+
+    <div class="dialog-text">
+      <p>
+        {{ 'login.error.information.notSupportedEmbeddedBrowser1' | translate }}
+        {{ this.data.appName }}
+        {{ 'login.error.information.notSupportedEmbeddedBrowser2' | translate }}
+      </p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <div class="button-wrapper dialog-actions">
+      <button mat-raised-button color="warn" class="action-button" (click)="onCancelClick()">
+        {{ 'registeredUsers.details.cancel' | translate }}
+      </button>
+      <button mat-raised-button color="primary" class="action-button" (click)="onApproveClick()">
+        {{ 'login.error.information.copy' | translate }}<mat-icon>file_copy</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>

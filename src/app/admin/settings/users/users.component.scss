@@ -1,0 +1,32 @@
+@use "src/app/admin/admin.component.scss" as *;
+
+.filer-and-add-new-user-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .filter-element,
+  .add-new-user-element {
+    flex: 1;
+    margin: 0 10px;
+  }
+}
+
+.action-button {
+  height: 55px !important;
+  margin-bottom: 25px;
+}
+
+@media (max-width: 500px) {
+  .filer-and-add-new-user-container {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .filter-element,
+    .add-new-user-element {
+      width: 100%;
+      margin: 5px 0;
+    }
+  }
+}

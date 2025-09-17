@@ -1,0 +1,61 @@
+<div class="registration-content">
+  <mat-card class="short-page-content">
+    <mat-card-title>
+      <h1>{{ 'login.header' | translate }}</h1>
+      <h5>{{ 'login.header2' | translate }}</h5>
+    </mat-card-title>
+    <mat-card-content>
+      @if (!checkingIfUserIsAlreadyLoggedIn) {
+        <div>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <p>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'login.enterEmail' | translate }}</mat-label>
+                <input matInput type="email" placeholder="{{ 'login.exampleEmail' | translate }}" formControlName="email" required>
+                <mat-error>{{this.getErrorMessage('email')}}</mat-error>
+              </mat-form-field>
+            </p>
+
+            <p>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'login.enterPassword' | translate }}</mat-label>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+                <button mat-icon-button matSuffix class="register-button"
+                        (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+                  <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error>{{this.getErrorMessage('password')}}</mat-error>
+              </mat-form-field>
+            </p>
+
+            <div>
+              @if (loading) {
+                <mat-spinner [diameter]="30"></mat-spinner>
+              } @else {
+                <button mat-flat-button type="submit" color="primary" class="register-button">
+                  {{ 'login.approve.button' | translate }}
+                </button>
+              }
+            </div>
+          </form>
+
+          <div class="separation-line"></div>
+
+          <div>
+            @if (!loading) {
+              <button mat-flat-button color="accent" class="register-button login-with-google"
+                      (click)="openPopupIfEmbeddedBrowserOpenOtherwiseOpenPopup()">
+                {{ 'login.googleSso' | translate }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+      @if (checkingIfUserIsAlreadyLoggedIn) {
+        <div class="checking-if-user-is-logged-in">
+          <mat-spinner [diameter]="200"></mat-spinner>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

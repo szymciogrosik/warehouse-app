@@ -1,0 +1,60 @@
+name: CI - firebase - Step 2 - Build and deploy to firebase
+
+on:
+  push:
+    branches:
+      - release/firebase
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    environment: firebase
+
+    steps:
+      - name: 🚚 Get latest code (checkout repo)
+        uses: actions/checkout@v4
+
+      - name: Replace site name in firebase configurations
+        run: |
+          sed -i "s/SITE_NAME/angular-firebase-accelerator/g" firebase.json
+
+      - name: Replace scss variable properties
+        run: cp -f ${GITHUB_WORKSPACE}/src/environments/firebase/variables.scss ${GITHUB_WORKSPACE}/src/environments/variables.scss
+
+      - name: Rename environment-example.ts file to environment.ts
+        run: |
+          mv src/environments/environment-example.ts src/environments/environment.ts
+
+      - name: Replace config in environment.ts
+        run: |
+          sed -i "s/FIREBASE_API_KEY/${{ secrets.FIREBASE_API_KEY }}/g" src/environments/firebase/environment.ts
+
+      - name: Replace build version in environment.ts
+        run: |
+          BUILD_VERSION=$(date +'%Y%m%d%H%M%S')
+          sed -i "s/BUILD_VERSION_TEMPLATE/${BUILD_VERSION}/g" src/environments/firebase/environment.ts
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: npm install
+
+      - name: 🔨 Build with firebase settings
+        run: npm run build-firebase
+
+      - name: Copy custom 404 page for GitHub pages
+        run: cp ${GITHUB_WORKSPACE}/src/environments/firebase/404.html ${GITHUB_WORKSPACE}/docs/browser/404.html
+
+      - name: Update last deployment data and time
+        run: sed -i "s/DD-MM-YYYY HH:MM:SS/$(TZ=Europe/Warsaw date +'%d-%m-%Y %H:%M:%S')/g" ${GITHUB_WORKSPACE}/docs/browser/assets/status/status.json
+
+      - name: 🎉 Deploy to firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ANGULAR_FIREBASE_ACCELERATOR }}
+          channelId: live
+          projectId: angular-firebase-accelerator

@@ -1,0 +1,9 @@
+<div class="settings-div">
+  @if (isAuthorized) {
+    <mat-tab-group dynamicHeight>
+      <mat-tab label="{{ 'admin.panel.tab.header.settings.users' | translate }}">
+        <app-users></app-users>
+      </mat-tab>
+    </mat-tab-group>
+  }
+</div>

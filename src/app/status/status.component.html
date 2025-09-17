@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <div class="status-content">
+      <mat-card class="short-page-content">
+        <mat-card-title>
+          <h2>{{ 'status.lastBuildTime' | translate }}</h2>
+        </mat-card-title>
+        <mat-card-content>
+          @if (lastDeployTime) {
+            <div [innerHTML]="lastDeployTime" style="text-align: center;"></div>
+          }
+          @if (!lastDeployTime) {
+            <div><mat-spinner [diameter]="80"></mat-spinner></div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+@use "src/styles.scss" as *;
+
+.fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* This might cause issues if not needed */
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  background: $app-background-color;
+}
+
+.main-content {
+  flex-grow: 1;
+}

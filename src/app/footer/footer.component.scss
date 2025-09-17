@@ -1,0 +1,36 @@
+@use "src/styles.scss" as *;
+
+.footer {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 100%;
+  color: $footer-element-color;
+  background: $app-primary-color;
+  background-size: 100% auto;  /* Adjust the width to 100% and height automatically */
+  font-size: $footer-font-size;
+}
+
+.footer-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; // Align items to the bottom
+  margin-top: auto; // Push content to the bottom
+}
+
+.footer-shadow {
+  box-shadow: 0 -3px 5px -1px #0003, 0 -6px 10px #00000024, 0 -1px 18px #0000001f;
+}
+
+.icons-container {
+  margin-bottom: 8px;
+}
+
+.copyrights {
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
