@@ -1,4 +1,4 @@
-# Angular Firebase Accelerator
+# Warehouse App
 
 Fast Angular app with Firebase Auth + Firestore, deployed to both GitHub Pages and Firebase Hosting.
 
@@ -114,7 +114,7 @@ Then create manually a fist user:
 
 5) **Repo strings to update**
 
-Replace every `angular-firebase-accelerator` with your local app name.
+Replace every `warehouse-app` with your local app name.
 
 In those files, provide a Firebase app ID:
 - `.firebaserc`
@@ -122,7 +122,7 @@ In those files, provide a Firebase app ID:
 - `README.md` link to Firebase Hosting
 
 Rename the secret env var:
-- `FIREBASE_SERVICE_ACCOUNT_ANGULAR_FIREBASE_ACCELERATOR` → use your generated secret name from GitHub.
+- `FIREBASE_SERVICE_ACCOUNT_WAREHOUSE_APP_3333` → use your generated secret name from GitHub.
 
 6) **Firebase CLI**
 
@@ -145,7 +145,7 @@ firebase use --add
    # Public directory: Enter (keep default)
    # Single-page app rewrite to /index.html: Yes
    # Set up automatic builds and deploys with GitHub: Yes
-   # Provide user/repository (i.e. szymciogrosik/angular-firebase-accelerator)
+   # Provide user/repository (i.e. szymciogrosik/warehouse-app)
    # Run a build script before deploy? No
    # Automatic deployment when a PR is merged? No
    ```
