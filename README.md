@@ -21,7 +21,7 @@ Fast Angular app with Firebase Auth + Firestore, deployed to both GitHub Pages a
 
 ```bash
 # install deps
-npm ci
+npm install
 
 # run locally
 ng serve
