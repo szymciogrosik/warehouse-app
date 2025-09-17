@@ -5,7 +5,7 @@ Fast Angular app with Firebase Auth + Firestore, deployed to both GitHub Pages a
 **Live:**
 
 - GitHub Pages: https://szymciogrosik.github.io/warehouse-app/
-- Firebase Hosting: https://warehouse-app.web.app/
+- Firebase Hosting: https://warehouse-app-3333.web.app/
 
 ---
 
