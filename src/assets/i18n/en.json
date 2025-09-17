@@ -2,6 +2,8 @@
   "language.english": "English",
   "language.polish": "Polski",
 
+  "page.title": "Your warehouse",
+
   "datePicker.formatHint": "MM/DD/YYYY",
   "datePicker.chooseDate": "Select date",
   "datePicker.chooseDateAndTime": "Provide date and time",
