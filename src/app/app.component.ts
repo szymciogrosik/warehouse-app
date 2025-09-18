@@ -3,6 +3,7 @@ import {CustomTranslateService} from './_services/translate/custom-translate.ser
 import {CustomCommonModule} from "./_imports/CustomCommon.module";
 import {FooterComponent} from "./footer/footer.component";
 import {NavbarComponent} from "./navbar/navbar.component";
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,14 @@ import {NavbarComponent} from "./navbar/navbar.component";
   imports: [CustomCommonModule, FooterComponent, NavbarComponent],
 })
 export class AppComponent {
-  title = 'angular';
 
   constructor(
     private translateService: CustomTranslateService,
+    private titleService: Title,
   ) {
-    this.translateService.setLoadedOrDefaultLanguage();
+    this.translateService.getPromise('page.title')
+      .then(value => this.titleService.setTitle(value))
+      .catch(err => console.error(err));
   }
 
 }
