@@ -169,9 +169,51 @@ export class WarehouseViewComponent implements OnInit {
       'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
   }
 
-  protected remove(): Promise<void> {
-    throw new Error('Provided no supported level ' +
-      'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
+  protected async remove(): Promise<void> {
+    if (!this.currentWarehouses) throw new Error('No warehouses state');
+
+    // remove warehouse
+    if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
+      this.currentWarehouses.warehouses.splice(this.selectedWarehouseIndex, 1);
+      this.selectedWarehouseIndex = null;
+      this.viewLevel = 0; // back to overview
+      await this.save();
+      return;
+    }
+
+    // remove room
+    if (this.viewLevel === 2 &&
+      this.selectedWarehouseIndex !== null &&
+      this.selectedRoomIndex !== null) {
+      const w = this.activeWarehouse;
+      w.rooms.splice(this.selectedRoomIndex, 1);
+      this.selectedRoomIndex = null;
+      this.viewLevel = 1; // back to warehouse level
+      await this.save();
+      return;
+    }
+
+    // remove box
+    if (this.viewLevel === 3 &&
+      this.selectedWarehouseIndex !== null &&
+      this.selectedRoomIndex !== null &&
+      this.selectedBoxIndex !== null) {
+      const w = this.activeWarehouse;
+      w.rooms[this.selectedRoomIndex].boxes.splice(this.selectedBoxIndex, 1);
+      this.selectedBoxIndex = null;
+      this.viewLevel = 2; // back to room level
+      await this.save();
+      return;
+    }
+
+    // removing items would require a selectedItemIndex
+    throw new Error(
+      'Remove not supported for current state: ' +
+      'viewLevel=' + this.viewLevel +
+      ', warehouseIndex=' + this.selectedWarehouseIndex +
+      ', roomIndex=' + this.selectedRoomIndex +
+      ', boxIndex=' + this.selectedBoxIndex
+    );
   }
 
   // mutations
