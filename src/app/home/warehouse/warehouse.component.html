@@ -4,12 +4,17 @@
   <!-- LIST OF WAREHOUSES -->
   @if (selectedWarehouseIndex === null) {
     <mat-card class="warehouse-card">
-      <mat-card-title>Warehouses</mat-card-title>
-
-      <button mat-raised-button color="primary" class="action-button"
-              (click)="createWarehouse()">
-        Create warehouse
-      </button>
+      <div class="nav-header">
+        <span class="nav-title">
+          Warehouses
+        </span>
+        <button mat-icon-button (click)="createWarehouse()">
+          <mat-icon class="mat-icon-class">add_circle</mat-icon>
+        </button>
+        <button mat-icon-button (click)="createWarehouse()">
+          <mat-icon class="mat-icon-class">edit</mat-icon>
+        </button>
+      </div>
 
       <div class="tile-list warehouses">
         @for (w of warehouses.warehouses; track $index) {
@@ -29,7 +34,7 @@
     <mat-card class="warehouse-card">
       <div class="nav-header">
         <button mat-icon-button (click)="goBack()">
-          <mat-icon>arrow_back</mat-icon>
+          <mat-icon class="mat-icon-class">arrow_back</mat-icon>
         </button>
         <span class="nav-title">
           {{ getNavTitle(warehouse) || warehouse.name }}
