@@ -3,6 +3,7 @@ import {environment} from "../../environments/environment";
 import {CustomCommonModule} from "../_imports/CustomCommon.module";
 import {WarehouseDbService} from "../_database/warehouse/warehouse.service";
 import {Warehouse} from "../_models/warehouse/warehouse";
+import {Warehouses} from "../_models/warehouse/warehouses";
 import {AuthService} from "../_services/auth/auth.service";
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Observable} from "rxjs";
@@ -18,7 +19,7 @@ import {WarehouseViewComponent} from "./warehouse/warehouse.component";
 export class HomeComponent implements OnInit {
   protected readonly environment = environment;
   protected userUid: string | null = null;
-  protected warehouse$: Observable<Warehouse | null>;
+  protected warehouses$: Observable<Warehouses | null>;
 
   private destroyRef = inject(DestroyRef);
 
@@ -35,7 +36,7 @@ export class HomeComponent implements OnInit {
         next: user => {
           if (user) {
             this.userUid = user.uid;
-            this.warehouse$ = this.warehouseDb.getByUser(user.uid);
+            this.warehouses$ = this.warehouseDb.getByUser(user.uid);
           } else {
             this.userUid = null;
           }
@@ -46,58 +47,4 @@ export class HomeComponent implements OnInit {
         }
       });
   }
-
-  async createDummyWarehouse(): Promise<void> {
-    if (!this.userUid) {
-      console.error('No logged user');
-      return;
-    }
-
-    const warehouse = new Warehouse({
-      name: 'Main',
-      description: 'Central warehouse',
-      rooms: [
-        {
-          name: 'Room A',
-          description: 'Electronics section',
-          boxes: [
-            {
-              name: 'Box A1',
-              description: 'Laptops',
-              items: [
-                { name: 'Dell XPS 13', description: 'Laptop model' },
-                { name: 'MacBook Pro', description: 'Laptop model' }
-              ]
-            },
-            {
-              name: 'Box A2',
-              description: 'Monitors',
-              items: [
-                { name: 'Dell 24"', description: 'Full HD Monitor' },
-                { name: 'LG 27"', description: '4K Monitor' }
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Room B',
-          description: 'Furniture section',
-          boxes: [
-            {
-              name: 'Box B1',
-              description: 'Chairs',
-              items: [
-                { name: 'Office Chair', description: 'Ergonomic' },
-                { name: 'Gaming Chair', description: 'Adjustable' }
-              ]
-            }
-          ]
-        }
-      ]
-    });
-
-    await this.warehouseDb.save(this.userUid, warehouse);
-    console.log('Warehouse created with nested rooms, boxes, and items');
-  }
-
 }

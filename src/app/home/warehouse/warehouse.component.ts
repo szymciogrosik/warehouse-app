@@ -9,6 +9,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
 import { Warehouse } from '../../_models/warehouse/warehouse';
+import { Warehouses } from '../../_models/warehouse/warehouses';
+import { WhRoom } from '../../_models/warehouse/wh-room';
+import { WhBox } from '../../_models/warehouse/wh-box';
+import { WhItem } from '../../_models/warehouse/wh-item';
+
 import { WarehouseDbService } from '../../_database/warehouse/warehouse.service';
 import { AuthService } from '../../_services/auth/auth.service';
 
@@ -27,11 +32,12 @@ import { AuthService } from '../../_services/auth/auth.service';
   styleUrls: ['./warehouse.component.scss']
 })
 export class WarehouseViewComponent implements OnInit {
-  warehouse$: Observable<Warehouse | null>;
-  currentWarehouse: Warehouse | null = null;
+  warehouses$: Observable<Warehouses | null>;
+  currentWarehouses: Warehouses | null = null;
   userUid: string | null = null;
 
   // navigation state
+  selectedWarehouseIndex: number | null = null;
   viewLevel = 0; // 0 = rooms, 1 = boxes, 2 = items
   selectedRoomIndex: number | null = null;
   selectedBoxIndex: number | null = null;
@@ -41,26 +47,33 @@ export class WarehouseViewComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.authService
-      .loggedUser()
+    this.authService.loggedUser()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(user => {
         if (user) {
           this.userUid = user.uid;
-          this.warehouse$ = this.warehouseDb.getByUser(user.uid);
-          this.warehouse$.subscribe(warehouse => {
-            this.currentWarehouse = warehouse;
-          });
+          this.warehouses$ = this.warehouseDb.getByUser(user.uid);
+          this.warehouses$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(ws => this.currentWarehouses = ws);
         } else {
           this.userUid = null;
         }
       });
   }
 
-  // navigation methods
+  // navigation
+  enterWarehouse(index: number): void {
+    this.selectedWarehouseIndex = index;
+    this.viewLevel = 0;
+    this.selectedRoomIndex = null;
+    this.selectedBoxIndex = null;
+  }
+
   enterRoom(index: number): void {
     this.selectedRoomIndex = index;
     this.viewLevel = 1;
+    this.selectedBoxIndex = null;
   }
 
   enterBox(index: number): void {
@@ -75,65 +88,88 @@ export class WarehouseViewComponent implements OnInit {
     } else if (this.viewLevel === 1) {
       this.selectedRoomIndex = null;
       this.viewLevel = 0;
+    } else if (this.selectedWarehouseIndex !== null) {
+      this.selectedWarehouseIndex = null;
     }
   }
 
-  getNavTitle(warehouse: Warehouse): string | undefined {
+  getNavTitle(warehouse: Warehouse): string {
     if (this.viewLevel === 1 && this.selectedRoomIndex !== null) {
-      return warehouse.rooms[this.selectedRoomIndex].name;
+      return warehouse.rooms[this.selectedRoomIndex].name || '';
     }
-    if (
-      this.viewLevel === 2 &&
-      this.selectedBoxIndex !== null &&
-      this.selectedRoomIndex !== null
-    ) {
-      return warehouse.rooms[this.selectedRoomIndex].boxes[
-        this.selectedBoxIndex
-        ].name;
+    if (this.viewLevel === 2 && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
+      return warehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].name || '';
     }
-    return '';
+    return warehouse.name || '';
   }
 
-  // data modifications
-  async addRoom(): Promise<void> {
+  // helpers
+  private async save(): Promise<void> {
     if (!this.userUid) throw new Error('User is not logged in');
-    if (!this.currentWarehouse) throw new Error('Warehouse not found');
+    if (!this.currentWarehouses) throw new Error('No warehouses state');
+    await this.warehouseDb.save(this.userUid, new Warehouses(this.currentWarehouses));
+  }
 
-    this.currentWarehouse.rooms.push({
+  private get activeWarehouse(): Warehouse {
+    if (
+      !this.currentWarehouses ||
+      this.selectedWarehouseIndex === null ||
+      !this.currentWarehouses.warehouses[this.selectedWarehouseIndex]
+    ) throw new Error('Active warehouse not selected');
+    return this.currentWarehouses.warehouses[this.selectedWarehouseIndex];
+  }
+
+  // mutations
+  async addRoom(): Promise<void> {
+    const w = this.activeWarehouse;
+    w.rooms.push(new WhRoom({
       name: 'New Room',
       description: 'Describe here',
       boxes: []
-    });
-
-    await this.warehouseDb.save(
-      this.userUid,
-      new Warehouse(this.currentWarehouse)
-    );
+    }));
+    await this.save();
   }
 
   async addBox(roomIndex: number): Promise<void> {
-    if (!this.userUid) throw new Error('User is not logged in');
-    if (!this.currentWarehouse) throw new Error('Warehouse not found');
-
-    const newBox = { name: 'New Box', description: 'Describe here', items: [] };
-    this.currentWarehouse.rooms[roomIndex].boxes.push(newBox);
-
-    await this.warehouseDb.save(
-      this.userUid,
-      new Warehouse(this.currentWarehouse)
-    );
+    const w = this.activeWarehouse;
+    if (roomIndex == null || !w.rooms[roomIndex]) throw new Error('Room not found');
+    w.rooms[roomIndex].boxes.push(new WhBox({
+      name: 'New Box',
+      description: 'Describe here',
+      items: []
+    }));
+    await this.save();
   }
 
   async addItem(roomIndex: number, boxIndex: number): Promise<void> {
-    if (!this.userUid) throw new Error('User is not logged in');
-    if (!this.currentWarehouse) throw new Error('Warehouse not found');
+    const w = this.activeWarehouse;
+    if (roomIndex == null || !w.rooms[roomIndex]) throw new Error('Room not found');
+    if (boxIndex == null || !w.rooms[roomIndex].boxes[boxIndex]) throw new Error('Box not found');
 
-    const newItem = { name: 'New Item', description: 'Describe here' };
-    this.currentWarehouse.rooms[roomIndex].boxes[boxIndex].items.push(newItem);
+    w.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
+      name: 'New Item',
+      description: 'Describe here'
+    }));
+    await this.save();
+  }
 
-    await this.warehouseDb.save(
-      this.userUid,
-      new Warehouse(this.currentWarehouse)
-    );
+  async createWarehouse(): Promise<void> {
+    if (!this.userUid) {
+      console.error('No logged user');
+      return;
+    }
+
+    const warehouse = new Warehouse({
+      name: 'Main',
+      description: 'Central warehouse',
+      rooms: []
+    });
+
+    if (!this.currentWarehouses || this.currentWarehouses?.warehouses?.length === 0) {
+      this.currentWarehouses = new Warehouses({warehouses: [warehouse]})
+    } else {
+      this.currentWarehouses.warehouses.push(warehouse);
+    }
+    await this.save();
   }
 }

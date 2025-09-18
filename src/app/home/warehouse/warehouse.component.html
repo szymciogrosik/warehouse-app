@@ -1,77 +1,104 @@
-@let warehouse = (warehouse$ | async);
+@let warehouses = (warehouses$ | async);
 
-@if (warehouse) {
-  <mat-card class="warehouse-card">
+@if (warehouses) {
+  <!-- LIST OF WAREHOUSES -->
+  @if (selectedWarehouseIndex === null) {
+    <mat-card class="warehouse-card">
+      <mat-card-title>Warehouses</mat-card-title>
+      <button mat-raised-button color="primary" class="action-button"
+              (click)="createWarehouse()">
+        Create warehouse
+      </button>
+      <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
+        @for (w of warehouses.warehouses; track $index) {
+          <mat-grid-tile>
+            <mat-card class="room-card" (click)="enterWarehouse($index)">
+              <mat-card-title>{{ w.name }}</mat-card-title>
+              <mat-card-subtitle>{{ w.description }}</mat-card-subtitle>
+            </mat-card>
+          </mat-grid-tile>
+        }
+      </mat-grid-list>
+    </mat-card>
+  } @else {
+    <!-- DRILL INTO ONE WAREHOUSE -->
+    @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
 
-    <!-- Back arrow -->
-    @if (viewLevel > 0) {
+    <mat-card class="warehouse-card">
+
+      <!-- Back arrow -->
       <div class="nav-header">
         <button mat-icon-button (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span class="nav-title">
-          {{ getNavTitle(warehouse) }}
+          {{ getNavTitle(warehouse) || warehouse.name }}
         </span>
       </div>
-    }
 
-    <!-- ROOMS -->
-    @if (viewLevel === 0) {
-      <mat-card-title>{{ warehouse.name }}</mat-card-title>
-      <mat-card-subtitle>{{ warehouse.description }}</mat-card-subtitle>
-      <button mat-raised-button color="primary" (click)="addRoom()">
-        <mat-icon>add</mat-icon> Add Room
-      </button>
+      <!-- ROOMS -->
+      @if (viewLevel === 0) {
+        <mat-card-subtitle>{{ warehouse.description }}</mat-card-subtitle>
+        <button mat-raised-button color="primary" (click)="addRoom()">
+          <mat-icon>add</mat-icon> Add Room
+        </button>
 
-      <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
-        @for (room of warehouse.rooms; track $index) {
-          <mat-grid-tile>
-            <mat-card class="room-card" (click)="enterRoom($index)">
-              <mat-card-title>{{ room.name }}</mat-card-title>
-              <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
-            </mat-card>
-          </mat-grid-tile>
-        }
-      </mat-grid-list>
-    }
+        <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
+          @for (room of warehouse.rooms; track $index) {
+            <mat-grid-tile>
+              <mat-card class="room-card" (click)="enterRoom($index)">
+                <mat-card-title>{{ room.name }}</mat-card-title>
+                <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
+              </mat-card>
+            </mat-grid-tile>
+          }
+        </mat-grid-list>
+      }
 
-    <!-- BOXES -->
-    @if (viewLevel === 1 && selectedRoomIndex !== null) {
-      <button mat-stroked-button color="accent" (click)="addBox(selectedRoomIndex)">
-        <mat-icon>add</mat-icon> Add Box
-      </button>
+      <!-- BOXES -->
+      @if (viewLevel === 1 && selectedRoomIndex !== null) {
+        <button mat-stroked-button color="accent" (click)="addBox(selectedRoomIndex)">
+          <mat-icon>add</mat-icon> Add Box
+        </button>
 
-      <mat-grid-list cols="3" rowHeight="120px" gutterSize="12px">
-        @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
-          <mat-grid-tile>
-            <mat-card class="box-card" (click)="enterBox($index)">
-              <mat-card-title>{{ box.name }}</mat-card-title>
-              <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
-            </mat-card>
-          </mat-grid-tile>
-        }
-      </mat-grid-list>
-    }
+        <mat-grid-list cols="3" rowHeight="120px" gutterSize="12px">
+          @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
+            <mat-grid-tile>
+              <mat-card class="box-card" (click)="enterBox($index)">
+                <mat-card-title>{{ box.name }}</mat-card-title>
+                <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
+              </mat-card>
+            </mat-grid-tile>
+          }
+        </mat-grid-list>
+      }
 
-    <!-- ITEMS -->
-    @if (viewLevel === 2 && selectedRoomIndex !== null && selectedBoxIndex !== null) {
-      <button mat-flat-button color="warn" (click)="addItem(selectedRoomIndex, selectedBoxIndex)">
-        <mat-icon>add</mat-icon> Add Item
-      </button>
+      <!-- ITEMS -->
+      @if (viewLevel === 2 && selectedRoomIndex !== null && selectedBoxIndex !== null) {
+        <button mat-flat-button color="warn" (click)="addItem(selectedRoomIndex, selectedBoxIndex)">
+          <mat-icon>add</mat-icon> Add Item
+        </button>
 
-      <mat-list>
-        @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
-          <mat-list-item>
-            <mat-icon matListIcon>inventory_2</mat-icon>
-            <div matLine>{{ item.name }}</div>
-            <div matLine class="secondary">{{ item.description }}</div>
-          </mat-list-item>
-        }
-      </mat-list>
-    }
-  </mat-card>
+        <mat-list>
+          @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
+            <mat-list-item>
+              <mat-icon matListIcon>inventory_2</mat-icon>
+              <div matLine>{{ item.name }}</div>
+              <div matLine class="secondary">{{ item.description }}</div>
+            </mat-list-item>
+          }
+        </mat-list>
+      }
+
+    </mat-card>
+  }
+
 } @else {
   <mat-card>
-    <mat-card-content>No warehouse created yet.</mat-card-content>
+    <button mat-raised-button color="primary" class="action-button"
+            (click)="createWarehouse()">
+      Create warehouse
+    </button>
+    <mat-card-content>No warehouses created yet.</mat-card-content>
   </mat-card>
 }
