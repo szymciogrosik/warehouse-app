@@ -1,45 +1,64 @@
 <ng-container *ngIf="warehouse$ | async as warehouse; else noWarehouse">
   <mat-card class="warehouse-card">
-    <mat-card-title>{{ warehouse.name }}</mat-card-title>
-    <mat-card-subtitle>{{ warehouse.description }}</mat-card-subtitle>
 
-    <button mat-raised-button color="primary" (click)="addRoom()">
-      <mat-icon>add</mat-icon> Add Room
-    </button>
+    <!-- Back arrow -->
+    <div class="nav-header" *ngIf="viewLevel > 0">
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="nav-title">
+        {{ getNavTitle(warehouse) }}
+      </span>
+    </div>
 
-    <mat-accordion multi displayMode="flat">
-      <mat-expansion-panel *ngFor="let room of warehouse.rooms; let r = index">
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{ room.name }}</mat-panel-title>
-          <mat-panel-description>{{ room.description }}</mat-panel-description>
-        </mat-expansion-panel-header>
+    <!-- ROOMS -->
+    <ng-container *ngIf="viewLevel === 0">
+      <mat-card-title>{{ warehouse.name }}</mat-card-title>
+      <mat-card-subtitle>{{ warehouse.description }}</mat-card-subtitle>
+      <button mat-raised-button color="primary" (click)="addRoom()">
+        <mat-icon>add</mat-icon> Add Room
+      </button>
 
-        <button mat-stroked-button color="accent" (click)="addBox(r)">
-          <mat-icon>add</mat-icon> Add Box
-        </button>
+      <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
+        <mat-grid-tile *ngFor="let room of warehouse.rooms; let r = index">
+          <mat-card class="room-card" (click)="enterRoom(r)">
+            <mat-card-title>{{ room.name }}</mat-card-title>
+            <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </ng-container>
 
-        <mat-accordion multi displayMode="flat">
-          <mat-expansion-panel *ngFor="let box of room.boxes; let b = index">
-            <mat-expansion-panel-header>
-              <mat-panel-title>{{ box.name }}</mat-panel-title>
-              <mat-panel-description>{{ box.description }}</mat-panel-description>
-            </mat-expansion-panel-header>
+    <!-- BOXES -->
+    <ng-container *ngIf="viewLevel === 1 && selectedRoomIndex !== null">
+      <button mat-stroked-button color="accent" (click)="addBox(selectedRoomIndex)">
+        <mat-icon>add</mat-icon> Add Box
+      </button>
 
-            <button mat-flat-button color="warn" (click)="addItem(r, b)">
-              <mat-icon>add</mat-icon> Add Item
-            </button>
+      <mat-grid-list cols="3" rowHeight="120px" gutterSize="12px">
+        <mat-grid-tile *ngFor="let box of warehouse.rooms[selectedRoomIndex].boxes; let b = index">
+          <mat-card class="box-card" (click)="enterBox(b)">
+            <mat-card-title>{{ box.name }}</mat-card-title>
+            <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </ng-container>
 
-            <mat-list>
-              <mat-list-item *ngFor="let item of box.items">
-                <mat-icon matListIcon>inventory_2</mat-icon>
-                <div matLine>{{ item.name }}</div>
-                <div matLine class="secondary">{{ item.description }}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </mat-expansion-panel>
-    </mat-accordion>
+    <!-- ITEMS -->
+    <ng-container *ngIf="viewLevel === 2 && selectedRoomIndex !== null && selectedBoxIndex !== null">
+      <button mat-flat-button color="warn" (click)="addItem(selectedRoomIndex, selectedBoxIndex)">
+        <mat-icon>add</mat-icon> Add Item
+      </button>
+
+      <mat-list>
+        <mat-list-item *ngFor="let item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items">
+          <mat-icon matListIcon>inventory_2</mat-icon>
+          <div matLine>{{ item.name }}</div>
+          <div matLine class="secondary">{{ item.description }}</div>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
   </mat-card>
 </ng-container>
 
