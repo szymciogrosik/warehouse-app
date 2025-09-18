@@ -1,21 +1,35 @@
 @let warehouses = (warehouses$ | async);
 
-@if (warehouses) {
-  <!-- LIST OF WAREHOUSES -->
-  @if (selectedWarehouseIndex === null) {
-    <mat-card class="warehouse-card">
-      <div class="nav-header">
-        <span class="nav-title">
-          Warehouses
-        </span>
-        <button mat-icon-button (click)="createWarehouse()">
-          <mat-icon class="mat-icon-class">add_circle</mat-icon>
-        </button>
-        <button mat-icon-button (click)="createWarehouse()">
-          <mat-icon class="mat-icon-class">edit</mat-icon>
-        </button>
-      </div>
+<mat-card class="warehouse-card">
 
+  <!-- Nav bar -->
+  <div class="nav-header">
+    @if (viewLevel > 0) {
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon class="mat-icon-class">arrow_back</mat-icon>
+      </button>
+    }
+    <span class="nav-title">
+      {{ getNavTitle() }}
+    </span>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button (click)="add()">
+      <mat-icon class="mat-icon-class">add_circle</mat-icon>
+    </button>
+    @if (viewLevel > 0) {
+      <button mat-icon-button (click)="edit()">
+        <mat-icon class="mat-icon-class">edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="remove()">
+        <mat-icon class="mat-icon-class">delete</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (warehouses && warehouses.warehouses.length > 0) {
+
+    <!-- Warehouses list -->
+    @if (viewLevel === 0) {
       <div class="tile-list warehouses">
         @for (w of warehouses.warehouses; track $index) {
           <div class="tile">
@@ -26,82 +40,53 @@
           </div>
         }
       </div>
-    </mat-card>
-  } @else {
-    <!-- DRILL INTO ONE WAREHOUSE -->
-    @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
+    }
 
-    <mat-card class="warehouse-card">
-      <div class="nav-header">
-        <button mat-icon-button (click)="goBack()">
-          <mat-icon class="mat-icon-class">arrow_back</mat-icon>
-        </button>
-        <span class="nav-title">
-          {{ getNavTitle(warehouse) || warehouse.name }}
-        </span>
+    <!-- Rooms -->
+    @if (viewLevel === 1 && selectedWarehouseIndex !== null) {
+      @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
+      <div class="tile-list rooms">
+        @for (room of warehouse.rooms; track $index) {
+          <div class="tile">
+            <mat-card class="tile-card" (click)="enterRoom($index)">
+              <mat-card-title>{{ room.name }}</mat-card-title>
+              <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
+            </mat-card>
+          </div>
+        }
       </div>
+    }
 
-      <!-- ROOMS -->
-      @if (viewLevel === 0) {
-        <mat-card-subtitle>{{ warehouse.description }}</mat-card-subtitle>
-        <button mat-raised-button color="primary" (click)="addRoom()">
-          <mat-icon>add</mat-icon> Add Room
-        </button>
+    <!-- Boxes -->
+    @if (viewLevel === 2 && selectedWarehouseIndex !== null && selectedRoomIndex !== null) {
+      @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
+      <div class="tile-list boxes">
+        @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
+          <div class="tile">
+            <mat-card class="tile-card" (click)="enterBox($index)">
+              <mat-card-title>{{ box.name }}</mat-card-title>
+              <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
+            </mat-card>
+          </div>
+        }
+      </div>
+    }
 
-        <div class="tile-list rooms">
-          @for (room of warehouse.rooms; track $index) {
-            <div class="tile">
-              <mat-card class="tile-card" (click)="enterRoom($index)">
-                <mat-card-title>{{ room.name }}</mat-card-title>
-                <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
-              </mat-card>
-            </div>
-          }
-        </div>
-      }
-
-      <!-- BOXES -->
-      @if (viewLevel === 1 && selectedRoomIndex !== null) {
-        <button mat-stroked-button color="accent" (click)="addBox(selectedRoomIndex)">
-          <mat-icon>add</mat-icon> Add Box
-        </button>
-
-        <div class="tile-list boxes">
-          @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
-            <div class="tile">
-              <mat-card class="tile-card" (click)="enterBox($index)">
-                <mat-card-title>{{ box.name }}</mat-card-title>
-                <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
-              </mat-card>
-            </div>
-          }
-        </div>
-      }
-
-      <!-- ITEMS -->
-      @if (viewLevel === 2 && selectedRoomIndex !== null && selectedBoxIndex !== null) {
-        <button mat-flat-button color="warn" (click)="addItem(selectedRoomIndex, selectedBoxIndex)">
-          <mat-icon>add</mat-icon> Add Item
-        </button>
-
-        <mat-list>
-          @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
-            <mat-list-item>
-              <mat-icon matListIcon>inventory_2</mat-icon>
-              <div matLine>{{ item.name }}</div>
-              <div matLine class="secondary">{{ item.description }}</div>
-            </mat-list-item>
-          }
-        </mat-list>
-      }
-    </mat-card>
+    <!-- Items -->
+    @if (viewLevel === 3
+    && selectedWarehouseIndex !== null
+    && selectedRoomIndex !== null
+    && selectedBoxIndex !== null) {
+      @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
+      <mat-list>
+        @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
+          <mat-list-item>
+            <mat-icon matListIcon>inventory_2</mat-icon>
+            <div matLine>{{ item.name }}</div>
+            <div matLine class="secondary">{{ item.description }}</div>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
   }
-} @else {
-  <mat-card>
-    <button mat-raised-button color="primary" class="action-button"
-            (click)="createWarehouse()">
-      Create warehouse
-    </button>
-    <mat-card-content>No warehouses created yet.</mat-card-content>
-  </mat-card>
-}
+</mat-card>

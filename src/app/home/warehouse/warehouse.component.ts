@@ -68,42 +68,50 @@ export class WarehouseViewComponent implements OnInit {
   // navigation
   enterWarehouse(index: number): void {
     this.selectedWarehouseIndex = index;
-    this.viewLevel = 0;
+    this.viewLevel = 1;
     this.selectedRoomIndex = null;
     this.selectedBoxIndex = null;
   }
 
   enterRoom(index: number): void {
     this.selectedRoomIndex = index;
-    this.viewLevel = 1;
+    this.viewLevel = 2;
     this.selectedBoxIndex = null;
   }
 
   enterBox(index: number): void {
     this.selectedBoxIndex = index;
-    this.viewLevel = 2;
+    this.viewLevel = 3;
   }
 
   goBack(): void {
-    if (this.viewLevel === 2) {
+    if (this.viewLevel === 3) {
       this.selectedBoxIndex = null;
+      this.viewLevel = 2;
+    } else if (this.viewLevel === 2) {
+      this.selectedRoomIndex = null;
       this.viewLevel = 1;
     } else if (this.viewLevel === 1) {
-      this.selectedRoomIndex = null;
-      this.viewLevel = 0;
-    } else if (this.selectedWarehouseIndex !== null) {
       this.selectedWarehouseIndex = null;
+      this.viewLevel = 0;
     }
   }
 
-  getNavTitle(warehouse: Warehouse): string {
-    if (this.viewLevel === 1 && this.selectedRoomIndex !== null) {
-      return warehouse.rooms[this.selectedRoomIndex].name || '';
+  getNavTitle(): string {
+    if (this.viewLevel === 0) {
+      return 'Warehouses';
     }
-    if (this.viewLevel === 2 && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
-      return warehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].name || '';
+    let warehouse = this.currentWarehouses?.warehouses[this.selectedWarehouseIndex ?? 0]
+    if (this.viewLevel === 1) {
+      return warehouse?.name || '';
     }
-    return warehouse.name || '';
+    if (this.viewLevel === 2 && this.selectedRoomIndex !== null) {
+      return warehouse?.rooms[this.selectedRoomIndex].name || '';
+    }
+    if (this.viewLevel === 3 && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
+      return warehouse?.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].name || '';
+    }
+    return '';
   }
 
   // sorting utility
@@ -137,6 +145,33 @@ export class WarehouseViewComponent implements OnInit {
       !this.currentWarehouses.warehouses[this.selectedWarehouseIndex]
     ) throw new Error('Active warehouse not selected');
     return this.currentWarehouses.warehouses[this.selectedWarehouseIndex];
+  }
+
+  protected add(): Promise<void> {
+    if (this.viewLevel === 0) {
+      return this.addWarehouse();
+    }
+    if (this.viewLevel === 1) {
+      return this.addRoom();
+    }
+    if (this.viewLevel === 2 && this.selectedRoomIndex !== null) {
+      return this.addBox(this.selectedRoomIndex);
+    }
+    if (this.viewLevel === 3 && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
+      return this.addItem(this.selectedRoomIndex, this.selectedBoxIndex);
+    }
+    throw new Error('Provided no supported level ' +
+      'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
+  }
+
+  protected edit(): Promise<void> {
+    throw new Error('Provided no supported level ' +
+      'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
+  }
+
+  protected remove(): Promise<void> {
+    throw new Error('Provided no supported level ' +
+      'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
   }
 
   // mutations
@@ -173,7 +208,7 @@ export class WarehouseViewComponent implements OnInit {
     await this.save();
   }
 
-  async createWarehouse(): Promise<void> {
+  async addWarehouse(): Promise<void> {
     if (!this.userUid) {
       console.error('No logged user');
       return;
@@ -192,4 +227,5 @@ export class WarehouseViewComponent implements OnInit {
     }
     await this.save();
   }
+
 }
