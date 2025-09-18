@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
@@ -25,7 +24,6 @@ import { AuthService } from '../../_services/auth/auth.service';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatGridListModule,
     MatListModule
   ],
   templateUrl: './warehouse.component.html',
@@ -55,7 +53,12 @@ export class WarehouseViewComponent implements OnInit {
           this.warehouses$ = this.warehouseDb.getByUser(user.uid);
           this.warehouses$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(ws => this.currentWarehouses = ws);
+            .subscribe(ws => {
+              if (ws) {
+                this.sortAll(ws);
+              }
+              this.currentWarehouses = ws;
+            });
         } else {
           this.userUid = null;
         }
@@ -103,10 +106,27 @@ export class WarehouseViewComponent implements OnInit {
     return warehouse.name || '';
   }
 
+  // sorting utility
+  private sortAll(ws: Warehouses): void {
+    const safe = (val?: string) => val?.toLowerCase() ?? '';
+
+    ws.warehouses.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
+    ws.warehouses.forEach(w => {
+      w.rooms.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
+      w.rooms.forEach(r => {
+        r.boxes.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
+        r.boxes.forEach(bx => {
+          bx.items.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
+        });
+      });
+    });
+  }
+
   // helpers
   private async save(): Promise<void> {
     if (!this.userUid) throw new Error('User is not logged in');
     if (!this.currentWarehouses) throw new Error('No warehouses state');
+    this.sortAll(this.currentWarehouses);
     await this.warehouseDb.save(this.userUid, new Warehouses(this.currentWarehouses));
   }
 
@@ -166,7 +186,7 @@ export class WarehouseViewComponent implements OnInit {
     });
 
     if (!this.currentWarehouses || this.currentWarehouses?.warehouses?.length === 0) {
-      this.currentWarehouses = new Warehouses({warehouses: [warehouse]})
+      this.currentWarehouses = new Warehouses({ warehouses: [warehouse] });
     } else {
       this.currentWarehouses.warehouses.push(warehouse);
     }
