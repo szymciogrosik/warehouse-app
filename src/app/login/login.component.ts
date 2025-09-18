@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
       this.authService.isAuthenticated().subscribe({
         next: (isLoggedUser: boolean) => {
           if (isLoggedUser) {
-            this.router.navigate([RedirectionEnum.ADMIN]);
+            this.router.navigate([RedirectionEnum.HOME]);
           } else {
             this.checkingIfUserIsAlreadyLoggedIn = false;
           }

@@ -10,7 +10,8 @@ import {adminPageGuard} from "./_services/guard/adminPageGuard";
 const appRoutes: Routes = [
   {
     path: RedirectionEnum.HOME,
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [authenticatedGuard]
   },
   {
     path: RedirectionEnum.STATUS,

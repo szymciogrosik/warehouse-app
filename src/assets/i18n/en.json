@@ -2,11 +2,13 @@
   "language.english": "English",
   "language.polish": "Polski",
 
+  "page.title": "My warehouse",
+
   "datePicker.formatHint": "MM/DD/YYYY",
   "datePicker.chooseDate": "Select date",
   "datePicker.chooseDateAndTime": "Provide date and time",
 
-  "navbar.tab.applicationName": "Angular accelerator app",
+  "navbar.tab.applicationName": "My warehouse",
   "navbar.tab.button.logout": "Logout",
   "navbar.tab.button.adminPanel": "Admin panel",
 
