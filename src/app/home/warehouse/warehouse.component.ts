@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
+import {firstValueFrom, Observable} from 'rxjs';
 
 import { Warehouse } from '../../_models/warehouse/warehouse';
 import { Warehouses } from '../../_models/warehouse/warehouses';
@@ -15,6 +15,8 @@ import { WhItem } from '../../_models/warehouse/wh-item';
 
 import { WarehouseDbService } from '../../_database/warehouse/warehouse.service';
 import { AuthService } from '../../_services/auth/auth.service';
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {ConfirmDialogComponent} from "../../_shared-components/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'warehouse-view',
@@ -24,7 +26,8 @@ import { AuthService } from '../../_services/auth/auth.service';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
   ],
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.scss']
@@ -43,6 +46,7 @@ export class WarehouseViewComponent implements OnInit {
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private dialog = inject(MatDialog);
 
   ngOnInit(): void {
     this.authService.loggedUser()
@@ -170,13 +174,21 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   protected async remove(): Promise<void> {
+    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'Are you sure you want to delete this?' }
+    }).afterClosed());
+
+    if (!confirmed) {
+      return;
+    }
+
     if (!this.currentWarehouses) throw new Error('No warehouses state');
 
     // remove warehouse
     if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
       this.currentWarehouses.warehouses.splice(this.selectedWarehouseIndex, 1);
       this.selectedWarehouseIndex = null;
-      this.viewLevel = 0; // back to overview
+      this.viewLevel = 0;
       await this.save();
       return;
     }
@@ -188,7 +200,7 @@ export class WarehouseViewComponent implements OnInit {
       const w = this.activeWarehouse;
       w.rooms.splice(this.selectedRoomIndex, 1);
       this.selectedRoomIndex = null;
-      this.viewLevel = 1; // back to warehouse level
+      this.viewLevel = 1;
       await this.save();
       return;
     }
@@ -201,19 +213,12 @@ export class WarehouseViewComponent implements OnInit {
       const w = this.activeWarehouse;
       w.rooms[this.selectedRoomIndex].boxes.splice(this.selectedBoxIndex, 1);
       this.selectedBoxIndex = null;
-      this.viewLevel = 2; // back to room level
+      this.viewLevel = 2;
       await this.save();
       return;
     }
 
-    // removing items would require a selectedItemIndex
-    throw new Error(
-      'Remove not supported for current state: ' +
-      'viewLevel=' + this.viewLevel +
-      ', warehouseIndex=' + this.selectedWarehouseIndex +
-      ', roomIndex=' + this.selectedRoomIndex +
-      ', boxIndex=' + this.selectedBoxIndex
-    );
+    throw new Error('Unsupported deletion state');
   }
 
   // mutations
