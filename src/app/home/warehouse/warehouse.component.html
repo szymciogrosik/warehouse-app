@@ -5,28 +5,28 @@
   @if (selectedWarehouseIndex === null) {
     <mat-card class="warehouse-card">
       <mat-card-title>Warehouses</mat-card-title>
+
       <button mat-raised-button color="primary" class="action-button"
               (click)="createWarehouse()">
         Create warehouse
       </button>
-      <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
+
+      <div class="tile-list warehouses">
         @for (w of warehouses.warehouses; track $index) {
-          <mat-grid-tile>
-            <mat-card class="room-card" (click)="enterWarehouse($index)">
+          <div class="tile">
+            <mat-card class="tile-card" (click)="enterWarehouse($index)">
               <mat-card-title>{{ w.name }}</mat-card-title>
               <mat-card-subtitle>{{ w.description }}</mat-card-subtitle>
             </mat-card>
-          </mat-grid-tile>
+          </div>
         }
-      </mat-grid-list>
+      </div>
     </mat-card>
   } @else {
     <!-- DRILL INTO ONE WAREHOUSE -->
     @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
 
     <mat-card class="warehouse-card">
-
-      <!-- Back arrow -->
       <div class="nav-header">
         <button mat-icon-button (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
@@ -43,16 +43,16 @@
           <mat-icon>add</mat-icon> Add Room
         </button>
 
-        <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
+        <div class="tile-list rooms">
           @for (room of warehouse.rooms; track $index) {
-            <mat-grid-tile>
-              <mat-card class="room-card" (click)="enterRoom($index)">
+            <div class="tile">
+              <mat-card class="tile-card" (click)="enterRoom($index)">
                 <mat-card-title>{{ room.name }}</mat-card-title>
                 <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
               </mat-card>
-            </mat-grid-tile>
+            </div>
           }
-        </mat-grid-list>
+        </div>
       }
 
       <!-- BOXES -->
@@ -61,16 +61,16 @@
           <mat-icon>add</mat-icon> Add Box
         </button>
 
-        <mat-grid-list cols="3" rowHeight="120px" gutterSize="12px">
+        <div class="tile-list boxes">
           @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
-            <mat-grid-tile>
-              <mat-card class="box-card" (click)="enterBox($index)">
+            <div class="tile">
+              <mat-card class="tile-card" (click)="enterBox($index)">
                 <mat-card-title>{{ box.name }}</mat-card-title>
                 <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
               </mat-card>
-            </mat-grid-tile>
+            </div>
           }
-        </mat-grid-list>
+        </div>
       }
 
       <!-- ITEMS -->
@@ -89,10 +89,8 @@
           }
         </mat-list>
       }
-
     </mat-card>
   }
-
 } @else {
   <mat-card>
     <button mat-raised-button color="primary" class="action-button"

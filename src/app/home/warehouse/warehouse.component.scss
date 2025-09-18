@@ -1,6 +1,4 @@
-.warehouse-card {
-
-}
+.warehouse-card { padding: 16px; }
 
 .nav-header {
   display: flex;
@@ -8,27 +6,36 @@
   margin-bottom: 12px;
 }
 
-.nav-title {
-  font-weight: 500;
-  margin-left: 8px;
+.nav-title { font-weight: 500; margin-left: 8px; }
+
+.tile-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
 }
 
-.room-card, .box-card {
+/* Responsive tiles: 1–3 per row depending on width */
+.tile { flex: 1 1 280px; max-width: 100%; }
+
+.tile-card {
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   cursor: pointer;
-  height: 100%;
-  transition: transform 0.2s ease;
+  height: 150px;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.room-card:hover, .box-card:hover {
+.tile-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
 }
 
-.secondary {
-  font-size: 12px;
-  color: gray;
-}
+/* Heights per level */
+.rooms .tile-card { height: 150px; }
+.boxes .tile-card { height: 120px; }
+.warehouses .tile-card { height: 150px; }
+
+.secondary { font-size: 12px; color: gray; }
