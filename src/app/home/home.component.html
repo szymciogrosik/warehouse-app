@@ -1,21 +1,12 @@
 <div class="home-content">
   <div class="container">
     <div class="row">
-      <mat-card class="short-page-content" style="margin-top: 20px">
-        <mat-card-title>
-          <h1>Dummy title!</h1>
-        </mat-card-title>
-        <mat-card-content>
+      <button mat-raised-button color="primary" class="action-button"
+              (click)="createDummyWarehouse()">
+        Create warehouse
+      </button>
 
-          <button mat-raised-button color="primary" class="action-button"
-                  (click)="createDummyWarehouse()">
-            Create warehouse
-          </button>
-
-          <warehouse-view></warehouse-view>
-
-        </mat-card-content>
-      </mat-card>
+      <warehouse-view></warehouse-view>
     </div>
   </div>
 </div>

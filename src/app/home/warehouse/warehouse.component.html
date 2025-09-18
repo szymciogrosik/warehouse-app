@@ -1,18 +1,22 @@
-<ng-container *ngIf="warehouse$ | async as warehouse; else noWarehouse">
+@let warehouse = (warehouse$ | async);
+
+@if (warehouse) {
   <mat-card class="warehouse-card">
 
     <!-- Back arrow -->
-    <div class="nav-header" *ngIf="viewLevel > 0">
-      <button mat-icon-button (click)="goBack()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <span class="nav-title">
-        {{ getNavTitle(warehouse) }}
-      </span>
-    </div>
+    @if (viewLevel > 0) {
+      <div class="nav-header">
+        <button mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="nav-title">
+          {{ getNavTitle(warehouse) }}
+        </span>
+      </div>
+    }
 
     <!-- ROOMS -->
-    <ng-container *ngIf="viewLevel === 0">
+    @if (viewLevel === 0) {
       <mat-card-title>{{ warehouse.name }}</mat-card-title>
       <mat-card-subtitle>{{ warehouse.description }}</mat-card-subtitle>
       <button mat-raised-button color="primary" (click)="addRoom()">
@@ -20,50 +24,54 @@
       </button>
 
       <mat-grid-list cols="3" rowHeight="150px" gutterSize="16px">
-        <mat-grid-tile *ngFor="let room of warehouse.rooms; let r = index">
-          <mat-card class="room-card" (click)="enterRoom(r)">
-            <mat-card-title>{{ room.name }}</mat-card-title>
-            <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
-          </mat-card>
-        </mat-grid-tile>
+        @for (room of warehouse.rooms; track $index) {
+          <mat-grid-tile>
+            <mat-card class="room-card" (click)="enterRoom($index)">
+              <mat-card-title>{{ room.name }}</mat-card-title>
+              <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
+            </mat-card>
+          </mat-grid-tile>
+        }
       </mat-grid-list>
-    </ng-container>
+    }
 
     <!-- BOXES -->
-    <ng-container *ngIf="viewLevel === 1 && selectedRoomIndex !== null">
+    @if (viewLevel === 1 && selectedRoomIndex !== null) {
       <button mat-stroked-button color="accent" (click)="addBox(selectedRoomIndex)">
         <mat-icon>add</mat-icon> Add Box
       </button>
 
       <mat-grid-list cols="3" rowHeight="120px" gutterSize="12px">
-        <mat-grid-tile *ngFor="let box of warehouse.rooms[selectedRoomIndex].boxes; let b = index">
-          <mat-card class="box-card" (click)="enterBox(b)">
-            <mat-card-title>{{ box.name }}</mat-card-title>
-            <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
-          </mat-card>
-        </mat-grid-tile>
+        @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
+          <mat-grid-tile>
+            <mat-card class="box-card" (click)="enterBox($index)">
+              <mat-card-title>{{ box.name }}</mat-card-title>
+              <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
+            </mat-card>
+          </mat-grid-tile>
+        }
       </mat-grid-list>
-    </ng-container>
+    }
 
     <!-- ITEMS -->
-    <ng-container *ngIf="viewLevel === 2 && selectedRoomIndex !== null && selectedBoxIndex !== null">
+    @if (viewLevel === 2 && selectedRoomIndex !== null && selectedBoxIndex !== null) {
       <button mat-flat-button color="warn" (click)="addItem(selectedRoomIndex, selectedBoxIndex)">
         <mat-icon>add</mat-icon> Add Item
       </button>
 
       <mat-list>
-        <mat-list-item *ngFor="let item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items">
-          <mat-icon matListIcon>inventory_2</mat-icon>
-          <div matLine>{{ item.name }}</div>
-          <div matLine class="secondary">{{ item.description }}</div>
-        </mat-list-item>
+        @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
+          <mat-list-item>
+            <mat-icon matListIcon>inventory_2</mat-icon>
+            <div matLine>{{ item.name }}</div>
+            <div matLine class="secondary">{{ item.description }}</div>
+          </mat-list-item>
+        }
       </mat-list>
-    </ng-container>
+    }
   </mat-card>
-</ng-container>
-
-<ng-template #noWarehouse>
+} @else {
   <mat-card>
     <mat-card-content>No warehouse created yet.</mat-card-content>
   </mat-card>
-</ng-template>
+}
