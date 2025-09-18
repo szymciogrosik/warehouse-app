@@ -6,13 +6,14 @@ import {Warehouse} from "../_models/warehouse/warehouse";
 import {AuthService} from "../_services/auth/auth.service";
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Observable} from "rxjs";
+import {WarehouseViewComponent} from "./warehouse/warehouse.component";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [CustomCommonModule],
+  imports: [CustomCommonModule, WarehouseViewComponent],
 })
 export class HomeComponent implements OnInit {
   protected readonly environment = environment;

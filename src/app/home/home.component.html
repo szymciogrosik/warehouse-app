@@ -12,25 +12,7 @@
             Create warehouse
           </button>
 
-          <ng-container *ngIf="warehouse$ | async as warehouse">
-            <h2>{{ warehouse.name }}</h2>
-            <p>{{ warehouse.description }}</p>
-            <ul>
-              <li *ngFor="let room of warehouse.rooms">
-                {{ room.name }} ({{ room.description }})
-                <ul>
-                  <li *ngFor="let box of room.boxes">
-                    {{ box.name }} – {{ box.description }}
-                    <ul>
-                      <li *ngFor="let item of box.items">
-                        {{ item.name }} – {{ item.description }}
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </ng-container>
+          <warehouse-view></warehouse-view>
 
         </mat-card-content>
       </mat-card>
