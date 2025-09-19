@@ -57,6 +57,8 @@
   "confirmation.dialog.remove": "Usuń",
   "confirmation.dialog.message": "Czy na pewno chcesz usunąć ten element?",
 
+  "confirmation.dialog.warehouses": "Magazyny",
+
   "edit.wh.dialog.add.warehouse": "Dodaj magazyn",
   "edit.wh.dialog.add.room": "Dodaj pokój",
   "edit.wh.dialog.add.box": "Dodaj pudełko",

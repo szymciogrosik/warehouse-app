@@ -115,7 +115,7 @@ export class WarehouseViewComponent implements OnInit {
 
   getNavTitle(): string {
     if (this.viewLevel === 0) {
-      return 'Warehouses';
+      return this.translateService.get('confirmation.dialog.warehouses');
     }
     let warehouse = this.currentWarehouses?.warehouses[this.selectedWarehouseIndex ?? 0]
     if (this.viewLevel === 1) {
@@ -237,6 +237,37 @@ export class WarehouseViewComponent implements OnInit {
     }
 
     throw new Error('Unsupported edit state');
+  }
+
+  protected async editItem(itemIndex: number): Promise<void> {
+    if (this.selectedWarehouseIndex === null || this.selectedRoomIndex === null || this.selectedBoxIndex === null) {
+      return;
+    }
+
+    const item = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].items[itemIndex];
+    const result = await this.openEditDialog(
+      this.translateService.get('edit.wh.dialog.edit.item'),
+      item.name,
+      item.description
+    );
+
+    if (result) {
+      item.name = result.name;
+      item.description = result.description;
+      await this.save();
+    }
+  }
+
+  protected async removeItem(itemIndex: number): Promise<void> {
+    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDeleteDialogComponent).afterClosed());
+    if (!confirmed) return;
+
+    if (this.selectedWarehouseIndex === null || this.selectedRoomIndex === null || this.selectedBoxIndex === null) {
+      return;
+    }
+
+    this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].items.splice(itemIndex, 1);
+    await this.save();
   }
 
   protected async remove(): Promise<void> {

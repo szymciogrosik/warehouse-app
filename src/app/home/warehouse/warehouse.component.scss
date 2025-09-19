@@ -98,3 +98,15 @@
 .subtitle-dates {
   font-size: small;
 }
+
+.list-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 4px;
+}

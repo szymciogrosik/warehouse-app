@@ -109,12 +109,27 @@
       <mat-list>
         @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
           <mat-list-item>
-            <span matListItemTitle><mat-icon matListIcon class="mat-icon-in-list-class">sell</mat-icon>{{ item.name }}</span>
+            <div class="list-item-header">
+              <span matListItemTitle>
+                <mat-icon matListIcon class="mat-icon-in-list-class">sell</mat-icon>
+                {{ item.name }}
+              </span>
+              <span class="list-item-actions">
+                <button mat-icon-button (click)="editItem($index)">
+                  <mat-icon class="mat-icon-class">edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeItem($index)">
+                  <mat-icon class="mat-icon-class">delete</mat-icon>
+                </button>
+              </span>
+            </div>
+
             @if (item.description) {
               <span matListItemLine class="list-item-description">
-              <mat-icon matListIcon class="mat-icon-in-list-class">category</mat-icon>{{ item.description }}
-            </span>
+                <mat-icon matListIcon class="mat-icon-in-list-class">category</mat-icon>{{ item.description }}
+              </span>
             }
+
             <span matListItemLine class="list-item-timestamps">
               {{ 'wh.element.lastModificationTimestamp' | translate }}{{ this.presentTimestamp(item.updatedTimestamp) }}
             </span>
