@@ -73,7 +73,7 @@
   "edit.wh.dialog.add.cancel": "Cancel",
   "edit.wh.dialog.add.save": "Save",
 
-  "wh.element.lastModificationTimestamp": "Last modification:",
+  "wh.element.lastModificationTimestamp": "Updated:",
   "wh.element.createdTimestamp": "Created:",
 
   "admin.panel.header": "ADMIN PANEL",
