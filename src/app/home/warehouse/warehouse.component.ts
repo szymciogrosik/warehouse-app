@@ -222,6 +222,26 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   // mutations
+  async addWarehouse(): Promise<void> {
+    if (!this.userUid) {
+      console.error('No logged user');
+      return;
+    }
+
+    const warehouse = new Warehouse({
+      name: 'Main',
+      description: 'Central warehouse',
+      rooms: []
+    });
+
+    if (!this.currentWarehouses || this.currentWarehouses?.warehouses?.length === 0) {
+      this.currentWarehouses = new Warehouses({ warehouses: [warehouse] });
+    } else {
+      this.currentWarehouses.warehouses.push(warehouse);
+    }
+    await this.save();
+  }
+
   async addRoom(): Promise<void> {
     const w = this.activeWarehouse;
     w.rooms.push(new WhRoom({
@@ -252,26 +272,6 @@ export class WarehouseViewComponent implements OnInit {
       name: 'New Item',
       description: 'Describe here'
     }));
-    await this.save();
-  }
-
-  async addWarehouse(): Promise<void> {
-    if (!this.userUid) {
-      console.error('No logged user');
-      return;
-    }
-
-    const warehouse = new Warehouse({
-      name: 'Main',
-      description: 'Central warehouse',
-      rooms: []
-    });
-
-    if (!this.currentWarehouses || this.currentWarehouses?.warehouses?.length === 0) {
-      this.currentWarehouses = new Warehouses({ warehouses: [warehouse] });
-    } else {
-      this.currentWarehouses.warehouses.push(warehouse);
-    }
     await this.save();
   }
 
