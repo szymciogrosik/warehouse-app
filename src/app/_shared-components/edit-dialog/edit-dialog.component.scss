@@ -1,0 +1,11 @@
+@use "src/styles.scss" as *;
+
+.dialog-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.dialog-form {
+  margin-top: 15px;
+}

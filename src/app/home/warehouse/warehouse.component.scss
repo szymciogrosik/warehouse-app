@@ -9,13 +9,27 @@
 .nav-header {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;
   padding: 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
 }
 
 .nav-title {
   font-weight: 500;
-  margin: 0 8px;
+  margin-left: 8px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+
+  button {
+    margin-left: 4px;
+  }
 }
 
 .tile-list {
@@ -40,25 +54,13 @@
   justify-content: center;
   text-align: center;
   cursor: pointer;
-  height: 150px;
+  min-height: 200px;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
 .tile-card:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
-}
-
-.rooms .tile-card {
-  height: 150px;
-}
-
-.boxes .tile-card {
-  height: 120px;
-}
-
-.warehouses .tile-card {
-  height: 150px;
 }
 
 .secondary {
@@ -68,4 +70,56 @@
 
 .mat-icon-class {
   margin-bottom: 5px;
+}
+
+.mat-icon-in-list-header-class {
+  margin-right: 5px;
+}
+
+.mat-icon-in-list-class {
+  padding-top: 8px;
+  font-size: large;
+}
+
+.list-item-description {
+  font-size: smaller;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.list-item-timestamps {
+  font-size: small;
+}
+
+.card-title-class {
+  padding-bottom: 0;
+}
+
+.subtitle-description {
+  font-size: smaller;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.subtitle-dates {
+  font-size: small;
+}
+
+.list-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.list-item-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 4px;
 }

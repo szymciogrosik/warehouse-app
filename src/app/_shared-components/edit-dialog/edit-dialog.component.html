@@ -1,0 +1,28 @@
+<h2 mat-dialog-title class="dialog-title-custom-class">{{ title }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="dialog-field">
+      <mat-label>{{ 'edit.wh.dialog.add.name' | translate }}</mat-label>
+      <input matInput formControlName="name">
+      @if (form.controls['name'].hasError('required')) {
+        <mat-error>
+          {{ 'edit.wh.dialog.add.name.error.required' | translate }}
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="dialog-field">
+      <mat-label>{{ 'edit.wh.dialog.add.description' | translate }}</mat-label>
+      <textarea matInput type="text" formControlName="description" appAutoResize></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="cancel()">
+    {{ 'edit.wh.dialog.add.cancel' | translate }}
+  </button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{ 'edit.wh.dialog.add.save' | translate }}
+  </button>
+</mat-dialog-actions>
