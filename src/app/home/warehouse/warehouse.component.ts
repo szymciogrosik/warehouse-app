@@ -20,6 +20,9 @@ import {ConfirmDeleteDialogComponent} from "../../_shared-components/confirm-dia
 import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
 import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
 import {MatLineModule} from '@angular/material/core';
+import {TranslatePipe} from "@ngx-translate/core";
+import {DateTime} from "luxon";
+import {DateService} from "../../_services/util/date.service";
 
 @Component({
   selector: 'warehouse-view',
@@ -31,12 +34,15 @@ import {MatLineModule} from '@angular/material/core';
     MatIconModule,
     MatListModule,
     MatDialogModule,
-    MatLineModule
+    MatLineModule,
+    TranslatePipe
   ],
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.scss']
 })
 export class WarehouseViewComponent implements OnInit {
+  protected readonly DateTime = DateTime;
+
   warehouses$: Observable<Warehouses | null>;
   currentWarehouses: Warehouses | null = null;
   userUid: string | null = null;
@@ -52,6 +58,7 @@ export class WarehouseViewComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private dialog = inject(MatDialog);
   private translateService = inject(CustomTranslateService);
+  protected dateService = inject(DateService);
 
   ngOnInit(): void {
     this.authService.loggedUser()
@@ -339,6 +346,22 @@ export class WarehouseViewComponent implements OnInit {
       description: result.description
     }));
     await this.save();
+  }
+
+  public getLastModificationTimestampForWarehouse(warehouse: Warehouse): string {
+    return DateTime.now().toISO();
+  }
+
+  public getLastModificationTimestampForRoom(room: WhRoom): string {
+    return DateTime.now().toISO();
+  }
+
+  public getLastModificationTimestampForBox(box: WhBox): string {
+    return DateTime.now().toISO();
+  }
+
+  public presentTimestamp(timestamp: string): string {
+    return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
   }
 
 }

@@ -73,6 +73,9 @@
   "edit.wh.dialog.add.cancel": "Anuluj",
   "edit.wh.dialog.add.save": "Zapisz",
 
+  "wh.element.lastModificationTimestamp": "Ostatnia modyfikacja: ",
+  "wh.element.createdTimestamp": "Utworzono: ",
+
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Witaj, ",
 

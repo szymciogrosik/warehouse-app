@@ -54,7 +54,7 @@
   justify-content: center;
   text-align: center;
   cursor: pointer;
-  height: 150px;
+  min-height: 170px;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
@@ -70,4 +70,16 @@
 
 .mat-icon-class {
   margin-bottom: 5px;
+}
+
+.card-title-class {
+  padding-bottom: 0;
+}
+
+.subtitle-description {
+  font-size: smaller;
+}
+
+.subtitle-dates {
+  font-size: small;
 }

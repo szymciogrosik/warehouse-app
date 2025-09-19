@@ -38,8 +38,14 @@
         @for (w of warehouses.warehouses; track $index) {
           <div class="tile">
             <mat-card class="tile-card" (click)="enterWarehouse($index)">
-              <mat-card-title>{{ w.name }}</mat-card-title>
-              <mat-card-subtitle>{{ w.description }}</mat-card-subtitle>
+              <mat-card-title class="card-title-class">{{ w.name }}</mat-card-title>
+              <mat-card-subtitle class="subtitle-description">{{ w.description }}</mat-card-subtitle>
+              <mat-card-subtitle class="subtitle-dates">
+                {{ 'wh.element.lastModificationTimestamp' | translate }}{{ this.presentTimestamp(this.getLastModificationTimestampForWarehouse(w)) }}
+              </mat-card-subtitle>
+              <mat-card-subtitle class="subtitle-dates">
+                {{ 'wh.element.createdTimestamp' | translate }}{{ this.presentTimestamp(w.createdTimestamp) }}
+              </mat-card-subtitle>
             </mat-card>
           </div>
         }
@@ -53,8 +59,14 @@
         @for (room of warehouse.rooms; track $index) {
           <div class="tile">
             <mat-card class="tile-card" (click)="enterRoom($index)">
-              <mat-card-title>{{ room.name }}</mat-card-title>
-              <mat-card-subtitle>{{ room.description }}</mat-card-subtitle>
+              <mat-card-title class="card-title-class">{{ room.name }}</mat-card-title>
+              <mat-card-subtitle class="subtitle-description">{{ room.description }}</mat-card-subtitle>
+              <mat-card-subtitle class="subtitle-dates">
+                {{ 'wh.element.lastModificationTimestamp' | translate }}{{ this.presentTimestamp(this.getLastModificationTimestampForRoom(room)) }}
+              </mat-card-subtitle>
+              <mat-card-subtitle class="subtitle-dates">
+                {{ 'wh.element.createdTimestamp' | translate }}{{ this.presentTimestamp(room.createdTimestamp) }}
+              </mat-card-subtitle>
             </mat-card>
           </div>
         }
@@ -68,8 +80,14 @@
         @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
           <div class="tile">
             <mat-card class="tile-card" (click)="enterBox($index)">
-              <mat-card-title>{{ box.name }}</mat-card-title>
-              <mat-card-subtitle>{{ box.description }}</mat-card-subtitle>
+              <mat-card-title class="card-title-class">{{ box.name }}</mat-card-title>
+              <mat-card-subtitle class="subtitle-description">{{ box.description }}</mat-card-subtitle>
+              <mat-card-subtitle class="subtitle-dates">
+                {{ 'wh.element.lastModificationTimestamp' | translate }}{{ this.presentTimestamp(this.getLastModificationTimestampForBox(box)) }}
+              </mat-card-subtitle>
+              <mat-card-subtitle class="subtitle-dates">
+                {{ 'wh.element.createdTimestamp' | translate }}{{ this.presentTimestamp(box.createdTimestamp) }}
+              </mat-card-subtitle>
             </mat-card>
           </div>
         }
