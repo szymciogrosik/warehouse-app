@@ -109,16 +109,30 @@
       <mat-list>
         @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
           <mat-list-item>
-            <!-- Title with icon -->
-            <span matListItemTitle>
-              <mat-icon class="mat-icon-in-list-class">sell</mat-icon>{{ item.name }}
-            </span>
+            <!-- Title + actions on the same row -->
+            <div matListItemTitle class="list-item-header">
+              <div class="list-item-title">
+                <mat-icon class="mat-icon-in-list-header-class">sell</mat-icon>
+                {{ item.name }}
+              </div>
+              <div class="list-item-actions">
+                <button mat-icon-button (click)="editItem($index)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeItem($index)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
             <!-- Optional description -->
             @if (item.description) {
               <span matListItemLine class="list-item-description">
-                <mat-icon class="mat-icon-in-list-class">category</mat-icon>{{ item.description }}
+                <mat-icon class="mat-icon-in-list-class">category</mat-icon>
+                      {{ item.description }}
               </span>
             }
+
             <!-- Timestamps -->
             <span matListItemLine class="list-item-timestamps">
               {{ 'wh.element.lastModificationTimestamp' | translate }}
@@ -128,15 +142,6 @@
               {{ 'wh.element.createdTimestamp' | translate }}
               {{ this.presentTimestamp(item.createdTimestamp) }}
             </span>
-            <!-- Action buttons aligned to the right -->
-            <div matListItemMeta class="list-item-actions">
-              <button mat-icon-button (click)="editItem($index)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button (click)="removeItem($index)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
           </mat-list-item>
         }
       </mat-list>

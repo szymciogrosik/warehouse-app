@@ -72,6 +72,10 @@
   margin-bottom: 5px;
 }
 
+.mat-icon-in-list-header-class {
+  margin-right: 5px;
+}
+
 .mat-icon-in-list-class {
   padding-top: 8px;
   font-size: large;
@@ -99,7 +103,21 @@
   font-size: small;
 }
 
+.list-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.list-item-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
 .list-item-actions {
   display: flex;
-  margin: 0 !important;
+  gap: 4px;
 }
