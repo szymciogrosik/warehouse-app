@@ -1,24 +1,25 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {Component, OnInit, inject, DestroyRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatListModule} from '@angular/material/list';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {firstValueFrom, Observable} from 'rxjs';
 
-import { Warehouse } from '../../_models/warehouse/warehouse';
-import { Warehouses } from '../../_models/warehouse/warehouses';
-import { WhRoom } from '../../_models/warehouse/wh-room';
-import { WhBox } from '../../_models/warehouse/wh-box';
-import { WhItem } from '../../_models/warehouse/wh-item';
+import {Warehouse} from '../../_models/warehouse/warehouse';
+import {Warehouses} from '../../_models/warehouse/warehouses';
+import {WhRoom} from '../../_models/warehouse/wh-room';
+import {WhBox} from '../../_models/warehouse/wh-box';
+import {WhItem} from '../../_models/warehouse/wh-item';
 
-import { WarehouseDbService } from '../../_database/warehouse/warehouse.service';
-import { AuthService } from '../../_services/auth/auth.service';
+import {WarehouseDbService} from '../../_database/warehouse/warehouse.service';
+import {AuthService} from '../../_services/auth/auth.service';
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {ConfirmDeleteDialogComponent} from "../../_shared-components/confirm-dialog/confirm-delete-dialog.component";
 import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
 import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
+import {MatLineModule} from '@angular/material/core';
 
 @Component({
   selector: 'warehouse-view',
@@ -29,7 +30,8 @@ import {CustomTranslateService} from "../../_services/translate/custom-translate
     MatButtonModule,
     MatIconModule,
     MatListModule,
-    MatDialogModule
+    MatDialogModule,
+    MatLineModule
   ],
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.scss']
@@ -154,10 +156,13 @@ export class WarehouseViewComponent implements OnInit {
     return this.currentWarehouses.warehouses[this.selectedWarehouseIndex];
   }
 
-  private async openEditDialog(title: string, name = '', description = ''): Promise<{name: string, description: string} | null> {
+  private async openEditDialog(title: string, name = '', description = ''): Promise<{
+    name: string,
+    description: string
+  } | null> {
     const result = await firstValueFrom(
       this.dialog.open(EditDialogComponent, {
-        data: { title, name, description },
+        data: {title, name, description},
         width: '600px',          // fixed width
         maxWidth: '90vw',        // responsive cap
       }).afterClosed()
@@ -291,7 +296,7 @@ export class WarehouseViewComponent implements OnInit {
     });
 
     if (!this.currentWarehouses || this.currentWarehouses.warehouses.length === 0) {
-      this.currentWarehouses = new Warehouses({ warehouses: [warehouse] });
+      this.currentWarehouses = new Warehouses({warehouses: [warehouse]});
     } else {
       this.currentWarehouses.warehouses.push(warehouse);
     }
