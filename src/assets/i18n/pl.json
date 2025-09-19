@@ -62,6 +62,17 @@
   "edit.wh.dialog.add.box": "Dodaj pudełko",
   "edit.wh.dialog.add.item": "Dodaj przedmiot",
 
+  "edit.wh.dialog.edit.warehouse": "Edytuj magazyn",
+  "edit.wh.dialog.edit.room": "Edytuj pokój",
+  "edit.wh.dialog.edit.box": "Edytuj pudełko",
+  "edit.wh.dialog.edit.item": "Edytuj przedmiot",
+
+  "edit.wh.dialog.add.name": "Nazwa",
+  "edit.wh.dialog.add.description": "Opis",
+  "edit.wh.dialog.add.name.error.required": "Nazwa jest wymagana",
+  "edit.wh.dialog.add.cancel": "Anuluj",
+  "edit.wh.dialog.add.save": "Zapisz",
+
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Witaj, ",
 

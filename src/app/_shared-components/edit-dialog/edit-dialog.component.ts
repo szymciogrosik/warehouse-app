@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CustomCommonModule } from '../../_imports/CustomCommon.module';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CustomCommonModule} from '../../_imports/CustomCommon.module';
+import {AutoResizeDirective} from "../auto-resize-directive.directive";
 
 export interface EditDialogData {
   title: string;
@@ -16,7 +17,8 @@ export interface EditDialogData {
   styleUrls: ['./edit-dialog.component.scss'],
   imports: [
     CustomCommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AutoResizeDirective
   ]
 })
 export class EditDialogComponent implements OnInit {
@@ -26,7 +28,8 @@ export class EditDialogComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditDialogData
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({

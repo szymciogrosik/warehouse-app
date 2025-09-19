@@ -157,7 +157,9 @@ export class WarehouseViewComponent implements OnInit {
   private async openEditDialog(title: string, name = '', description = ''): Promise<{name: string, description: string} | null> {
     const result = await firstValueFrom(
       this.dialog.open(EditDialogComponent, {
-        data: { title, name, description }
+        data: { title, name, description },
+        width: '600px',          // fixed width
+        maxWidth: '90vw',        // responsive cap
       }).afterClosed()
     );
     return result ?? null;
@@ -186,7 +188,8 @@ export class WarehouseViewComponent implements OnInit {
     // edit warehouse
     if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
       const w = this.activeWarehouse;
-      const result = await this.openEditDialog('Edit Warehouse', w.name, w.description);
+      const result =
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.warehouse'), w.name, w.description);
       if (result) {
         w.name = result.name;
         w.description = result.description;
@@ -198,7 +201,8 @@ export class WarehouseViewComponent implements OnInit {
     // edit room
     if (this.viewLevel === 2 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null) {
       const room = this.activeWarehouse.rooms[this.selectedRoomIndex];
-      const result = await this.openEditDialog('Edit Room', room.name, room.description);
+      const result =
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.room'), room.name, room.description);
       if (result) {
         room.name = result.name;
         room.description = result.description;
@@ -210,7 +214,8 @@ export class WarehouseViewComponent implements OnInit {
     // edit box
     if (this.viewLevel === 3 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
       const box = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex];
-      const result = await this.openEditDialog('Edit Box', box.name, box.description);
+      const result =
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.box'), box.name, box.description);
       if (result) {
         box.name = result.name;
         box.description = result.description;
