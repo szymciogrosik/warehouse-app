@@ -1,6 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef} from '@angular/material/dialog';
-import {CustomCommonModule} from "../../_imports/CustomCommon.module";
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CustomCommonModule } from '../../_imports/CustomCommon.module';
 
 export interface EditDialogData {
   title: string;
@@ -15,29 +16,36 @@ export interface EditDialogData {
   styleUrls: ['./edit-dialog.component.scss'],
   imports: [
     CustomCommonModule,
-    MatDialogContent,
-    MatDialogActions
+    ReactiveFormsModule
   ]
 })
-export class EditDialogComponent {
-  title: string;
-  name: string;
-  description: string;
+export class EditDialogComponent implements OnInit {
+  form: FormGroup;
 
   constructor(
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditDialogData
-  ) {
-    this.title = data.title;
-    this.name = data.name;
-    this.description = data.description;
+  ) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      name: [this.data.name || '', Validators.required],
+      description: [this.data.description || '']
+    });
   }
 
   save(): void {
-    this.dialogRef.close({ name: this.name, description: this.description });
+    if (this.form.valid) {
+      this.dialogRef.close(this.form.value);
+    }
   }
 
   cancel(): void {
     this.dialogRef.close(null);
+  }
+
+  get title(): string {
+    return this.data.title;
   }
 }
