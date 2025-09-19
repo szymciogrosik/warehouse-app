@@ -16,8 +16,9 @@ import { WhItem } from '../../_models/warehouse/wh-item';
 import { WarehouseDbService } from '../../_database/warehouse/warehouse.service';
 import { AuthService } from '../../_services/auth/auth.service';
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {ConfirmDialogComponent} from "../../_shared-components/confirm-dialog/confirm-dialog.component";
+import {ConfirmDeleteDialogComponent} from "../../_shared-components/confirm-dialog/confirm-delete-dialog.component";
 import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
+import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
 
 @Component({
   selector: 'warehouse-view',
@@ -48,6 +49,7 @@ export class WarehouseViewComponent implements OnInit {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private dialog = inject(MatDialog);
+  private translateService = inject(CustomTranslateService);
 
   ngOnInit(): void {
     this.authService.loggedUser()
@@ -221,9 +223,7 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   protected async remove(): Promise<void> {
-    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDialogComponent, {
-      data: { message: 'Are you sure you want to delete this?' }
-    }).afterClosed());
+    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDeleteDialogComponent).afterClosed());
 
     if (!confirmed) {
       return;
@@ -275,7 +275,8 @@ export class WarehouseViewComponent implements OnInit {
       return;
     }
 
-    const result = await this.openEditDialog('Create Warehouse');
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.warehouse'));
     if (!result) return;
 
     const warehouse = new Warehouse({
@@ -293,7 +294,8 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   async addRoom(): Promise<void> {
-    const result = await this.openEditDialog('Create Room');
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.room'));
     if (!result) return;
 
     this.activeWarehouse.rooms.push(new WhRoom({
@@ -305,7 +307,8 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   async addBox(roomIndex: number): Promise<void> {
-    const result = await this.openEditDialog('Create Box');
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.box'));
     if (!result) return;
 
     this.activeWarehouse.rooms[roomIndex].boxes.push(new WhBox({
@@ -317,7 +320,8 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   async addItem(roomIndex: number, boxIndex: number): Promise<void> {
-    const result = await this.openEditDialog('Create Item');
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.item'));
     if (!result) return;
 
     this.activeWarehouse.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({

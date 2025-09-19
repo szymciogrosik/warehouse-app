@@ -52,6 +52,16 @@
   "registeredUsers.details.confirm": "Potwierdź",
   "registeredUsers.details.cancel": "Anuluj",
 
+  "confirmation.dialog.title": "Potwierdź usunięcie",
+  "confirmation.dialog.cancel": "Anuluj",
+  "confirmation.dialog.remove": "Usuń",
+  "confirmation.dialog.message": "Czy na pewno chcesz usunąć ten element?",
+
+  "edit.wh.dialog.add.warehouse": "Dodaj magazyn",
+  "edit.wh.dialog.add.room": "Dodaj pokój",
+  "edit.wh.dialog.add.box": "Dodaj pudełko",
+  "edit.wh.dialog.add.item": "Dodaj przedmiot",
+
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Witaj, ",
 

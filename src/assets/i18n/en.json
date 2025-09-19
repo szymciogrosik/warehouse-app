@@ -52,6 +52,16 @@
   "registeredUsers.details.confirm": "Confirm",
   "registeredUsers.details.cancel": "Cancel",
 
+  "confirmation.dialog.title": "Confirm deletion",
+  "confirmation.dialog.cancel": "Cancel",
+  "confirmation.dialog.remove": "Delete",
+  "confirmation.dialog.message": "Are you sure you want to remove this element?",
+
+  "edit.wh.dialog.add.warehouse": "Add a warehouse",
+  "edit.wh.dialog.add.room": "Add a room",
+  "edit.wh.dialog.add.box": "Add a box",
+  "edit.wh.dialog.add.item": "Add an item",
+
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Hello, ",
 
