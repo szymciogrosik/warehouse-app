@@ -1,22 +1,28 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {Component, OnInit, inject, DestroyRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatListModule} from '@angular/material/list';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {firstValueFrom, Observable} from 'rxjs';
 
-import { Warehouse } from '../../_models/warehouse/warehouse';
-import { Warehouses } from '../../_models/warehouse/warehouses';
-import { WhRoom } from '../../_models/warehouse/wh-room';
-import { WhBox } from '../../_models/warehouse/wh-box';
-import { WhItem } from '../../_models/warehouse/wh-item';
+import {Warehouse} from '../../_models/warehouse/warehouse';
+import {Warehouses} from '../../_models/warehouse/warehouses';
+import {WhRoom} from '../../_models/warehouse/wh-room';
+import {WhBox} from '../../_models/warehouse/wh-box';
+import {WhItem} from '../../_models/warehouse/wh-item';
 
-import { WarehouseDbService } from '../../_database/warehouse/warehouse.service';
-import { AuthService } from '../../_services/auth/auth.service';
+import {WarehouseDbService} from '../../_database/warehouse/warehouse.service';
+import {AuthService} from '../../_services/auth/auth.service';
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {ConfirmDialogComponent} from "../../_shared-components/confirm-dialog/confirm-dialog.component";
+import {ConfirmDeleteDialogComponent} from "../../_shared-components/confirm-dialog/confirm-delete-dialog.component";
+import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
+import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
+import {MatLineModule} from '@angular/material/core';
+import {TranslatePipe} from "@ngx-translate/core";
+import {DateTime} from "luxon";
+import {DateService} from "../../_services/util/date.service";
 
 @Component({
   selector: 'warehouse-view',
@@ -27,12 +33,16 @@ import {ConfirmDialogComponent} from "../../_shared-components/confirm-dialog/co
     MatButtonModule,
     MatIconModule,
     MatListModule,
-    MatDialogModule
+    MatDialogModule,
+    MatLineModule,
+    TranslatePipe
   ],
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.scss']
 })
 export class WarehouseViewComponent implements OnInit {
+  protected readonly DateTime = DateTime;
+
   warehouses$: Observable<Warehouses | null>;
   currentWarehouses: Warehouses | null = null;
   userUid: string | null = null;
@@ -47,6 +57,8 @@ export class WarehouseViewComponent implements OnInit {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private dialog = inject(MatDialog);
+  private translateService = inject(CustomTranslateService);
+  protected dateService = inject(DateService);
 
   ngOnInit(): void {
     this.authService.loggedUser()
@@ -103,7 +115,7 @@ export class WarehouseViewComponent implements OnInit {
 
   getNavTitle(): string {
     if (this.viewLevel === 0) {
-      return 'Warehouses';
+      return this.translateService.get('confirmation.dialog.warehouses');
     }
     let warehouse = this.currentWarehouses?.warehouses[this.selectedWarehouseIndex ?? 0]
     if (this.viewLevel === 1) {
@@ -151,6 +163,20 @@ export class WarehouseViewComponent implements OnInit {
     return this.currentWarehouses.warehouses[this.selectedWarehouseIndex];
   }
 
+  private async openEditDialog(title: string, name = '', description = ''): Promise<{
+    name: string,
+    description: string
+  } | null> {
+    const result = await firstValueFrom(
+      this.dialog.open(EditDialogComponent, {
+        data: {title, name, description},
+        width: '600px',          // fixed width
+        maxWidth: '90vw',        // responsive cap
+      }).afterClosed()
+    );
+    return result ?? null;
+  }
+
   protected add(): Promise<void> {
     if (this.viewLevel === 0) {
       return this.addWarehouse();
@@ -168,15 +194,84 @@ export class WarehouseViewComponent implements OnInit {
       'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
   }
 
-  protected edit(): Promise<void> {
-    throw new Error('Provided no supported level ' +
-      'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
+  protected async edit(): Promise<void> {
+    if (!this.currentWarehouses) throw new Error('No warehouses state');
+
+    // edit warehouse
+    if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
+      const w = this.activeWarehouse;
+      const result =
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.warehouse'), w.name, w.description);
+      if (result) {
+        w.name = result.name;
+        w.description = result.description;
+        await this.save();
+      }
+      return;
+    }
+
+    // edit room
+    if (this.viewLevel === 2 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null) {
+      const room = this.activeWarehouse.rooms[this.selectedRoomIndex];
+      const result =
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.room'), room.name, room.description);
+      if (result) {
+        room.name = result.name;
+        room.description = result.description;
+        await this.save();
+      }
+      return;
+    }
+
+    // edit box
+    if (this.viewLevel === 3 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
+      const box = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex];
+      const result =
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.box'), box.name, box.description);
+      if (result) {
+        box.name = result.name;
+        box.description = result.description;
+        await this.save();
+      }
+      return;
+    }
+
+    throw new Error('Unsupported edit state');
+  }
+
+  protected async editItem(itemIndex: number): Promise<void> {
+    if (this.selectedWarehouseIndex === null || this.selectedRoomIndex === null || this.selectedBoxIndex === null) {
+      return;
+    }
+
+    const item = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].items[itemIndex];
+    const result = await this.openEditDialog(
+      this.translateService.get('edit.wh.dialog.edit.item'),
+      item.name,
+      item.description
+    );
+
+    if (result) {
+      item.name = result.name;
+      item.description = result.description;
+      await this.save();
+    }
+  }
+
+  protected async removeItem(itemIndex: number): Promise<void> {
+    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDeleteDialogComponent).afterClosed());
+    if (!confirmed) return;
+
+    if (this.selectedWarehouseIndex === null || this.selectedRoomIndex === null || this.selectedBoxIndex === null) {
+      return;
+    }
+
+    this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].items.splice(itemIndex, 1);
+    await this.save();
   }
 
   protected async remove(): Promise<void> {
-    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDialogComponent, {
-      data: { message: 'Are you sure you want to delete this?' }
-    }).afterClosed());
+    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDeleteDialogComponent).afterClosed());
 
     if (!confirmed) {
       return;
@@ -222,57 +317,105 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   // mutations
-  async addRoom(): Promise<void> {
-    const w = this.activeWarehouse;
-    w.rooms.push(new WhRoom({
-      name: 'New Room',
-      description: 'Describe here',
-      boxes: []
-    }));
-    await this.save();
-  }
-
-  async addBox(roomIndex: number): Promise<void> {
-    const w = this.activeWarehouse;
-    if (roomIndex == null || !w.rooms[roomIndex]) throw new Error('Room not found');
-    w.rooms[roomIndex].boxes.push(new WhBox({
-      name: 'New Box',
-      description: 'Describe here',
-      items: []
-    }));
-    await this.save();
-  }
-
-  async addItem(roomIndex: number, boxIndex: number): Promise<void> {
-    const w = this.activeWarehouse;
-    if (roomIndex == null || !w.rooms[roomIndex]) throw new Error('Room not found');
-    if (boxIndex == null || !w.rooms[roomIndex].boxes[boxIndex]) throw new Error('Box not found');
-
-    w.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
-      name: 'New Item',
-      description: 'Describe here'
-    }));
-    await this.save();
-  }
-
   async addWarehouse(): Promise<void> {
     if (!this.userUid) {
       console.error('No logged user');
       return;
     }
 
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.warehouse'));
+    if (!result) return;
+
     const warehouse = new Warehouse({
-      name: 'Main',
-      description: 'Central warehouse',
+      name: result.name,
+      description: result.description,
       rooms: []
     });
 
-    if (!this.currentWarehouses || this.currentWarehouses?.warehouses?.length === 0) {
-      this.currentWarehouses = new Warehouses({ warehouses: [warehouse] });
+    if (!this.currentWarehouses || this.currentWarehouses.warehouses.length === 0) {
+      this.currentWarehouses = new Warehouses({warehouses: [warehouse]});
     } else {
       this.currentWarehouses.warehouses.push(warehouse);
     }
     await this.save();
+  }
+
+  async addRoom(): Promise<void> {
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.room'));
+    if (!result) return;
+
+    this.activeWarehouse.rooms.push(new WhRoom({
+      name: result.name,
+      description: result.description,
+      boxes: []
+    }));
+    await this.save();
+  }
+
+  async addBox(roomIndex: number): Promise<void> {
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.box'));
+    if (!result) return;
+
+    this.activeWarehouse.rooms[roomIndex].boxes.push(new WhBox({
+      name: result.name,
+      description: result.description,
+      items: []
+    }));
+    await this.save();
+  }
+
+  async addItem(roomIndex: number, boxIndex: number): Promise<void> {
+    const result =
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.item'));
+    if (!result) return;
+
+    this.activeWarehouse.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
+      name: result.name,
+      description: result.description
+    }));
+    await this.save();
+  }
+
+  public getLastModificationTimestampForWarehouse(warehouse: Warehouse): string {
+    let latest: string | null = null;
+    for (const room of warehouse.rooms) {
+      const ts = this.getLastModificationTimestampForRoom(room);
+      if (!ts) continue;
+      if (!latest || DateTime.fromISO(ts) > DateTime.fromISO(latest)) {
+        latest = ts;
+      }
+    }
+    return latest ?? warehouse.createdTimestamp;
+  }
+
+  public getLastModificationTimestampForRoom(room: WhRoom): string {
+    let latest: string | null = null;
+    for (const box of room.boxes) {
+      const ts = this.getLastModificationTimestampForBox(box);
+      if (!ts) continue;
+      if (!latest || DateTime.fromISO(ts) > DateTime.fromISO(latest)) {
+        latest = ts;
+      }
+    }
+    return latest ?? '';
+  }
+
+  public getLastModificationTimestampForBox(box: WhBox): string {
+    if (!box.items || box.items.length === 0) return '';
+    let latest = box.items[0].updatedTimestamp;
+    for (const item of box.items) {
+      if (DateTime.fromISO(item.updatedTimestamp) > DateTime.fromISO(latest)) {
+        latest = item.updatedTimestamp;
+      }
+    }
+    return latest;
+  }
+
+  public presentTimestamp(timestamp: string): string {
+    return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
   }
 
 }

@@ -52,6 +52,32 @@
   "registeredUsers.details.confirm": "Potwierdź",
   "registeredUsers.details.cancel": "Anuluj",
 
+  "confirmation.dialog.title": "Potwierdź usunięcie",
+  "confirmation.dialog.cancel": "Anuluj",
+  "confirmation.dialog.remove": "Usuń",
+  "confirmation.dialog.message": "Czy na pewno chcesz usunąć ten element?",
+
+  "confirmation.dialog.warehouses": "Magazyny",
+
+  "edit.wh.dialog.add.warehouse": "Dodaj magazyn",
+  "edit.wh.dialog.add.room": "Dodaj pokój",
+  "edit.wh.dialog.add.box": "Dodaj pudełko",
+  "edit.wh.dialog.add.item": "Dodaj przedmiot",
+
+  "edit.wh.dialog.edit.warehouse": "Edytuj magazyn",
+  "edit.wh.dialog.edit.room": "Edytuj pokój",
+  "edit.wh.dialog.edit.box": "Edytuj pudełko",
+  "edit.wh.dialog.edit.item": "Edytuj przedmiot",
+
+  "edit.wh.dialog.add.name": "Nazwa",
+  "edit.wh.dialog.add.description": "Opis",
+  "edit.wh.dialog.add.name.error.required": "Nazwa jest wymagana",
+  "edit.wh.dialog.add.cancel": "Anuluj",
+  "edit.wh.dialog.add.save": "Zapisz",
+
+  "wh.element.lastModificationTimestamp": "Zaktualizowano: ",
+  "wh.element.createdTimestamp": "Utworzono: ",
+
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Witaj, ",
 

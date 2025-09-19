@@ -4,7 +4,7 @@ import { Timestamp } from "firebase/firestore";
 export class WhSharedElem {
   name?: string;
   description?: string;
-  createdTimestamp?: string;
+  createdTimestamp: string;
 
   constructor(data: Partial<WhSharedElem>) {
     this.name = data.name ?? "";

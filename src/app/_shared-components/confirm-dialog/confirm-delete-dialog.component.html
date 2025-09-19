@@ -1,0 +1,12 @@
+<h1 mat-dialog-title class="dialog-title-custom-class">{{ 'confirmation.dialog.title' | translate }}</h1>
+<mat-dialog-content>
+  {{ 'confirmation.dialog.message' | translate }}
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
+    {{ 'confirmation.dialog.cancel' | translate }}
+  </button>
+  <button mat-raised-button color="warn" (click)="dialogRef.close(true)">
+    {{ 'confirmation.dialog.remove' | translate }}
+  </button>
+</mat-dialog-actions>
