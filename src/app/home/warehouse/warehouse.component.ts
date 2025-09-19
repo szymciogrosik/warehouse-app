@@ -17,6 +17,7 @@ import { WarehouseDbService } from '../../_database/warehouse/warehouse.service'
 import { AuthService } from '../../_services/auth/auth.service';
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../../_shared-components/confirm-dialog/confirm-dialog.component";
+import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
 
 @Component({
   selector: 'warehouse-view',
@@ -151,6 +152,15 @@ export class WarehouseViewComponent implements OnInit {
     return this.currentWarehouses.warehouses[this.selectedWarehouseIndex];
   }
 
+  private async openEditDialog(title: string, name = '', description = ''): Promise<{name: string, description: string} | null> {
+    const result = await firstValueFrom(
+      this.dialog.open(EditDialogComponent, {
+        data: { title, name, description }
+      }).afterClosed()
+    );
+    return result ?? null;
+  }
+
   protected add(): Promise<void> {
     if (this.viewLevel === 0) {
       return this.addWarehouse();
@@ -168,9 +178,46 @@ export class WarehouseViewComponent implements OnInit {
       'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
   }
 
-  protected edit(): Promise<void> {
-    throw new Error('Provided no supported level ' +
-      'viewLevel: ' + this.viewLevel + ', selectedRoomIndex: ' + this.selectedRoomIndex + 'selectedBoxIndex: ' + this.selectedBoxIndex);
+  protected async edit(): Promise<void> {
+    if (!this.currentWarehouses) throw new Error('No warehouses state');
+
+    // edit warehouse
+    if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
+      const w = this.activeWarehouse;
+      const result = await this.openEditDialog('Edit Warehouse', w.name, w.description);
+      if (result) {
+        w.name = result.name;
+        w.description = result.description;
+        await this.save();
+      }
+      return;
+    }
+
+    // edit room
+    if (this.viewLevel === 2 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null) {
+      const room = this.activeWarehouse.rooms[this.selectedRoomIndex];
+      const result = await this.openEditDialog('Edit Room', room.name, room.description);
+      if (result) {
+        room.name = result.name;
+        room.description = result.description;
+        await this.save();
+      }
+      return;
+    }
+
+    // edit box
+    if (this.viewLevel === 3 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
+      const box = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex];
+      const result = await this.openEditDialog('Edit Box', box.name, box.description);
+      if (result) {
+        box.name = result.name;
+        box.description = result.description;
+        await this.save();
+      }
+      return;
+    }
+
+    throw new Error('Unsupported edit state');
   }
 
   protected async remove(): Promise<void> {
@@ -228,13 +275,16 @@ export class WarehouseViewComponent implements OnInit {
       return;
     }
 
+    const result = await this.openEditDialog('Create Warehouse');
+    if (!result) return;
+
     const warehouse = new Warehouse({
-      name: 'Main',
-      description: 'Central warehouse',
+      name: result.name,
+      description: result.description,
       rooms: []
     });
 
-    if (!this.currentWarehouses || this.currentWarehouses?.warehouses?.length === 0) {
+    if (!this.currentWarehouses || this.currentWarehouses.warehouses.length === 0) {
       this.currentWarehouses = new Warehouses({ warehouses: [warehouse] });
     } else {
       this.currentWarehouses.warehouses.push(warehouse);
@@ -243,34 +293,36 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   async addRoom(): Promise<void> {
-    const w = this.activeWarehouse;
-    w.rooms.push(new WhRoom({
-      name: 'New Room',
-      description: 'Describe here',
+    const result = await this.openEditDialog('Create Room');
+    if (!result) return;
+
+    this.activeWarehouse.rooms.push(new WhRoom({
+      name: result.name,
+      description: result.description,
       boxes: []
     }));
     await this.save();
   }
 
   async addBox(roomIndex: number): Promise<void> {
-    const w = this.activeWarehouse;
-    if (roomIndex == null || !w.rooms[roomIndex]) throw new Error('Room not found');
-    w.rooms[roomIndex].boxes.push(new WhBox({
-      name: 'New Box',
-      description: 'Describe here',
+    const result = await this.openEditDialog('Create Box');
+    if (!result) return;
+
+    this.activeWarehouse.rooms[roomIndex].boxes.push(new WhBox({
+      name: result.name,
+      description: result.description,
       items: []
     }));
     await this.save();
   }
 
   async addItem(roomIndex: number, boxIndex: number): Promise<void> {
-    const w = this.activeWarehouse;
-    if (roomIndex == null || !w.rooms[roomIndex]) throw new Error('Room not found');
-    if (boxIndex == null || !w.rooms[roomIndex].boxes[boxIndex]) throw new Error('Box not found');
+    const result = await this.openEditDialog('Create Item');
+    if (!result) return;
 
-    w.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
-      name: 'New Item',
-      description: 'Describe here'
+    this.activeWarehouse.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
+      name: result.name,
+      description: result.description
     }));
     await this.save();
   }
