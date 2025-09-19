@@ -1,7 +1,7 @@
 import {WhSharedElem} from "./shared/wh-shared-elem";
 
 export class WhItem extends WhSharedElem {
-  updatedTimestamp?: string;
+  updatedTimestamp: string;
 
   constructor(data: Partial<WhItem>) {
     super(data);

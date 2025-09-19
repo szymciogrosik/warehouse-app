@@ -349,15 +349,38 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   public getLastModificationTimestampForWarehouse(warehouse: Warehouse): string {
-    return DateTime.now().toISO();
+    let latest: string | null = null;
+    for (const room of warehouse.rooms) {
+      const ts = this.getLastModificationTimestampForRoom(room);
+      if (!ts) continue;
+      if (!latest || DateTime.fromISO(ts) > DateTime.fromISO(latest)) {
+        latest = ts;
+      }
+    }
+    return latest ?? warehouse.createdTimestamp;
   }
 
   public getLastModificationTimestampForRoom(room: WhRoom): string {
-    return DateTime.now().toISO();
+    let latest: string | null = null;
+    for (const box of room.boxes) {
+      const ts = this.getLastModificationTimestampForBox(box);
+      if (!ts) continue;
+      if (!latest || DateTime.fromISO(ts) > DateTime.fromISO(latest)) {
+        latest = ts;
+      }
+    }
+    return latest ?? '';
   }
 
   public getLastModificationTimestampForBox(box: WhBox): string {
-    return DateTime.now().toISO();
+    if (!box.items || box.items.length === 0) return '';
+    let latest = box.items[0].updatedTimestamp;
+    for (const item of box.items) {
+      if (DateTime.fromISO(item.updatedTimestamp) > DateTime.fromISO(latest)) {
+        latest = item.updatedTimestamp;
+      }
+    }
+    return latest;
   }
 
   public presentTimestamp(timestamp: string): string {
