@@ -82,7 +82,7 @@
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
       <mat-list>
         @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
-          <mat-list-item class="tile-box" style="margin-bottom: 10px" (click)="enterBox($index)">
+          <mat-list-item class="tile-box list-item-class" (click)="enterBox($index)">
             <!-- Title + actions on the same row -->
             <div matListItemTitle class="list-item-header">
               <div class="list-item-title">
@@ -123,7 +123,7 @@
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
       <mat-list>
         @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
-          <mat-list-item style="margin-bottom: 10px">
+          <mat-list-item class="list-item-class">
             <!-- Title + actions on the same row -->
             <div matListItemTitle class="list-item-header">
               <div class="list-item-title">
