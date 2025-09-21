@@ -23,6 +23,7 @@ import {MatLineModule} from '@angular/material/core';
 import {TranslatePipe} from "@ngx-translate/core";
 import {DateTime} from "luxon";
 import {DateService} from "../../_services/util/date.service";
+import {WhSharedElem} from "../../_models/warehouse/shared/wh-shared-elem";
 
 @Component({
   selector: 'warehouse-view',
@@ -254,6 +255,7 @@ export class WarehouseViewComponent implements OnInit {
     if (result) {
       item.name = result.name;
       item.description = result.description;
+      item.updatedTimestamp = WhSharedElem.normalizeTimestamp(null);
       await this.save();
     }
   }
