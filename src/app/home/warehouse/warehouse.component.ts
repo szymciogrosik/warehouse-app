@@ -53,6 +53,7 @@ export class WarehouseViewComponent implements OnInit {
   viewLevel = 0; // 0 = rooms, 1 = boxes, 2 = items
   selectedRoomIndex: number | null = null;
   selectedBoxIndex: number | null = null;
+  private firstLoading: boolean = true;
 
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
@@ -75,6 +76,7 @@ export class WarehouseViewComponent implements OnInit {
                 this.sortAll(ws);
               }
               this.currentWarehouses = ws;
+              this.setupStartPointIfFirstLoading();
             });
         } else {
           this.userUid = null;
@@ -420,4 +422,19 @@ export class WarehouseViewComponent implements OnInit {
     return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
   }
 
+  private setupStartPointIfFirstLoading() {
+    if (!this.firstLoading) {
+      return;
+    }
+    if (this.currentWarehouses?.warehouses?.length === 1) {
+      this.enterWarehouse(0);
+      if (this.currentWarehouses.warehouses[0]?.rooms?.length === 1) {
+        this.enterRoom(0);
+        if (this.currentWarehouses.warehouses[0].rooms[0]?.boxes?.length === 1) {
+          this.enterBox(0);
+        }
+      }
+    }
+    this.firstLoading = false;
+  }
 }
