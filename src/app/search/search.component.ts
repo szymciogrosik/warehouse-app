@@ -1,57 +1,106 @@
 import {Component, OnInit, inject, DestroyRef} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MatCardModule} from '@angular/material/card';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSortModule} from '@angular/material/sort';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {MatListModule} from '@angular/material/list';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {firstValueFrom, Observable} from 'rxjs';
-import {DateTime} from "luxon";
-import {Warehouses} from "../_models/warehouse/warehouses";
+
+import {TranslatePipe} from "@ngx-translate/core";
 import {WarehouseDbService} from "../_database/warehouse/warehouse.service";
 import {AuthService} from "../_services/auth/auth.service";
 import {CustomTranslateService} from "../_services/translate/custom-translate.service";
-import {DateService} from "../_services/util/date.service";
+import {Warehouses} from "../_models/warehouse/warehouses";
+import {Warehouse} from "../_models/warehouse/warehouse";
+import {WhRoom} from "../_models/warehouse/wh-room";
+import {WhBox} from "../_models/warehouse/wh-box";
+import {WhItem} from "../_models/warehouse/wh-item";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+
+interface ItemTableRow {
+  name: string;
+  description: string;
+  location: string;
+  warehouseIndex: number;
+  roomIndex: number;
+  boxIndex: number;
+}
 
 @Component({
   selector: 'app-search',
-  imports: [],
+  standalone: true,
   templateUrl: './search.component.html',
-  styleUrl: './search.component.scss'
+  styleUrls: ['./search.component.scss'],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSortModule,
+    MatButtonModule,
+    MatIconModule,
+    TranslatePipe
+  ]
 })
 export class SearchComponent implements OnInit {
-  protected readonly DateTime = DateTime;
-
-  warehouses$: Observable<Warehouses | null>;
-  currentWarehouses: Warehouses | null = null;
-  userUid: string | null = null;
-
+  protected displayedColumns: string[] = ['position', 'name', 'description', 'location'];
+  protected dataSource = new MatTableDataSource<ItemTableRow>([]);
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
-  private translateService = inject(CustomTranslateService);
-  protected dateService = inject(DateService);
+  private translate = inject(CustomTranslateService);
+
+  // do komunikacji z WarehouseViewComponent
+  protected warehouses: Warehouses | null = null;
 
   ngOnInit(): void {
     this.authService.loggedUser()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(user => {
         if (user) {
-          this.userUid = user.uid;
-          this.warehouses$ = this.warehouseDb.getByUser(user.uid);
-          this.warehouses$
+          this.warehouseDb.getByUser(user.uid)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(ws => {
-              this.currentWarehouses = ws;
+              this.warehouses = ws;
+              if (ws) {
+                this.dataSource.data = this.flattenItems(ws);
+              }
             });
-        } else {
-          this.userUid = null;
         }
       });
   }
 
-  public presentTimestamp(timestamp: string): string {
-    return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
+  protected applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  private flattenItems(ws: Warehouses): ItemTableRow[] {
+    const rows: ItemTableRow[] = [];
+    ws.warehouses.forEach((w: Warehouse, wi: number) => {
+      w.rooms.forEach((r: WhRoom, ri: number) => {
+        r.boxes.forEach((b: WhBox, bi: number) => {
+          b.items.forEach((it: WhItem) => {
+            rows.push({
+              name: it.name ? it.name : '',
+              description: it.description ? it.description : '',
+              location: `${w.name} → ${r.name} → ${b.name}`,
+              warehouseIndex: wi,
+              roomIndex: ri,
+              boxIndex: bi
+            });
+          });
+        });
+      });
+    });
+    return rows;
+  }
+
+  protected navigateToBox(row: ItemTableRow): void {
+    // Tutaj zamiast console.log powinieneś:
+    // - albo zawołać serwis do ustawienia "selectedWarehouseIndex/Room/Box"
+    // - albo router.navigate do WarehouseViewComponent
+    console.log('Navigate to box:', row);
+  }
 }
