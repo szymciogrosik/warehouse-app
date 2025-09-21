@@ -59,7 +59,18 @@
 }
 
 .tile-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+}
+
+.tile-box {
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  padding: 10px;
+}
+
+.tile-box:hover {
+  transform: scale(1.01);
   box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
 }
 
@@ -89,6 +100,8 @@
 
 .list-item-timestamps {
   font-size: small;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .card-title-class {
@@ -103,6 +116,10 @@
 
 .subtitle-dates {
   font-size: small;
+}
+
+.list-item-class {
+  margin-bottom: 10px;
 }
 
 .list-item-header {

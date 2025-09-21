@@ -23,6 +23,7 @@ import {MatLineModule} from '@angular/material/core';
 import {TranslatePipe} from "@ngx-translate/core";
 import {DateTime} from "luxon";
 import {DateService} from "../../_services/util/date.service";
+import {WhSharedElem} from "../../_models/warehouse/shared/wh-shared-elem";
 
 @Component({
   selector: 'warehouse-view',
@@ -52,6 +53,7 @@ export class WarehouseViewComponent implements OnInit {
   viewLevel = 0; // 0 = rooms, 1 = boxes, 2 = items
   selectedRoomIndex: number | null = null;
   selectedBoxIndex: number | null = null;
+  private firstLoading: boolean = true;
 
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
@@ -70,10 +72,10 @@ export class WarehouseViewComponent implements OnInit {
           this.warehouses$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(ws => {
-              if (ws) {
-                this.sortAll(ws);
-              }
               this.currentWarehouses = ws;
+              if (this.currentWarehouses) {
+                this.setupStartPointIfFirstLoading();
+              }
             });
         } else {
           this.userUid = null;
@@ -130,27 +132,10 @@ export class WarehouseViewComponent implements OnInit {
     return '';
   }
 
-  // sorting utility
-  private sortAll(ws: Warehouses): void {
-    const safe = (val?: string) => val?.toLowerCase() ?? '';
-
-    ws.warehouses.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-    ws.warehouses.forEach(w => {
-      w.rooms.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-      w.rooms.forEach(r => {
-        r.boxes.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-        r.boxes.forEach(bx => {
-          bx.items.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-        });
-      });
-    });
-  }
-
   // helpers
   private async save(): Promise<void> {
     if (!this.userUid) throw new Error('User is not logged in');
     if (!this.currentWarehouses) throw new Error('No warehouses state');
-    this.sortAll(this.currentWarehouses);
     await this.warehouseDb.save(this.userUid, new Warehouses(this.currentWarehouses));
   }
 
@@ -254,6 +239,7 @@ export class WarehouseViewComponent implements OnInit {
     if (result) {
       item.name = result.name;
       item.description = result.description;
+      item.updatedTimestamp = WhSharedElem.normalizeTimestamp(null);
       await this.save();
     }
   }
@@ -418,4 +404,19 @@ export class WarehouseViewComponent implements OnInit {
     return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
   }
 
+  private setupStartPointIfFirstLoading() {
+    if (!this.firstLoading) {
+      return;
+    }
+    if (this.currentWarehouses?.warehouses?.length === 1) {
+      this.enterWarehouse(0);
+      if (this.currentWarehouses.warehouses[0]?.rooms?.length === 1) {
+        this.enterRoom(0);
+        if (this.currentWarehouses.warehouses[0].rooms[0]?.boxes?.length === 1) {
+          this.enterBox(0);
+        }
+      }
+    }
+    this.firstLoading = false;
+  }
 }
