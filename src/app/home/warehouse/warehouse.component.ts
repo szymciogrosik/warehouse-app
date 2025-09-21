@@ -72,11 +72,10 @@ export class WarehouseViewComponent implements OnInit {
           this.warehouses$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(ws => {
-              if (ws) {
-                this.sortAll(ws);
-              }
               this.currentWarehouses = ws;
-              this.setupStartPointIfFirstLoading();
+              if (this.currentWarehouses) {
+                this.setupStartPointIfFirstLoading();
+              }
             });
         } else {
           this.userUid = null;
@@ -133,27 +132,10 @@ export class WarehouseViewComponent implements OnInit {
     return '';
   }
 
-  // sorting utility
-  private sortAll(ws: Warehouses): void {
-    const safe = (val?: string) => val?.toLowerCase() ?? '';
-
-    ws.warehouses.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-    ws.warehouses.forEach(w => {
-      w.rooms.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-      w.rooms.forEach(r => {
-        r.boxes.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-        r.boxes.forEach(bx => {
-          bx.items.sort((a, b) => safe(a.name).localeCompare(safe(b.name)));
-        });
-      });
-    });
-  }
-
   // helpers
   private async save(): Promise<void> {
     if (!this.userUid) throw new Error('User is not logged in');
     if (!this.currentWarehouses) throw new Error('No warehouses state');
-    this.sortAll(this.currentWarehouses);
     await this.warehouseDb.save(this.userUid, new Warehouses(this.currentWarehouses));
   }
 
