@@ -80,24 +80,39 @@
     <!-- Boxes -->
     @if (viewLevel === 2 && selectedWarehouseIndex !== null && selectedRoomIndex !== null) {
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
-      <div class="tile-list boxes">
+      <mat-list>
         @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
-          <div class="tile">
-            <mat-card class="tile-card" (click)="enterBox($index)">
-              <mat-card-title class="card-title-class">{{ box.name }}</mat-card-title>
-              <mat-card-subtitle class="subtitle-dates">
-                {{ 'wh.element.lastModificationTimestamp' | translate }}{{ this.presentTimestamp(this.getLastModificationTimestampForBox(box)) }}
-              </mat-card-subtitle>
-              <mat-card-subtitle class="subtitle-dates">
-                {{ 'wh.element.createdTimestamp' | translate }}{{ this.presentTimestamp(box.createdTimestamp) }}
-              </mat-card-subtitle>
-              <mat-card-content class="subtitle-description">
+          <mat-list-item class="tile-box" style="margin-bottom: 10px" (click)="enterBox($index)">
+            <!-- Title + actions on the same row -->
+            <div matListItemTitle class="list-item-header">
+              <div class="list-item-title">
+                <mat-icon class="mat-icon-in-list-header-class">inventory_2</mat-icon>
+                {{ box.name }}
+              </div>
+            </div>
+
+            <!-- Optional description -->
+            <span matListItemLine class="list-item-description">
+              <mat-icon class="mat-icon-in-list-class">category</mat-icon>
+              @if (box.description) {
                 {{ box.description }}
-              </mat-card-content>
-            </mat-card>
-          </div>
+              } @else {
+                -
+              }
+            </span>
+
+            <!-- Timestamps -->
+            <span matListItemLine class="list-item-timestamps">
+                {{ 'wh.element.lastModificationTimestamp' | translate }}
+              {{ this.presentTimestamp(this.getLastModificationTimestampForBox(box)) }}
+            </span>
+            <span matListItemLine class="list-item-timestamps">
+                {{ 'wh.element.createdTimestamp' | translate }}
+              {{ this.presentTimestamp(box.createdTimestamp) }}
+            </span>
+          </mat-list-item>
         }
-      </div>
+      </mat-list>
     }
 
     <!-- Items -->
