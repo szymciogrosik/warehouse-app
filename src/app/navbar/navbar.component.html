@@ -41,6 +41,11 @@
 
 <mat-menu xPosition="before" #menu="matMenu">
   <!-- Add new link here part 2/2 -->
+  @if (this.authService.isAuthenticated() | async) {
+    <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToSearchItems()">
+      {{ 'navbar.tab.button.search' | translate }}
+    </button>
+  }
   @if (isAdmin$ | async) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToAdminPanel()">
       {{ 'navbar.tab.button.adminPanel' | translate }}
