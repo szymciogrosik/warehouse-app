@@ -10,6 +10,7 @@
 
   "navbar.tab.applicationName": "Mój magazyn",
   "navbar.tab.button.logout": "Wyloguj",
+  "navbar.tab.button.search": "Wyszukaj",
   "navbar.tab.button.adminPanel": "Panel administratora",
 
   "snackbar.default.dismiss": "Zamknij",

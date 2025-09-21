@@ -9,6 +9,11 @@
   <!-- Full menu navbar -->
   <div class="full-menu">
     <!-- Add new link here part 1/2 -->
+    @if (this.authService.isAuthenticated() | async) {
+      <button mat-button class="navbar-button" (click)="navigateToSearchItems()">
+        {{ 'navbar.tab.button.search' | translate }}
+      </button>
+    }
     @if (isAdmin$ | async) {
       <button mat-button class="navbar-button" (click)="navigateToAdminPanel()">
         {{ 'navbar.tab.button.adminPanel' | translate }}

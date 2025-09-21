@@ -6,11 +6,17 @@ import {LoginComponent} from "./login/login.component";
 import {AdminComponent} from "./admin/admin.component";
 import {authenticatedGuard} from "./_services/guard/authenticatedGuard";
 import {adminPageGuard} from "./_services/guard/adminPageGuard";
+import {SearchComponent} from "./search/search.component";
 
 const appRoutes: Routes = [
   {
     path: RedirectionEnum.HOME,
     component: HomeComponent,
+    canActivate: [authenticatedGuard]
+  },
+  {
+    path: RedirectionEnum.SEARCH,
+    component: SearchComponent,
     canActivate: [authenticatedGuard]
   },
   {
