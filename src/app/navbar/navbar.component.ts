@@ -17,6 +17,9 @@ import {Router} from "@angular/router";
   imports: [CustomCommonModule],
 })
 export class NavbarComponent implements OnInit {
+  protected readonly AccessRoleService = AccessRoleService;
+  protected readonly AccessRole = AccessRole;
+
   protected readonly LanguageEnum = LanguageEnum;
   protected readonly rp = RedirectionEnum;
   protected isAdmin$: Observable<boolean>;
@@ -40,6 +43,7 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(["/" + RedirectionEnum.ADMIN]);
   }
 
-  protected readonly AccessRoleService = AccessRoleService;
-  protected readonly AccessRole = AccessRole;
+  navigateToSearchItems() {
+    this.router.navigate(["/" + RedirectionEnum.SEARCH]);
+  }
 }

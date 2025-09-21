@@ -3,5 +3,6 @@ export enum RedirectionEnum {
   HOME = '',
   STATUS = 'status',
   LOGIN = 'login',
+  SEARCH = 'search',
   ADMIN = 'admin-panel',
 }

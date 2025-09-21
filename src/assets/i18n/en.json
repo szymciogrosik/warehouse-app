@@ -10,6 +10,7 @@
 
   "navbar.tab.applicationName": "My warehouse",
   "navbar.tab.button.logout": "Logout",
+  "navbar.tab.button.search": "Search",
   "navbar.tab.button.adminPanel": "Admin panel",
 
   "snackbar.default.dismiss": "Dismiss",
