@@ -126,12 +126,14 @@
             </div>
 
             <!-- Optional description -->
-            @if (item.description) {
-              <span matListItemLine class="list-item-description">
-                <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-                      {{ item.description }}
-              </span>
-            }
+            <span matListItemLine class="list-item-description">
+              <mat-icon class="mat-icon-in-list-class">category</mat-icon>
+              @if (item.description) {
+                {{ item.description }}
+              } @else {
+                -
+              }
+            </span>
 
             <!-- Timestamps -->
             <span matListItemLine class="list-item-timestamps">
