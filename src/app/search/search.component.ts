@@ -51,7 +51,6 @@ export class SearchComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private translate = inject(CustomTranslateService);
 
-  // do komunikacji z WarehouseViewComponent
   protected warehouses: Warehouses | null = null;
 
   ngOnInit(): void {
