@@ -21,6 +21,9 @@ import {CommonModule} from "@angular/common";
 import {MatCard} from "@angular/material/card";
 import {DateTime} from "luxon";
 import {DateService} from "../_services/util/date.service";
+import {WarehouseNavigationService} from "../_services/warehouse/warehouse-navigation.service";
+import {Router} from "@angular/router";
+import {RedirectionEnum} from "../../utils/redirection.enum";
 
 interface ItemTableRow {
   name: string;
@@ -62,6 +65,8 @@ export class SearchComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private dateService = inject(DateService);
   private translate = inject(CustomTranslateService);
+  private navService = inject(WarehouseNavigationService);
+  private router = inject(Router);
 
   protected warehouses: Warehouses | null = null;
 
@@ -111,10 +116,12 @@ export class SearchComponent implements OnInit {
   }
 
   protected navigateToBox(row: ItemTableRow): void {
-    // Tutaj zamiast console.log powinieneś:
-    // - albo zawołać serwis do ustawienia "selectedWarehouseIndex/Room/Box"
-    // - albo router.navigate do WarehouseViewComponent
-    console.log('Navigate to box:', row);
+    this.navService.setTarget({
+      warehouseIndex: row.warehouseIndex,
+      roomIndex: row.roomIndex,
+      boxIndex: row.boxIndex
+    });
+    this.router.navigate([RedirectionEnum.HOME]);
   }
 
   public presentTimestamp(timestamp: string): string {
