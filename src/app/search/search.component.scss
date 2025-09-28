@@ -1,22 +1,143 @@
-.filter-container {
-  margin: 20px 0;
-  display: flex;
-  justify-content: flex-start;
+.warehouse-card {
+  margin-top: 20px;
+  padding: 12px;
 
-  .filter-field {
-    width: 300px;
+  mat-card-title {
+    padding-top: 0;
   }
 }
 
-.table-container {
-  overflow-x: auto;
+.nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
 }
 
-.clickable-row {
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-title {
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+
+  button {
+    margin-left: 4px;
+  }
+}
+
+.tile-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.tile {
+  flex: 1 1 280px;
+  max-width: 100%;
+
+  mat-card-title {
+    font-weight: bold;
+  }
+}
+
+.tile-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  min-height: 200px;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.clickable-row:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+.tile-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+}
+
+.tile-box {
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  padding: 10px;
+}
+
+.tile-box:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+}
+
+.secondary {
+  font-size: 12px;
+  color: gray;
+}
+
+.mat-icon-class {
+  margin-bottom: 5px;
+}
+
+.mat-icon-in-list-header-class {
+  margin-right: 5px;
+}
+
+.mat-icon-in-list-class {
+  padding-top: 8px;
+  font-size: large;
+}
+
+.list-item-description {
+  font-size: smaller;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.list-item-timestamps {
+  font-size: small;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.card-title-class {
+  padding-bottom: 0;
+}
+
+.subtitle-description {
+  font-size: smaller;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.subtitle-dates {
+  font-size: small;
+}
+
+.list-item-class {
+  margin-bottom: 20px;
+}
+
+.list-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.list-item-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 4px;
 }

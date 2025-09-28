@@ -79,6 +79,10 @@
   "wh.element.lastModificationTimestamp": "Zaktualizowano: ",
   "wh.element.createdTimestamp": "Utworzono: ",
 
+  "wh.search.filter": "Filtr wyszukiwania",
+  "wh.search.placeholder": "Np. kabel",
+  "wh.search.noResult": "Brak danych pasujących do wyszukiwanej frazy",
+
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Witaj, ",
 

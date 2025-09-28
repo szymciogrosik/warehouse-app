@@ -1,5 +1,4 @@
 import {Component, OnInit, inject, DestroyRef} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -17,6 +16,11 @@ import {WhRoom} from "../_models/warehouse/wh-room";
 import {WhBox} from "../_models/warehouse/wh-box";
 import {WhItem} from "../_models/warehouse/wh-item";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from "@angular/material/list";
+import {CommonModule} from "@angular/common";
+import {MatCard} from "@angular/material/card";
+import {DateTime} from "luxon";
+import {DateService} from "../_services/util/date.service";
 
 interface ItemTableRow {
   name: string;
@@ -25,6 +29,8 @@ interface ItemTableRow {
   warehouseIndex: number;
   roomIndex: number;
   boxIndex: number;
+  updatedTimestamp: string;
+  createdTimestamp: string;
 }
 
 @Component({
@@ -40,7 +46,12 @@ interface ItemTableRow {
     MatSortModule,
     MatButtonModule,
     MatIconModule,
-    TranslatePipe
+    TranslatePipe,
+    MatListItem,
+    MatList,
+    MatCard,
+    MatListItemLine,
+    MatListItemTitle
   ]
 })
 export class SearchComponent implements OnInit {
@@ -49,6 +60,7 @@ export class SearchComponent implements OnInit {
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private dateService = inject(DateService);
   private translate = inject(CustomTranslateService);
 
   protected warehouses: Warehouses | null = null;
@@ -87,7 +99,9 @@ export class SearchComponent implements OnInit {
               location: `${w.name} → ${r.name} → ${b.name}`,
               warehouseIndex: wi,
               roomIndex: ri,
-              boxIndex: bi
+              boxIndex: bi,
+              updatedTimestamp: it.updatedTimestamp,
+              createdTimestamp: it.createdTimestamp
             });
           });
         });
@@ -102,4 +116,9 @@ export class SearchComponent implements OnInit {
     // - albo router.navigate do WarehouseViewComponent
     console.log('Navigate to box:', row);
   }
+
+  public presentTimestamp(timestamp: string): string {
+    return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
+  }
+
 }
