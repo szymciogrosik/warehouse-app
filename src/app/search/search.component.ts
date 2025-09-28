@@ -24,6 +24,7 @@ import {DateService} from "../_services/util/date.service";
 import {WarehouseNavigationService} from "../_services/warehouse/warehouse-navigation.service";
 import {Router} from "@angular/router";
 import {RedirectionEnum} from "../../utils/redirection.enum";
+import {MatSelectModule} from "@angular/material/select";
 
 interface ItemTableRow {
   name: string;
@@ -54,10 +55,13 @@ interface ItemTableRow {
     MatList,
     MatCard,
     MatListItemLine,
-    MatListItemTitle
+    MatListItemTitle,
+    MatSelectModule,
   ]
 })
 export class SearchComponent implements OnInit {
+  protected availableRooms: { name: string; rooms: { name: string; fullPath: string }[] }[] = [];
+  protected selectedRooms: string[] = [];
   protected displayedColumns: string[] = ['position', 'name', 'description', 'location'];
   protected dataSource = new MatTableDataSource<ItemTableRow>([]);
   private warehouseDb = inject(WarehouseDbService);
@@ -87,20 +91,46 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  protected applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  protected applyFilter(event?: Event): void {
+    const textFilter = event
+      ? (event.target as HTMLInputElement).value.trim().toLowerCase()
+      : '';
+
+    this.dataSource.filterPredicate = (row: ItemTableRow, filter: string) => {
+      const matchesText =
+        !textFilter ||
+        row.name.toLowerCase().includes(textFilter) ||
+        row.description.toLowerCase().includes(textFilter) ||
+        row.location.toLowerCase().includes(textFilter);
+
+      const matchesRoom =
+        this.selectedRooms.length > 0 &&
+        this.selectedRooms.some(roomPath => row.location.includes(roomPath));
+
+      return matchesText && matchesRoom;
+    };
+
+    // force re-evaluation even if content looks same
+    this.dataSource.filter =
+      textFilter + '|' + this.selectedRooms.sort().join(',') + '|' + Date.now();
   }
 
   private flattenItems(ws: Warehouses): ItemTableRow[] {
     const rows: ItemTableRow[] = [];
+    const roomMap: { name: string; rooms: { name: string; fullPath: string }[] }[] = [];
+
     ws.warehouses.forEach((w: Warehouse, wi: number) => {
+      const warehouseEntry = { name: w.name, rooms: [] as { name: string; fullPath: string }[] };
+
       w.rooms.forEach((r: WhRoom, ri: number) => {
+        const roomPath = `${w.name} → ${r.name}`;
+        warehouseEntry.rooms.push({ name: r.name, fullPath: roomPath });
+
         r.boxes.forEach((b: WhBox, bi: number) => {
           b.items.forEach((it: WhItem) => {
             rows.push({
-              name: it.name ? it.name : '',
-              description: it.description ? it.description : '',
+              name: it.name || '',
+              description: it.description || '',
               location: `${w.name} → ${r.name} → ${b.name}`,
               warehouseIndex: wi,
               roomIndex: ri,
@@ -111,7 +141,15 @@ export class SearchComponent implements OnInit {
           });
         });
       });
+
+      roomMap.push(warehouseEntry);
     });
+
+    this.availableRooms = roomMap;
+
+    // default: all rooms selected
+    this.selectedRooms = roomMap.flatMap(w => w.rooms.map(r => r.fullPath));
+
     return rows;
   }
 

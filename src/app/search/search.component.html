@@ -10,6 +10,22 @@
                  placeholder="{{ 'wh.search.placeholder' | translate }}"
                  #input>
         </mat-form-field>
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>{{ 'wh.search.roomFilter' | translate }}</mat-label>
+          <mat-select
+            multiple
+            [(value)]="selectedRooms"
+            (selectionChange)="applyFilter()">
+
+            @for (warehouse of availableRooms; track $index) {
+              <mat-optgroup [label]="warehouse.name">
+                @for (room of warehouse.rooms; track $index) {
+                  <mat-option [value]="room.fullPath">{{ room.name }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+          </mat-select>
+        </mat-form-field>
       </div>
 
       @if (dataSource.filteredData.length > 0) {

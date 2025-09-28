@@ -82,6 +82,7 @@
   "wh.search.filter": "Search filter",
   "wh.search.placeholder": "E.g. cable",
   "wh.search.noResult": "No data matching the phrase searched",
+  "wh.search.roomFilter": "Select room",
 
   "admin.panel.header": "ADMIN PANEL",
   "admin.panel.helloMessage": "Hello, ",
