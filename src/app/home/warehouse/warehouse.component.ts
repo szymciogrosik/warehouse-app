@@ -24,6 +24,7 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {DateTime} from "luxon";
 import {DateService} from "../../_services/util/date.service";
 import {WhSharedElem} from "../../_models/warehouse/shared/wh-shared-elem";
+import {WarehouseNavigationService} from "../../_services/warehouse/warehouse-navigation.service";
 
 @Component({
   selector: 'warehouse-view',
@@ -61,6 +62,7 @@ export class WarehouseViewComponent implements OnInit {
   private dialog = inject(MatDialog);
   private translateService = inject(CustomTranslateService);
   protected dateService = inject(DateService);
+  private navService = inject(WarehouseNavigationService);
 
   ngOnInit(): void {
     this.authService.loggedUser()
@@ -75,6 +77,14 @@ export class WarehouseViewComponent implements OnInit {
               this.currentWarehouses = ws;
               if (this.currentWarehouses) {
                 this.setupStartPointIfFirstLoading();
+
+                const target = this.navService.consumeTarget();
+                if (target) {
+                  this.selectedWarehouseIndex = target.warehouseIndex;
+                  this.selectedRoomIndex = target.roomIndex;
+                  this.selectedBoxIndex = target.boxIndex;
+                  this.viewLevel = 3; // jump directly into items
+                }
               }
             });
         } else {
@@ -386,7 +396,7 @@ export class WarehouseViewComponent implements OnInit {
         latest = ts;
       }
     }
-    return latest ?? '';
+    return latest ?? room.createdTimestamp;
   }
 
   public getLastModificationTimestampForBox(box: WhBox): string {
@@ -401,7 +411,11 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   public presentTimestamp(timestamp: string): string {
-    return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
+    if (timestamp) {
+      return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
+    } else {
+      return '';
+    }
   }
 
   private setupStartPointIfFirstLoading() {
