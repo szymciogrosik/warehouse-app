@@ -386,7 +386,7 @@ export class WarehouseViewComponent implements OnInit {
         latest = ts;
       }
     }
-    return latest ?? '';
+    return latest ?? room.createdTimestamp;
   }
 
   public getLastModificationTimestampForBox(box: WhBox): string {
@@ -401,7 +401,11 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   public presentTimestamp(timestamp: string): string {
-    return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
+    if (timestamp) {
+      return this.dateService.presentDateTime(DateTime.fromISO(timestamp))
+    } else {
+      return '';
+    }
   }
 
   private setupStartPointIfFirstLoading() {
