@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { Timestamp } from "firebase/firestore";
 
 export class WhSharedElem {
-  name?: string;
+  name: string;
   description?: string;
   createdTimestamp: string;
 
