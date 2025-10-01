@@ -72,6 +72,7 @@
 
   "edit.wh.dialog.add.name": "Name",
   "edit.wh.dialog.add.description": "Description",
+  "edit.wh.dialog.move.item": "Location",
   "edit.wh.dialog.add.name.error.required": "Name is required",
   "edit.wh.dialog.add.cancel": "Cancel",
   "edit.wh.dialog.add.save": "Save",
