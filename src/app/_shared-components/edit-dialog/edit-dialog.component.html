@@ -15,6 +15,30 @@
       <mat-label>{{ 'edit.wh.dialog.add.description' | translate }}</mat-label>
       <textarea matInput type="text" formControlName="description" appAutoResize></textarea>
     </mat-form-field>
+
+    <!-- Select for Item -->
+    <mat-form-field *ngIf="data.editType === EditDialogType.ITEM" appearance="outline" class="dialog-field">
+      <mat-label>{{ 'edit.wh.dialog.move.item' | translate }}</mat-label>
+      <mat-select formControlName="targetBoxIndex">
+        <mat-optgroup *ngFor="let r of data.warehouses?.[data.selectedWarehouseIndex]?.rooms; let rIndex = index"
+                      [label]="r.name">
+          <mat-option *ngFor="let b of r.boxes; let bIndex = index" [value]="bIndex">
+            {{ r.name }} / {{ b.name }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Select for Box -->
+    <mat-form-field *ngIf="data.editType === EditDialogType.BOX" appearance="outline" class="dialog-field">
+      <mat-label>{{ 'edit.wh.dialog.move.box' | translate }}</mat-label>
+      <mat-select formControlName="targetRoomIndex">
+        <mat-option *ngFor="let r of data.warehouses?.[data.selectedWarehouseIndex]?.rooms; let rIndex = index"
+                    [value]="rIndex">
+          {{ r.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 
