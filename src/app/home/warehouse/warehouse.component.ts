@@ -161,7 +161,7 @@ export class WarehouseViewComponent implements OnInit {
 
   private async openEditDialog(
     title: string,
-    type: EditDialogType,
+    type: EditDialogType | null,
     name = '',
     description = ''
   ): Promise<{
@@ -218,7 +218,7 @@ export class WarehouseViewComponent implements OnInit {
     if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
       const w = this.activeWarehouse;
       const result =
-        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.warehouse'), EditDialogType.WAREHOUSE, w.name, w.description);
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.warehouse'), null, w.name, w.description);
       if (result) {
         w.name = result.name;
         w.description = result.description;
@@ -231,7 +231,7 @@ export class WarehouseViewComponent implements OnInit {
     if (this.viewLevel === 2 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null) {
       const room = this.activeWarehouse.rooms[this.selectedRoomIndex];
       const result =
-        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.room'), EditDialogType.ROOM, room.name, room.description);
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.room'), null, room.name, room.description);
       if (result) {
         room.name = result.name;
         room.description = result.description;
@@ -369,7 +369,7 @@ export class WarehouseViewComponent implements OnInit {
     }
 
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.warehouse'), EditDialogType.WAREHOUSE);
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.warehouse'), null);
     if (!result) return;
 
     const warehouse = new Warehouse({
@@ -388,7 +388,7 @@ export class WarehouseViewComponent implements OnInit {
 
   async addRoom(): Promise<void> {
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.room'), EditDialogType.ROOM);
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.room'), null);
     if (!result) return;
 
     this.activeWarehouse.rooms.push(new WhRoom({
@@ -401,7 +401,7 @@ export class WarehouseViewComponent implements OnInit {
 
   async addBox(roomIndex: number): Promise<void> {
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.box'), EditDialogType.BOX);
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.box'), null);
     if (!result) return;
 
     this.activeWarehouse.rooms[roomIndex].boxes.push(new WhBox({
@@ -414,7 +414,7 @@ export class WarehouseViewComponent implements OnInit {
 
   async addItem(roomIndex: number, boxIndex: number): Promise<void> {
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.item'), EditDialogType.ITEM);
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.item'), null);
     if (!result) return;
 
     this.activeWarehouse.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
