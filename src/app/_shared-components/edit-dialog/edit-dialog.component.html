@@ -16,33 +16,39 @@
       <textarea matInput type="text" formControlName="description" appAutoResize></textarea>
     </mat-form-field>
 
-    <!-- Select for Item -->
+    <!-- Item editing: choose target Box -->
     @if (data.editType === EditDialogType.ITEM) {
       <mat-form-field appearance="outline" class="dialog-field">
-        <mat-label>{{ 'edit.wh.dialog.move.item' | translate }}</mat-label>
+        <mat-label>{{ 'edit.wh.dialog.move.location' | translate }}</mat-label>
         <mat-select formControlName="targetBoxIndex">
-          @for (r of data.warehouses?.[data.selectedWarehouseIndex]?.rooms; track $index) {
-            <mat-optgroup [label]="r.name">
-              @for (b of r.boxes; track $index) {
-                <mat-option [value]="$index">
-                  {{ r.name }} / {{ b.name }}
-                </mat-option>
-              }
-            </mat-optgroup>
+          @for (w of data.warehouses; track $index; let wi = $index) {
+            @for (r of w.rooms; track $index; let ri = $index) {
+              <mat-optgroup [label]="w.name + ' / ' + r.name">
+                @for (b of r.boxes; track $index; let bi = $index) {
+                  <mat-option [value]="{warehouse: wi, room: ri, box: bi}">
+                    {{ b.name }}
+                  </mat-option>
+                }
+              </mat-optgroup>
+            }
           }
         </mat-select>
       </mat-form-field>
     }
 
-    <!-- Select for Box -->
+    <!-- Box editing: choose target Room -->
     @if (data.editType === EditDialogType.BOX) {
       <mat-form-field appearance="outline" class="dialog-field">
-        <mat-label>{{ 'edit.wh.dialog.move.box' | translate }}</mat-label>
+        <mat-label>{{ 'edit.wh.dialog.move.location' | translate }}</mat-label>
         <mat-select formControlName="targetRoomIndex">
-          @for (r of data.warehouses?.[data.selectedWarehouseIndex]?.rooms; track $index) {
-            <mat-option [value]="$index">
-              {{ r.name }}
-            </mat-option>
+          @for (w of data.warehouses; track $index; let wi = $index) {
+            <mat-optgroup [label]="w.name">
+              @for (r of w.rooms; track $index; let ri = $index) {
+                <mat-option [value]="{warehouse: wi, room: ri}">
+                  {{ r.name }}
+                </mat-option>
+              }
+            </mat-optgroup>
           }
         </mat-select>
       </mat-form-field>
