@@ -124,19 +124,27 @@
 
 .list-item-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-start;
   width: 100%;
+  flex-wrap: nowrap;
 }
 
 .list-item-title {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  display: block;
   font-weight: 500;
+  margin-right: 8px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  flex: 1;
+  margin-top: 10px;
 }
 
 .list-item-actions {
   display: flex;
+  flex-shrink: 0;
   gap: 4px;
+  button {
+    margin-bottom: 5px;
+  }
 }

@@ -3,12 +3,8 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CustomCommonModule} from '../../_imports/CustomCommon.module';
 import {AutoResizeDirective} from "../auto-resize-directive.directive";
-
-export interface EditDialogData {
-  title: string;
-  name: string;
-  description: string;
-}
+import {EditDialogData} from "../../_models/dialog/warehouse/edit-dialog-data";
+import {EditDialogType} from "../../_models/dialog/warehouse/edit-dialog-type";
 
 @Component({
   selector: 'edit-dialog',
@@ -36,6 +32,27 @@ export class EditDialogComponent implements OnInit {
       name: [this.data.name || '', Validators.required],
       description: [this.data.description || '']
     });
+
+    if (this.data.editType === EditDialogType.BOX) {
+      this.form.addControl(
+        'targetRoomIndex',
+        this.fb.control({
+          warehouse: this.data.selectedWarehouseIndex,
+          room: this.data.selectedRoomIndex
+        })
+      );
+    }
+
+    if (this.data.editType === EditDialogType.ITEM) {
+      this.form.addControl(
+        'targetBoxIndex',
+        this.fb.control({
+          warehouse: this.data.selectedWarehouseIndex,
+          room: this.data.selectedRoomIndex,
+          box: this.data.selectedBoxIndex
+        })
+      );
+    }
   }
 
   save(): void {
@@ -51,4 +68,19 @@ export class EditDialogComponent implements OnInit {
   get title(): string {
     return this.data.title;
   }
+
+  protected readonly EditDialogType = EditDialogType;
+
+  compareBoxFn = (a: any, b: any) => {
+    return a && b &&
+      a.warehouse === b.warehouse &&
+      a.room === b.room;
+  };
+
+  compareItemFn = (a: any, b: any) => {
+    return a && b &&
+      a.warehouse === b.warehouse &&
+      a.room === b.room &&
+      a.box === b.box;
+  };
 }

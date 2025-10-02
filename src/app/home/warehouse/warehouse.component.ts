@@ -1,4 +1,4 @@
-import {Component, OnInit, inject, DestroyRef} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
@@ -25,6 +25,7 @@ import {DateTime} from "luxon";
 import {DateService} from "../../_services/util/date.service";
 import {WhSharedElem} from "../../_models/warehouse/shared/wh-shared-elem";
 import {WarehouseNavigationService} from "../../_services/warehouse/warehouse-navigation.service";
+import {EditDialogType} from "../../_models/dialog/warehouse/edit-dialog-type";
 
 @Component({
   selector: 'warehouse-view',
@@ -158,17 +159,38 @@ export class WarehouseViewComponent implements OnInit {
     return this.currentWarehouses.warehouses[this.selectedWarehouseIndex];
   }
 
-  private async openEditDialog(title: string, name = '', description = ''): Promise<{
-    name: string,
-    description: string
+  private async openEditDialog(
+    title: string,
+    type: EditDialogType | null,
+    name = '',
+    description = ''
+  ): Promise<{
+    name: string;
+    description: string;
+    targetBoxIndex?: {warehouse: number, room: number, box: number};
+    targetRoomIndex?: {warehouse: number, room: number};
   } | null> {
+    if (!this.currentWarehouses) {
+      throw new Error('No warehouses state');
+    }
+
     const result = await firstValueFrom(
       this.dialog.open(EditDialogComponent, {
-        data: {title, name, description},
-        width: '600px',          // fixed width
-        maxWidth: '90vw',        // responsive cap
+        data: {
+          title,
+          name,
+          description,
+          editType: type,
+          warehouses: this.currentWarehouses.warehouses,
+          selectedWarehouseIndex: this.selectedWarehouseIndex,
+          selectedRoomIndex: this.selectedRoomIndex,
+          selectedBoxIndex: this.selectedBoxIndex
+        },
+        width: '600px',
+        maxWidth: '90vw'
       }).afterClosed()
     );
+
     return result ?? null;
   }
 
@@ -196,7 +218,7 @@ export class WarehouseViewComponent implements OnInit {
     if (this.viewLevel === 1 && this.selectedWarehouseIndex !== null) {
       const w = this.activeWarehouse;
       const result =
-        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.warehouse'), w.name, w.description);
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.warehouse'), null, w.name, w.description);
       if (result) {
         w.name = result.name;
         w.description = result.description;
@@ -209,7 +231,7 @@ export class WarehouseViewComponent implements OnInit {
     if (this.viewLevel === 2 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null) {
       const room = this.activeWarehouse.rooms[this.selectedRoomIndex];
       const result =
-        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.room'), room.name, room.description);
+        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.room'), null, room.name, room.description);
       if (result) {
         room.name = result.name;
         room.description = result.description;
@@ -219,13 +241,46 @@ export class WarehouseViewComponent implements OnInit {
     }
 
     // edit box
-    if (this.viewLevel === 3 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
+    if (
+      this.viewLevel === 3 &&
+      this.selectedWarehouseIndex !== null &&
+      this.selectedRoomIndex !== null &&
+      this.selectedBoxIndex !== null
+    ) {
       const box = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex];
-      const result =
-        await this.openEditDialog(this.translateService.get('edit.wh.dialog.edit.box'), box.name, box.description);
+      const result = await this.openEditDialog(
+        this.translateService.get('edit.wh.dialog.edit.box'),
+        EditDialogType.BOX,
+        box.name,
+        box.description
+      );
+
       if (result) {
         box.name = result.name;
         box.description = result.description;
+
+        const target = result.targetRoomIndex;
+        if (
+          target &&
+          (target.warehouse !== this.selectedWarehouseIndex ||
+            target.room !== this.selectedRoomIndex)
+        ) {
+          // remove from current location
+          const moved = this.currentWarehouses!.warehouses[this.selectedWarehouseIndex]
+            .rooms[this.selectedRoomIndex]
+            .boxes.splice(this.selectedBoxIndex, 1)[0];
+
+          // push into target room
+          this.currentWarehouses!.warehouses[target.warehouse]
+            .rooms[target.room]
+            .boxes.push(moved);
+
+          // navigation: go back to old room (not into the target)
+          this.selectedBoxIndex = null;
+          this.viewLevel = 2;
+          // keep this.selectedRoomIndex pointing to the original room
+        }
+
         await this.save();
       }
       return;
@@ -235,21 +290,55 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   protected async editItem(itemIndex: number): Promise<void> {
-    if (this.selectedWarehouseIndex === null || this.selectedRoomIndex === null || this.selectedBoxIndex === null) {
+    if (
+      this.selectedWarehouseIndex === null ||
+      this.selectedRoomIndex === null ||
+      this.selectedBoxIndex === null
+    ) {
       return;
     }
 
-    const item = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].items[itemIndex];
+    const item = this.activeWarehouse
+      .rooms[this.selectedRoomIndex]
+      .boxes[this.selectedBoxIndex]
+      .items[itemIndex];
+
     const result = await this.openEditDialog(
       this.translateService.get('edit.wh.dialog.edit.item'),
+      EditDialogType.ITEM,
       item.name,
       item.description
     );
 
     if (result) {
+      // update values
       item.name = result.name;
       item.description = result.description;
       item.updatedTimestamp = WhSharedElem.normalizeTimestamp(null);
+
+      const target = result.targetBoxIndex;
+
+      if (
+        target &&
+        (target.warehouse !== this.selectedWarehouseIndex ||
+          target.room !== this.selectedRoomIndex ||
+          target.box !== this.selectedBoxIndex)
+      ) {
+        // remove from current location
+        const moved = this.currentWarehouses!.warehouses[this.selectedWarehouseIndex]
+          .rooms[this.selectedRoomIndex]
+          .boxes[this.selectedBoxIndex]
+          .items.splice(itemIndex, 1)[0];
+
+        // push into target location
+        this.currentWarehouses!.warehouses[target.warehouse]
+          .rooms[target.room]
+          .boxes[target.box]
+          .items.push(moved);
+
+        // keep navigation in the same box (do not reset indices)
+      }
+
       await this.save();
     }
   }
@@ -320,7 +409,7 @@ export class WarehouseViewComponent implements OnInit {
     }
 
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.warehouse'));
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.warehouse'), null);
     if (!result) return;
 
     const warehouse = new Warehouse({
@@ -339,7 +428,7 @@ export class WarehouseViewComponent implements OnInit {
 
   async addRoom(): Promise<void> {
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.room'));
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.room'), null);
     if (!result) return;
 
     this.activeWarehouse.rooms.push(new WhRoom({
@@ -352,7 +441,7 @@ export class WarehouseViewComponent implements OnInit {
 
   async addBox(roomIndex: number): Promise<void> {
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.box'));
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.box'), null);
     if (!result) return;
 
     this.activeWarehouse.rooms[roomIndex].boxes.push(new WhBox({
@@ -365,7 +454,7 @@ export class WarehouseViewComponent implements OnInit {
 
   async addItem(roomIndex: number, boxIndex: number): Promise<void> {
     const result =
-      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.item'));
+      await this.openEditDialog(this.translateService.get('edit.wh.dialog.add.item'), null);
     if (!result) return;
 
     this.activeWarehouse.rooms[roomIndex].boxes[boxIndex].items.push(new WhItem({
