@@ -167,8 +167,8 @@ export class WarehouseViewComponent implements OnInit {
   ): Promise<{
     name: string;
     description: string;
-    targetBoxIndex?: number;
-    targetRoomIndex?: number;
+    targetBoxIndex?: {warehouse: number, room: number, box: number};
+    targetRoomIndex?: {warehouse: number, room: number};
   } | null> {
     if (!this.currentWarehouses) {
       throw new Error('No warehouses state');
@@ -253,14 +253,17 @@ export class WarehouseViewComponent implements OnInit {
         box.name = result.name;
         box.description = result.description;
 
-        if (result.targetRoomIndex !== undefined && result.targetRoomIndex !== this.selectedRoomIndex) {
+        if (result.targetRoomIndex !== undefined && result.targetRoomIndex.room !== this.selectedRoomIndex) {
           const moved = this.activeWarehouse.rooms[this.selectedRoomIndex!]
             .boxes.splice(this.selectedBoxIndex!, 1)[0];
-          this.activeWarehouse.rooms[result.targetRoomIndex].boxes.push(moved);
 
+          this.activeWarehouse.rooms[result.targetRoomIndex.room].boxes.push(moved);
+
+          // Reset navigation back to old room
           this.selectedBoxIndex = null;
           this.viewLevel = 2;
-          this.selectedRoomIndex = result.targetRoomIndex;
+          // Keep focus on the original room where the box used to be
+          // (not the target room!)
         }
         await this.save();
       }
@@ -271,11 +274,19 @@ export class WarehouseViewComponent implements OnInit {
   }
 
   protected async editItem(itemIndex: number): Promise<void> {
-    if (this.selectedWarehouseIndex === null || this.selectedRoomIndex === null || this.selectedBoxIndex === null) {
+    if (
+      this.selectedWarehouseIndex === null ||
+      this.selectedRoomIndex === null ||
+      this.selectedBoxIndex === null
+    ) {
       return;
     }
 
-    const item = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex].items[itemIndex];
+    const item = this.activeWarehouse
+      .rooms[this.selectedRoomIndex]
+      .boxes[this.selectedBoxIndex]
+      .items[itemIndex];
+
     const result = await this.openEditDialog(
       this.translateService.get('edit.wh.dialog.edit.item'),
       EditDialogType.ITEM,
@@ -289,16 +300,29 @@ export class WarehouseViewComponent implements OnInit {
       item.description = result.description;
       item.updatedTimestamp = WhSharedElem.normalizeTimestamp(null);
 
-      // handle move
-      if (result.targetBoxIndex !== undefined && result.targetBoxIndex !== this.selectedBoxIndex) {
-        const moved = this.activeWarehouse.rooms[this.selectedRoomIndex!]
-          .boxes[this.selectedBoxIndex!].items.splice(itemIndex, 1)[0];
-        this.activeWarehouse.rooms[this.selectedRoomIndex!]
-          .boxes[result.targetBoxIndex].items.push(moved);
+      const target = result.targetBoxIndex;
 
-        this.selectedBoxIndex = null;
-        this.viewLevel = 2;
+      if (
+        target &&
+        (target.warehouse !== this.selectedWarehouseIndex ||
+          target.room !== this.selectedRoomIndex ||
+          target.box !== this.selectedBoxIndex)
+      ) {
+        // remove from current location
+        const moved = this.currentWarehouses!.warehouses[this.selectedWarehouseIndex]
+          .rooms[this.selectedRoomIndex]
+          .boxes[this.selectedBoxIndex]
+          .items.splice(itemIndex, 1)[0];
+
+        // push into target location
+        this.currentWarehouses!.warehouses[target.warehouse]
+          .rooms[target.room]
+          .boxes[target.box]
+          .items.push(moved);
+
+        // keep navigation in the same box (do not reset indices)
       }
+
       await this.save();
     }
   }
