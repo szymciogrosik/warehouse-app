@@ -241,30 +241,46 @@ export class WarehouseViewComponent implements OnInit {
     }
 
     // edit box
-    if (this.viewLevel === 3 && this.selectedWarehouseIndex !== null && this.selectedRoomIndex !== null && this.selectedBoxIndex !== null) {
-      const box = this.activeWarehouse.rooms[this.selectedRoomIndex!].boxes[this.selectedBoxIndex];
+    if (
+      this.viewLevel === 3 &&
+      this.selectedWarehouseIndex !== null &&
+      this.selectedRoomIndex !== null &&
+      this.selectedBoxIndex !== null
+    ) {
+      const box = this.activeWarehouse.rooms[this.selectedRoomIndex].boxes[this.selectedBoxIndex];
       const result = await this.openEditDialog(
         this.translateService.get('edit.wh.dialog.edit.box'),
         EditDialogType.BOX,
         box.name,
         box.description
       );
+
       if (result) {
         box.name = result.name;
         box.description = result.description;
 
-        if (result.targetRoomIndex !== undefined && result.targetRoomIndex.room !== this.selectedRoomIndex) {
-          const moved = this.activeWarehouse.rooms[this.selectedRoomIndex!]
-            .boxes.splice(this.selectedBoxIndex!, 1)[0];
+        const target = result.targetRoomIndex;
+        if (
+          target &&
+          (target.warehouse !== this.selectedWarehouseIndex ||
+            target.room !== this.selectedRoomIndex)
+        ) {
+          // remove from current location
+          const moved = this.currentWarehouses!.warehouses[this.selectedWarehouseIndex]
+            .rooms[this.selectedRoomIndex]
+            .boxes.splice(this.selectedBoxIndex, 1)[0];
 
-          this.activeWarehouse.rooms[result.targetRoomIndex.room].boxes.push(moved);
+          // push into target room
+          this.currentWarehouses!.warehouses[target.warehouse]
+            .rooms[target.room]
+            .boxes.push(moved);
 
-          // Reset navigation back to old room
+          // navigation: go back to old room (not into the target)
           this.selectedBoxIndex = null;
           this.viewLevel = 2;
-          // Keep focus on the original room where the box used to be
-          // (not the target room!)
+          // keep this.selectedRoomIndex pointing to the original room
         }
+
         await this.save();
       }
       return;
