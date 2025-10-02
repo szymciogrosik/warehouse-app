@@ -33,11 +33,25 @@ export class EditDialogComponent implements OnInit {
       description: [this.data.description || '']
     });
 
-    if (this.data.editType === EditDialogType.ITEM) {
-      this.form.addControl('targetBoxIndex', this.fb.control(this.data.selectedBoxIndex));
-    }
     if (this.data.editType === EditDialogType.BOX) {
-      this.form.addControl('targetRoomIndex', this.fb.control(this.data.selectedRoomIndex));
+      this.form.addControl(
+        'targetRoomIndex',
+        this.fb.control({
+          warehouse: this.data.selectedWarehouseIndex,
+          room: this.data.selectedRoomIndex
+        })
+      );
+    }
+
+    if (this.data.editType === EditDialogType.ITEM) {
+      this.form.addControl(
+        'targetBoxIndex',
+        this.fb.control({
+          warehouse: this.data.selectedWarehouseIndex,
+          room: this.data.selectedRoomIndex,
+          box: this.data.selectedBoxIndex
+        })
+      );
     }
   }
 
@@ -56,4 +70,17 @@ export class EditDialogComponent implements OnInit {
   }
 
   protected readonly EditDialogType = EditDialogType;
+
+  compareBoxFn = (a: any, b: any) => {
+    return a && b &&
+      a.warehouse === b.warehouse &&
+      a.room === b.room;
+  };
+
+  compareItemFn = (a: any, b: any) => {
+    return a && b &&
+      a.warehouse === b.warehouse &&
+      a.room === b.room &&
+      a.box === b.box;
+  };
 }
