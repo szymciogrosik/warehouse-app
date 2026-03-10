@@ -1,7 +1,7 @@
 <mat-toolbar class="navbar-style navbar-home-page navbar-shadow" color="primary">
 
   <button mat-button routerLink="{{ rp.SEP + rp.HOME }}">
-    <mat-icon>beach_access</mat-icon>&nbsp;{{ 'navbar.tab.applicationName' | translate }}
+    <mat-icon>inventory_2</mat-icon>&nbsp;{{ 'navbar.tab.applicationName' | translate }}
   </button>
   <!--   This fills the remaining space of the current row-->
   <span class="fill-remaining-space"></span>
@@ -9,6 +9,11 @@
   <!-- Full menu navbar -->
   <div class="full-menu">
     <!-- Add new link here part 1/2 -->
+    @if (this.authService.isAuthenticated() | async) {
+      <button mat-button class="navbar-button" (click)="navigateToSearchItems()">
+        {{ 'navbar.tab.button.search' | translate }}
+      </button>
+    }
     @if (isAdmin$ | async) {
       <button mat-button class="navbar-button" (click)="navigateToAdminPanel()">
         {{ 'navbar.tab.button.adminPanel' | translate }}
@@ -66,6 +71,11 @@
 
 <mat-menu xPosition="before" #menu="matMenu">
   <!-- Add new link here part 2/2 -->
+  @if (this.authService.isAuthenticated() | async) {
+    <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToSearchItems()">
+      {{ 'navbar.tab.button.search' | translate }}
+    </button>
+  }
   @if (isAdmin$ | async) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToAdminPanel()">
       {{ 'navbar.tab.button.adminPanel' | translate }}

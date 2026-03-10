@@ -71,6 +71,10 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/' + RedirectionEnum.LOGIN]);
   }
 
+  navigateToSearchItems() {
+    this.router.navigate(["/" + RedirectionEnum.SEARCH]);
+  }
+
   protected readonly AccessRoleService = AccessRoleService;
   protected readonly AccessRole = AccessRole;
 }
