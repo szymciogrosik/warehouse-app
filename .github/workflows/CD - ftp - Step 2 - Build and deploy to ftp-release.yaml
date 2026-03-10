@@ -1,4 +1,4 @@
-name: CI - ftp - Step 2 - Build and deploy to ftp-release
+name: CD - ftp - Step 2 - Build and deploy to ftp-release
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 🔨 Build with prod-ftp settings
         run: npm run build-ftp

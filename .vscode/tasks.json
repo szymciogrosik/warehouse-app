@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "npm",
+            "script": "start",
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "typescript",
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "Building..."
+                    },
+                    "endsPattern": {
+                        "regexp": "Application bundle generation complete"
+                    }
+                }
+            },
+            "label": "npm: start",
+            "presentation": {
+                "group": "server",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}

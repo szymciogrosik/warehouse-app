@@ -2,6 +2,7 @@
 root = true
 
 [*]
+end_of_line = lf
 charset = utf-8
 indent_style = space
 indent_size = 2
@@ -10,6 +11,12 @@ trim_trailing_whitespace = true
 
 [*.ts]
 quote_type = single
+
+# Match IntelliJ frontend default indentations
+[*.{js,ts,html,json,css,scss}]
+indent_style = space
+indent_size = 2
+max_line_length = 120
 
 [*.md]
 max_line_length = off

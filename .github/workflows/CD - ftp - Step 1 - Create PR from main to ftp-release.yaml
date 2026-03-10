@@ -1,4 +1,4 @@
-name: CI - ftp - Step 1 - Create PR from main to ftp-release
+name: CD - ftp - Step 1 - Create PR from main to ftp-release
 
 on:
   push:

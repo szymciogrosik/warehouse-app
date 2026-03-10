@@ -1,7 +1,7 @@
 import {ActivatedRouteSnapshot, CanActivateFn, Router} from '@angular/router';
 import {inject} from "@angular/core";
 import {RedirectionEnum} from "../../../utils/redirection.enum";
-import {from, tap} from "rxjs";
+import {from} from "rxjs";
 import {AccessRoleService} from "../auth/access-role.service";
 import {AccessRole} from "../../_models/user/access-role";
 import {map} from "rxjs/operators";

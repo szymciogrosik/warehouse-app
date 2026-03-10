@@ -10,7 +10,8 @@
   width: 100%;
   color: $footer-element-color;
   background: $app-primary-color;
-  background-size: 100% auto;  /* Adjust the width to 100% and height automatically */
+  background-size: 100% auto;
+  /* Adjust the width to 100% and height automatically */
   font-size: $footer-font-size;
 }
 
@@ -18,8 +19,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-end; // Align items to the bottom
-  margin-top: auto; // Push content to the bottom
+  align-items: center;
 }
 
 .footer-shadow {
@@ -27,10 +27,20 @@
 }
 
 .icons-container {
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
 }
 
 .copyrights {
   margin-right: 10px;
-  margin-bottom: 15px;
+}
+
+.instagram-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+::ng-deep .dark-theme .instagram-icon {
+  filter: brightness(0.88);
 }

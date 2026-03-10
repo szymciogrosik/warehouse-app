@@ -4,13 +4,15 @@ import {AfterViewInit, ChangeDetectorRef, Directive, ElementRef, HostListener} f
   selector: '[appAutoResize]'
 })
 export class AutoResizeDirective implements AfterViewInit {
-
-  @HostListener('input', ['$event.target'])
-  onInput(textArea: HTMLTextAreaElement): void {
+  @HostListener('input')
+  onInput(): void {
     this.adjustHeight();
   }
 
-  constructor(private el: ElementRef<HTMLTextAreaElement>, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private el: ElementRef<HTMLTextAreaElement>,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();

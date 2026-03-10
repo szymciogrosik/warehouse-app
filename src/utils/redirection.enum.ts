@@ -5,4 +5,5 @@ export enum RedirectionEnum {
   LOGIN = 'login',
   SEARCH = 'search',
   ADMIN = 'admin-panel',
+  PROFILE = 'profile',
 }

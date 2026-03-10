@@ -1,4 +1,4 @@
-name: CI - firebase - Step 1 - Create PR from main to firebase-release
+name: CD - firebase - Step 1 - Create PR from main to firebase-release
 
 on:
   push:

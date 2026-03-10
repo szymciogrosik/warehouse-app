@@ -1,16 +1,18 @@
 import {Component} from '@angular/core';
 import {CustomTranslateService} from './_services/translate/custom-translate.service';
-import {CustomCommonModule} from "./_imports/CustomCommon.module";
 import {FooterComponent} from "./footer/footer.component";
 import {NavbarComponent} from "./navbar/navbar.component";
 import {Title} from '@angular/platform-browser';
+import {CommonModule} from '@angular/common';
+import {TranslateModule} from '@ngx-translate/core';
+import {RouterModule} from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [CustomCommonModule, FooterComponent, NavbarComponent],
+  imports: [FooterComponent, NavbarComponent, CommonModule, TranslateModule, RouterModule],
 })
 export class AppComponent {
 

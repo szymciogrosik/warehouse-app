@@ -1,9 +1,5 @@
 @use "src/styles.scss" as *;
 
-.dialog-font {
-  font-size: 1.2rem;
-}
-
 .dialog-button {
   width: 100%;
   margin: 16px;
@@ -11,11 +7,6 @@
 
 .dialog-content-container {
   padding-bottom: 0;
-}
-
-.dialog-title {
-  margin-top: 5px;
-  font-weight: bold;
 }
 
 .dialog-image {
@@ -32,25 +23,11 @@
   color: $app-green-color;
 }
 
-.dialog-warning-image{
+.dialog-warning-image {
   color: $app-accent-color;
 }
 
-.dialog-error-image{
+.dialog-error-image {
   color: $app-red-color;
 }
 
-.dialog-actions {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.action-button {
-  flex: 1;
-}
-
-.button-wrapper {
-  width: 100%;
-  margin: 10px;
-}

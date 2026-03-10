@@ -1,4 +1,4 @@
-name: CI - firebase - Step 2 - Build and deploy to firebase
+name: CD - firebase - Step 2 - Build and deploy to firebase
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 🔨 Build with firebase settings
         run: npm run build-firebase

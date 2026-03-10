@@ -1,19 +1,17 @@
-<div class="container">
-  <div class="row">
-    <div class="status-content">
-      <mat-card class="short-page-content">
-        <mat-card-title>
-          <h2>{{ 'status.lastBuildTime' | translate }}</h2>
-        </mat-card-title>
-        <mat-card-content>
-          @if (lastDeployTime) {
-            <div [innerHTML]="lastDeployTime" style="text-align: center;"></div>
-          }
-          @if (!lastDeployTime) {
-            <div><mat-spinner [diameter]="80"></mat-spinner></div>
-          }
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
+<div class="app-page-container">
+  <mat-card class="app-card-medium">
+    <mat-card-title>
+      <h1>{{ 'status.lastBuildTime' | translate }}</h1>
+      <p>
+        @if (lastDeployTime) {
+          <div [innerHTML]="lastDeployTime" style="text-align: center;"></div>
+        }
+        @if (!lastDeployTime) {
+          <div>
+            <div class="skeleton-loader" style="height: 30px; width: 250px; border-radius: 8px; margin: 0 auto;"></div>
+          </div>
+        }
+      </p>
+    </mat-card-title>
+  </mat-card>
 </div>

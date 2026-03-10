@@ -1,4 +1,4 @@
-name: CI - gh-pages - Step 1 - Create PR from main to gh-pages-release
+name: CD - gh-pages - Step 1 - Create PR from main to gh-pages-release
 
 on:
   push:

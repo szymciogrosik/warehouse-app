@@ -1,0 +1,25 @@
+.smart-table-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+.smart-table-col-action,
+.smart-table-col-index {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 16px !important;
+}
+
+.filter-element {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.enable-vertical-scrolling {
+  overflow-x: auto;
+  width: 100%;
+}

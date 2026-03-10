@@ -1,15 +1,18 @@
 import {Component} from '@angular/core';
 import {AccessRoleService} from "../../_services/auth/access-role.service";
-import {CustomCommonModule} from "../../_imports/CustomCommon.module";
 import {UsersComponent} from "./users/users.component";
 import {AccessRole} from "../../_models/user/access-role";
+import {PublicSettingsComponent} from "./public-settings/public-settings.component";
+import {CommonModule} from '@angular/common';
+import {TranslateModule} from '@ngx-translate/core';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   standalone: true,
-  imports: [CustomCommonModule, UsersComponent],
+  imports: [UsersComponent, PublicSettingsComponent, CommonModule, TranslateModule, MatTabsModule],
 })
 export class SettingsComponent {
   protected isAuthorized: boolean = false;

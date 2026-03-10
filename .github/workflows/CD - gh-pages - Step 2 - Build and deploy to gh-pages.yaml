@@ -1,4 +1,4 @@
-name: CI - gh-pages - Step 2 - Build and deploy to gh-pages
+name: CD - gh-pages - Step 2 - Build and deploy to gh-pages
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 🔨 Build with gh-pages settings
         run: npm run build-gh-pages

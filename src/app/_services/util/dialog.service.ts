@@ -12,7 +12,8 @@ export class DialogService {
   constructor(
     private dialog: MatDialog,
     private translateService: CustomTranslateService,
-  ) { }
+  ) {
+  }
 
   public openConfirmDialog(messageKey: string) {
     return this.dialog.open(

@@ -1,5 +1,5 @@
 <div class="dialog-container">
-  <h1 mat-dialog-title class="dialog-font dialog-title">{{ this.data.title }}</h1>
+  <h1 mat-dialog-title class="dialog-title">{{ this.data.title }}</h1>
 
   <mat-dialog-content class="mat-typography dialog-font dialog-content-container">
     @if (this.data.popupType !== null) {
@@ -27,19 +27,16 @@
     </div>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <div class="button-wrapper dialog-actions">
+  <mat-dialog-actions>
+    <div class="app-popup-full-width-actions">
       @if (this.data.cancelButtonText) {
-        <button mat-raised-button color="warn" class="action-button"
-                (click)="onCancelClick()">
+        <button mat-raised-button color="warn" class="app-action-button" (click)="onCancelClick()">
           {{ this.data.cancelButtonText }}
         </button>
       }
-      <button mat-raised-button color="primary" class="action-button"
-              (click)="onApproveClick()" cdkFocusInitial>
+      <button mat-raised-button color="primary" class="app-action-button" (click)="onApproveClick()" cdkFocusInitial>
         {{ this.data.confirmButtonText }}
       </button>
     </div>
   </mat-dialog-actions>
 </div>
-
