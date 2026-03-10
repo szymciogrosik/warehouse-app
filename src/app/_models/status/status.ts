@@ -1,3 +1,3 @@
 export class Status {
-   lastDeployTime: string;
+  lastDeployTime: string;
 }

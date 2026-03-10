@@ -23,14 +23,22 @@ export class SnackbarService {
     this.snackBar.open(message, action, {duration});
   }
 
-  public openDefaultSnackBar(message: string): void {
+  public openSnackBar(message: string): void {
     this.snackBar.open(message, this.translateService.get(SnackbarService.DISMISS_ACTION), {
       duration: SnackbarService.MEDIUM_DURATION
     });
   }
 
+  public openShortSnackBar(message: string): void {
+    this.snackBar.open(message, this.translateService.get(SnackbarService.DISMISS_ACTION), {
+      duration: SnackbarService.SHORT_DURATION
+    });
+  }
+
   public openLongSnackBar(message: string): void {
-    this.snackBar.open(message, this.translateService.get(SnackbarService.DISMISS_ACTION));
+    this.snackBar.open(message, this.translateService.get(SnackbarService.DISMISS_ACTION), {
+      duration: SnackbarService.LONG_DURATION
+    });
   }
 
   public openForeverSnackBar(message: string): void {

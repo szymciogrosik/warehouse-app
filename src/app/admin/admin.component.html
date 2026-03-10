@@ -1,19 +1,21 @@
-<div class="admin-div">
-  <mat-card class="short-page-content">
+<div class="app-page-container">
+  <mat-card class="app-card-wide">
     <mat-card-title>
       <h1>{{ 'admin.panel.header' | translate }}</h1>
-      <h5>{{ 'admin.panel.helloMessage' | translate }}{{ this.loggedUserName }}!</h5>
+      <p>{{ 'admin.panel.helloMessage' | translate }}{{ this.loggedUserName }}!</p>
     </mat-card-title>
     <mat-card-content>
       @if (!environment.production) {
-        <div class="alert alert-warning" role="alert" style="margin-bottom: 30px;">
-          {{ 'nonProdMode.warning' | translate }}
-        </div>
+        <mat-card class="app-alert-warning" style="margin: 0;">
+          <mat-card-content>
+            <span>{{ 'nonProdMode.warning' | translate }}</span>
+          </mat-card-content>
+        </mat-card>
       }
       <mat-tab-group dynamicHeight>
         @if (settingsVisible) {
           <mat-tab label="{{ 'admin.panel.tab.header.settings' | translate }}">
-            <div class="admin-tab-content">
+            <div>
               <app-settings></app-settings>
             </div>
           </mat-tab>

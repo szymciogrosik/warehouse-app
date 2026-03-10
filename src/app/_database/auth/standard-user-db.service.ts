@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
-import { UserDbService } from './user-db-service.service';
-import { CustomUser } from '../../_models/user/custom-user';
-import { firstValueFrom } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {UserDbService} from './user-db-service.service';
+import {CustomUser} from '../../_models/user/custom-user';
+import {firstValueFrom} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StandardUserDbService {
-  constructor(private userDbService: UserDbService) {}
+  constructor(private userDbService: UserDbService) {
+  }
 
   public async getUser(uid: string, email: string | null): Promise<CustomUser | null> {
     if (email === null) {
@@ -26,5 +27,9 @@ export class StandardUserDbService {
     } catch (err: unknown) {
       throw err;
     }
+  }
+
+  public async create(newUser: CustomUser): Promise<void> {
+    return this.userDbService.create(newUser);
   }
 }

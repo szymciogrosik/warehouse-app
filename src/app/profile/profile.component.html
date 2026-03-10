@@ -1,0 +1,64 @@
+<div class="app-page-container">
+  <mat-card class="app-card-narrow">
+    <mat-card-title>
+      <h1>{{ 'profile.title' | translate }}</h1>
+      <p>{{ 'profile.subtitle' | translate }}</p>
+    </mat-card-title>
+
+    <mat-card-content>
+      @if (isLoading) {
+        <div class="loader-container" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+          <div class="skeleton-loader" style="width: 150px; height: 150px; border-radius: 50%;"></div>
+          <div class="skeleton-loader" style="height: 56px; width: 100%; border-radius: 4px; margin-top: 10px;"></div>
+          <div class="skeleton-loader" style="height: 56px; width: 100%; border-radius: 4px;"></div>
+          <div class="skeleton-loader" style="height: 56px; width: 100%; border-radius: 4px;"></div>
+          <div class="app-full-width-actions" style="margin-top: 20px;">
+            <div class="skeleton-loader app-action-button" style="height: 36px; border-radius: 4px;"></div>
+            <div class="skeleton-loader app-action-button" style="height: 36px; border-radius: 4px;"></div>
+          </div>
+        </div>
+      } @else if (user) {
+        <div class="profile-picture-container">
+          <div class="avatar-container">
+            <div class="avatar-wrapper">
+              @if (user.photoUrl) {
+                <img [src]="user.photoUrl" alt="Profile Picture" class="avatar-image avatar-clickable"
+                     fetchpriority="high"
+                     (click)="openPreviewDialog(user.photoUrl)">
+              } @else {
+                <div class="avatar-fallback">{{ user.firstName.charAt(0) || '' }}{{ user.lastName.charAt(0) || '' }}
+                </div>
+              }
+            </div>
+            @if (allowForProfilePictureChange) {
+              <button mat-mini-fab color="primary" class="change-photo-fab" (click)="fileInput.click()"
+                      [matTooltip]="'profile.button.changePhoto' | translate">
+                <mat-icon>photo_camera</mat-icon>
+              </button>
+              <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+            }
+          </div>
+        </div>
+
+        <app-user-form #userFormComponent [user]="user" [showPassword]="false" [showRoles]="false" [disableEmail]="true"
+                       (formSubmit)="onFormSubmit($event)"></app-user-form>
+      } @else {
+        <div class="error-container">
+          <mat-icon color="warn">error</mat-icon>
+          <p>{{ 'profile.error.notFound' | translate }}</p>
+        </div>
+      }
+
+      <div class="app-full-width-actions">
+        <button mat-raised-button color="accent" class="app-action-button" [disabled]="isLoading || !user"
+                (click)="openChangePasswordDialog()">
+          {{ 'profile.button.changePassword' | translate }}
+        </button>
+        <button mat-raised-button color="primary" class="app-action-button" [disabled]="isLoading || !user"
+                (click)="userFormComponent.triggerSubmit()">
+          {{ 'profile.button.save' | translate }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

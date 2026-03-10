@@ -41,3 +41,39 @@ button:focus {
   margin-left: 5px;
 }
 
+.navbar-profile-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-avatar-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid $app-accent-color;
+  object-fit: cover;
+}
+
+.navbar-avatar-fallback {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid black;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 500;
+  color: #757575;
+  text-transform: uppercase;
+}
+
+:host-context(.dark-theme) {
+  .navbar-avatar-fallback {
+    background-color: $dark-surface;
+    border-color: $dark-border-secondary;
+    color: $dark-text-primary;
+  }
+}

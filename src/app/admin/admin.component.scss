@@ -1,25 +1,11 @@
 @use "src/styles.scss" as *;
 
-.short-page-content {
-  max-width: 1200px;
-  padding-top: 0;
-}
-
-.admin-div {
-  margin: 20px 20px 0 20px;
-  font-size: 1rem;
-}
-
 table {
   width: 100%;
 }
 
 .mat-mdc-form-field {
   width: 100%;
-}
-
-.admin-tab-content {
-  margin: 20px 15px;
 }
 
 .sticky-toggle-group {
@@ -29,7 +15,7 @@ table {
 }
 
 .sticky-toggle-group .mat-button-toggle-checked {
-  background-color: $app-accent-color;  // Change to your desired background color
+  background-color: $app-accent-color;
   flex-grow: 1;
 }
 
@@ -54,6 +40,7 @@ table {
     flex-direction: column; // Stacks the flex items vertically on small screens
     align-items: flex-start; // Aligns items to the start of the flex container
   }
+
   .button-toggle-label {
     margin-bottom: 0;
   }

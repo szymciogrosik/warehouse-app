@@ -5,7 +5,7 @@ export class CustomValidators {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const input = control.value;
       const isValid = input === text;
-      return isValid ? null : { 'exactText': { value: control.value } };
+      return isValid ? null : {'exactText': {value: control.value}};
     };
   }
 
@@ -18,7 +18,7 @@ export class CustomValidators {
 
     const isValid = hasUppercase && hasLowercase && hasDigit && hasSpecial;
 
-    return isValid ? null : { 'invalidPasswordSecurity': true };
+    return isValid ? null : {'invalidPasswordSecurity': true};
   }
 
 }

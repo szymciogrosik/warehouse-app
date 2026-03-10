@@ -13,7 +13,7 @@ import {BehaviorSubject, firstValueFrom} from "rxjs";
 })
 export class CustomTranslateService {
 
-  private selectedLanguage : BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  private selectedLanguage: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   constructor(
     private translateService: TranslateService,

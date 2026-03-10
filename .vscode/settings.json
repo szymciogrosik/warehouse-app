@@ -1,0 +1,28 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    // Default formatter for JavaScript, TypeScript, and JSON
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // VS Code built-in HTML formatter mimics IntelliJ HTML formatting better than Prettier
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    // HTML formatting specific rules to match IntelliJ
+    "html.format.wrapLineLength": 120,
+    "html.format.preserveNewLines": true,
+    "html.format.maxPreserveNewLines": 2,
+    "html.format.indentInnerHtml": false
+}

@@ -7,7 +7,8 @@ export class PromiseTimoutService {
 
   public timoutMessage: string = 'Timout error occurred';
 
-  constructor() { }
+  constructor() {
+  }
 
   public promiseTimeout(ms: number, promise: Promise<any>): Promise<any> {
     // Create a promise that rejects in <ms> milliseconds

@@ -7,7 +7,8 @@ export class ScrollService {
 
   public scrollRequest: EventEmitter<string> = new EventEmitter();
 
-  constructor() { }
+  constructor() {
+  }
 
   requestScrollTo(elementId: string): void {
     this.scrollRequest.emit(elementId);
