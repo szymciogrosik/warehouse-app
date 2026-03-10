@@ -1,80 +1,78 @@
-<div class="container">
-  <div class="row">
-    <mat-card class="warehouse-card">
-      <div class="filter-container">
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>{{ 'wh.search.filter' | translate }}</mat-label>
-          <input matInput
-                 type="text"
-                 (keyup)="applyFilter($event)"
-                 placeholder="{{ 'wh.search.placeholder' | translate }}"
-                 #input>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>{{ 'wh.search.roomFilter' | translate }}</mat-label>
-          <mat-select
-            multiple
-            [(value)]="selectedRooms"
-            (selectionChange)="applyFilter()">
+<div class="app-page-container">
+  <mat-card class="app-card-wide">
+    <div class="filter-container">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'wh.search.filter' | translate }}</mat-label>
+        <input matInput
+               type="text"
+               (keyup)="applyFilter($event)"
+               placeholder="{{ 'wh.search.placeholder' | translate }}"
+               #input>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'wh.search.roomFilter' | translate }}</mat-label>
+        <mat-select
+          multiple
+          [(value)]="selectedRooms"
+          (selectionChange)="applyFilter()">
 
-            @for (warehouse of availableRooms; track $index) {
-              <mat-optgroup [label]="warehouse.name">
-                @for (room of warehouse.rooms; track $index) {
-                  <mat-option [value]="room.fullPath">{{ room.name }}</mat-option>
-                }
-              </mat-optgroup>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      @if (dataSource.filteredData.length > 0) {
-        <mat-list>
-          @for (item of dataSource.filteredData; track $index) {
-            <mat-list-item class="list-item-class">
-              <!-- Title + actions on the same row -->
-              <div matListItemTitle class="list-item-header" (click)="navigateToBox(item)">
-                <div class="list-item-title">
-                  <mat-icon class="mat-icon-in-list-header-class">sell</mat-icon>
-                  {{ item.name }}
-                </div>
-                <button mat-icon-button class="mat-icon-class">
-                  <mat-icon>open_in_new</mat-icon>
-                </button>
-              </div>
-
-              <!-- Optional description -->
-              <span matListItemLine class="list-item-description">
-                <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-                  @if (item.description) {
-                    {{ item.description }}
-                  } @else {
-                    -
-                  }
-              </span>
-
-              <span matListItemLine class="list-item-description">
-                <mat-icon class="mat-icon-in-list-class">location_on</mat-icon>
-                    {{ item.location }}
-              </span>
-
-              <!-- Timestamps -->
-              <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.lastModificationTimestamp' | translate }}
-                  {{ this.presentTimestamp(item.updatedTimestamp) }}
-              </span>
-              <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.createdTimestamp' | translate }}
-                  {{ this.presentTimestamp(item.createdTimestamp) }}
-              </span>
-            </mat-list-item>
+          @for (warehouse of availableRooms; track $index) {
+            <mat-optgroup [label]="warehouse.name">
+              @for (room of warehouse.rooms; track $index) {
+                <mat-option [value]="room.fullPath">{{ room.name }}</mat-option>
+              }
+            </mat-optgroup>
           }
-        </mat-list>
-      } @else {
-        <div class="no-results">
-          {{ 'wh.search.noResult' | translate }} "{{ input.value }}"
-        </div>
-      }
-    </mat-card>
-  </div>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (dataSource.filteredData.length > 0) {
+      <mat-list>
+        @for (item of dataSource.filteredData; track $index) {
+          <mat-list-item class="list-item-class">
+            <!-- Title + actions on the same row -->
+            <div matListItemTitle class="list-item-header" (click)="navigateToBox(item)">
+              <div class="list-item-title">
+                <mat-icon class="mat-icon-in-list-header-class">sell</mat-icon>
+                {{ item.name }}
+              </div>
+              <button mat-icon-button class="mat-icon-class">
+                <mat-icon>open_in_new</mat-icon>
+              </button>
+            </div>
+
+            <!-- Optional description -->
+            <span matListItemLine class="list-item-description">
+                <mat-icon class="mat-icon-in-list-class">category</mat-icon>
+              @if (item.description) {
+                {{ item.description }}
+              } @else {
+                -
+              }
+              </span>
+
+            <span matListItemLine class="list-item-description">
+                <mat-icon class="mat-icon-in-list-class">location_on</mat-icon>
+              {{ item.location }}
+              </span>
+
+            <!-- Timestamps -->
+            <span matListItemLine class="list-item-timestamps">
+                {{ 'wh.element.lastModificationTimestamp' | translate }}
+              {{ this.presentTimestamp(item.updatedTimestamp) }}
+              </span>
+            <span matListItemLine class="list-item-timestamps">
+                {{ 'wh.element.createdTimestamp' | translate }}
+              {{ this.presentTimestamp(item.createdTimestamp) }}
+              </span>
+          </mat-list-item>
+        }
+      </mat-list>
+    } @else {
+      <div class="no-results">
+        {{ 'wh.search.noResult' | translate }} "{{ input.value }}"
+      </div>
+    }
+  </mat-card>
 </div>
