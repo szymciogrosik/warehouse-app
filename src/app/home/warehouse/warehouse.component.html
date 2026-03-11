@@ -153,7 +153,7 @@
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
       <mat-list>
         @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
-          <mat-list-item class="list-item-class">
+          <mat-list-item class="list-item-class final-item">
             <!-- Title + actions on the same row -->
             <div matListItemTitle class="list-item-header">
               <div class="list-item-title">

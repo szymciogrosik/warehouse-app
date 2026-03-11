@@ -3,18 +3,12 @@
     <div class="filter-container">
       <mat-form-field appearance="outline" class="filter-field">
         <mat-label>{{ 'wh.search.filter' | translate }}</mat-label>
-        <input matInput
-               type="text"
-               (keyup)="applyFilter($event)"
-               placeholder="{{ 'wh.search.placeholder' | translate }}"
-               #input>
+        <input matInput type="text" (keyup)="applyFilter($event)"
+               placeholder="{{ 'wh.search.placeholder' | translate }}" #input>
       </mat-form-field>
       <mat-form-field appearance="outline" class="filter-field">
         <mat-label>{{ 'wh.search.roomFilter' | translate }}</mat-label>
-        <mat-select
-          multiple
-          [(value)]="selectedRooms"
-          (selectionChange)="applyFilter()">
+        <mat-select multiple [(value)]="selectedRooms" (selectionChange)="applyFilter()">
 
           @for (warehouse of availableRooms; track $index) {
             <mat-optgroup [label]="warehouse.name">
@@ -32,40 +26,48 @@
         @for (item of dataSource.filteredData; track $index) {
           <mat-list-item class="list-item-class">
             <!-- Title + actions on the same row -->
-            <div matListItemTitle class="list-item-header" (click)="navigateToBox(item)">
-              <div class="list-item-title">
+            <div matListItemTitle class="list-item-header">
+              <div class="list-item-title" (click)="navigateToBox(item)">
                 <mat-icon class="mat-icon-in-list-header-class">sell</mat-icon>
                 {{ item.name }}
               </div>
-              <button mat-icon-button class="mat-icon-class">
-                <mat-icon>open_in_new</mat-icon>
-              </button>
+              <div class="list-item-actions">
+                <button mat-icon-button class="mat-icon-class" (click)="editItem(item)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="mat-icon-class" (click)="removeItem(item)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button class="mat-icon-class" (click)="navigateToBox(item)">
+                  <mat-icon>open_in_new</mat-icon>
+                </button>
+              </div>
             </div>
 
             <!-- Optional description -->
             <span matListItemLine class="list-item-description">
-                <mat-icon class="mat-icon-in-list-class">category</mat-icon>
+          <mat-icon class="mat-icon-in-list-class">category</mat-icon>
               @if (item.description) {
                 {{ item.description }}
               } @else {
                 -
               }
-              </span>
+        </span>
 
             <span matListItemLine class="list-item-description">
-                <mat-icon class="mat-icon-in-list-class">location_on</mat-icon>
+          <mat-icon class="mat-icon-in-list-class">location_on</mat-icon>
               {{ item.location }}
-              </span>
+        </span>
 
             <!-- Timestamps -->
             <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.lastModificationTimestamp' | translate }}
+          {{ 'wh.element.lastModificationTimestamp' | translate }}
               {{ this.presentTimestamp(item.updatedTimestamp) }}
-              </span>
+        </span>
             <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.createdTimestamp' | translate }}
+          {{ 'wh.element.createdTimestamp' | translate }}
               {{ this.presentTimestamp(item.createdTimestamp) }}
-              </span>
+        </span>
           </mat-list-item>
         }
       </mat-list>
