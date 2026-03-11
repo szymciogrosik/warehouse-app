@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .nav-header {
   display: flex;
   align-items: center;
@@ -82,11 +87,15 @@
 }
 
 .mat-icon-in-list-class {
-  padding-top: 8px;
-  font-size: large;
+  margin-right: 5px;
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
 }
 
 .list-item-description {
+  display: flex;
+  align-items: center;
   font-size: smaller;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -125,13 +134,15 @@
 }
 
 .list-item-title {
-  display: block;
+  display: flex;
+  align-items: center;
   font-weight: 500;
   margin-right: 8px;
   overflow-wrap: anywhere;
   white-space: normal;
   flex: 1;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .list-item-actions {
