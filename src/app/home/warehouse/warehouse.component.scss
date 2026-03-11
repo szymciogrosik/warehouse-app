@@ -1,3 +1,9 @@
+:host {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .nav-header {
   display: flex;
   align-items: center;
@@ -79,14 +85,20 @@
 
 .mat-icon-in-list-header-class {
   margin-right: 5px;
+  flex-shrink: 0;
 }
 
 .mat-icon-in-list-class {
-  padding-top: 8px;
-  font-size: large;
+  margin-right: 5px;
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  flex-shrink: 0;
 }
 
 .list-item-description {
+  display: flex;
+  align-items: center;
   font-size: smaller;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -125,13 +137,15 @@
 }
 
 .list-item-title {
-  display: block;
+  display: flex;
+  align-items: center;
   font-weight: 500;
   margin-right: 8px;
   overflow-wrap: anywhere;
   white-space: normal;
   flex: 1;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .list-item-actions {
@@ -141,4 +155,16 @@
   button {
     margin-bottom: 5px;
   }
+}
+
+mat-list {
+  padding: 0;
+}
+
+mat-card {
+  padding: 10px !important;
+}
+
+.final-item {
+  padding: 10px;
 }
