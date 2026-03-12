@@ -56,11 +56,13 @@
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-raised-button color="accent" (click)="cancel()">
-    {{ 'edit.wh.dialog.add.cancel' | translate }}
-  </button>
-  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
-    {{ 'edit.wh.dialog.add.save' | translate }}
-  </button>
+<mat-dialog-actions>
+  <div class="app-popup-full-width-actions">
+    <button mat-raised-button color="accent" class="app-action-button" (click)="cancel()">
+      {{ 'edit.wh.dialog.add.cancel' | translate }}
+    </button>
+    <button mat-raised-button color="primary" class="app-action-button" (click)="save()" [disabled]="form.invalid">
+      {{ 'edit.wh.dialog.add.save' | translate }}
+    </button>
+  </div>
 </mat-dialog-actions>
