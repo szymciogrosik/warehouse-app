@@ -16,7 +16,6 @@ import {WhRoom} from '../_models/warehouse/wh-room';
 import {WhBox} from '../_models/warehouse/wh-box';
 import {WhItem} from '../_models/warehouse/wh-item';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from '@angular/material/list';
 import {CommonModule} from '@angular/common';
 import {MatCard} from '@angular/material/card';
 import {DateTime} from 'luxon';
@@ -57,11 +56,7 @@ interface ItemTableRow {
     MatButtonModule,
     MatIconModule,
     TranslatePipe,
-    MatListItem,
-    MatList,
     MatCard,
-    MatListItemLine,
-    MatListItemTitle,
     MatSelectModule,
     MatDialogModule
   ]

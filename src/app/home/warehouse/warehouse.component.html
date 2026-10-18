@@ -34,115 +34,133 @@
 
     <!-- Warehouses list -->
     @if (viewLevel === 0) {
-      <mat-list>
+      <div class="wh-tiles-grid">
         @for (w of warehouses.warehouses; track $index) {
-          <mat-list-item class="tile-box list-item-class" (click)="enterWarehouse($index)">
-            <!-- Title + actions on the same row -->
-            <div matListItemTitle class="list-item-header">
-              <div class="list-item-title">
-                <mat-icon class="mat-icon-in-list-header-class">warehouse</mat-icon>
-                {{ w.name }}
+          <div class="wh-tile clickable-tile" (click)="enterWarehouse($index)">
+            <div class="wh-tile-top">
+              <div class="wh-tile-title-group">
+                <div class="wh-tile-icon-badge">
+                  <mat-icon>warehouse</mat-icon>
+                </div>
+                <strong class="wh-tile-title">{{ w.name }}</strong>
               </div>
+              <mat-icon class="wh-tile-chevron">chevron_right</mat-icon>
             </div>
 
-            <!-- Optional description -->
-            <span matListItemLine class="list-item-description">
-              <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-              @if (w.description) {
-                {{ w.description }}
-              } @else {
-                -
-              }
-            </span>
+            <p class="wh-tile-desc">
+              <mat-icon>category</mat-icon>
+              <span>
+                @if (w.description) {
+                  {{ w.description }}
+                } @else {
+                  -
+                }
+              </span>
+            </p>
 
-            <!-- Timestamps -->
-            <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.lastModificationTimestamp' | translate }}
-              {{ this.presentTimestamp(this.getLastModificationTimestampForWarehouse(w)) }}
-            </span>
-            <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.createdTimestamp' | translate }}
-              {{ this.presentTimestamp(w.createdTimestamp) }}
-            </span>
-          </mat-list-item>
+            <div class="wh-tile-footer">
+              <div class="wh-tile-timestamps">
+                <span>
+                  {{ 'wh.element.lastModificationTimestamp' | translate }}
+                  <strong>{{ this.presentTimestamp(this.getLastModificationTimestampForWarehouse(w)) }}</strong>
+                </span>
+                <span>
+                  {{ 'wh.element.createdTimestamp' | translate }}
+                  {{ this.presentTimestamp(w.createdTimestamp) }}
+                </span>
+              </div>
+            </div>
+          </div>
         }
-      </mat-list>
+      </div>
     }
 
     <!-- Rooms -->
     @if (viewLevel === 1 && selectedWarehouseIndex !== null) {
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
-      <mat-list>
+      <div class="wh-tiles-grid">
         @for (room of warehouse.rooms; track $index) {
-          <mat-list-item class="tile-box list-item-class" (click)="enterRoom($index)">
-            <!-- Title + actions on the same row -->
-            <div matListItemTitle class="list-item-header">
-              <div class="list-item-title">
-                <mat-icon class="mat-icon-in-list-header-class">meeting_room</mat-icon>
-                {{ room.name }}
+          <div class="wh-tile clickable-tile" (click)="enterRoom($index)">
+            <div class="wh-tile-top">
+              <div class="wh-tile-title-group">
+                <div class="wh-tile-icon-badge">
+                  <mat-icon>meeting_room</mat-icon>
+                </div>
+                <strong class="wh-tile-title">{{ room.name }}</strong>
               </div>
+              <mat-icon class="wh-tile-chevron">chevron_right</mat-icon>
             </div>
 
-            <!-- Optional description -->
-            <span matListItemLine class="list-item-description">
-              <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-              @if (room.description) {
-                {{ room.description }}
-              } @else {
-                -
-              }
-            </span>
+            <p class="wh-tile-desc">
+              <mat-icon>category</mat-icon>
+              <span>
+                @if (room.description) {
+                  {{ room.description }}
+                } @else {
+                  -
+                }
+              </span>
+            </p>
 
-            <!-- Timestamps -->
-            <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.lastModificationTimestamp' | translate }}
-              {{ this.presentTimestamp(this.getLastModificationTimestampForRoom(room)) }}
-            </span>
-            <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.createdTimestamp' | translate }}
-              {{ this.presentTimestamp(room.createdTimestamp) }}
-            </span>
-          </mat-list-item>
+            <div class="wh-tile-footer">
+              <div class="wh-tile-timestamps">
+                <span>
+                  {{ 'wh.element.lastModificationTimestamp' | translate }}
+                  <strong>{{ this.presentTimestamp(this.getLastModificationTimestampForRoom(room)) }}</strong>
+                </span>
+                <span>
+                  {{ 'wh.element.createdTimestamp' | translate }}
+                  {{ this.presentTimestamp(room.createdTimestamp) }}
+                </span>
+              </div>
+            </div>
+          </div>
         }
-      </mat-list>
+      </div>
     }
 
     <!-- Boxes -->
     @if (viewLevel === 2 && selectedWarehouseIndex !== null && selectedRoomIndex !== null) {
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
-      <mat-list>
+      <div class="wh-tiles-grid">
         @for (box of warehouse.rooms[selectedRoomIndex].boxes; track $index) {
-          <mat-list-item class="tile-box list-item-class" (click)="enterBox($index)">
-            <!-- Title + actions on the same row -->
-            <div matListItemTitle class="list-item-header">
-              <div class="list-item-title">
-                <mat-icon class="mat-icon-in-list-header-class">inventory_2</mat-icon>
-                {{ box.name }}
+          <div class="wh-tile clickable-tile" (click)="enterBox($index)">
+            <div class="wh-tile-top">
+              <div class="wh-tile-title-group">
+                <div class="wh-tile-icon-badge">
+                  <mat-icon>inventory_2</mat-icon>
+                </div>
+                <strong class="wh-tile-title">{{ box.name }}</strong>
               </div>
+              <mat-icon class="wh-tile-chevron">chevron_right</mat-icon>
             </div>
 
-            <!-- Optional description -->
-            <span matListItemLine class="list-item-description">
-              <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-              @if (box.description) {
-                {{ box.description }}
-              } @else {
-                -
-              }
-            </span>
+            <p class="wh-tile-desc">
+              <mat-icon>category</mat-icon>
+              <span>
+                @if (box.description) {
+                  {{ box.description }}
+                } @else {
+                  -
+                }
+              </span>
+            </p>
 
-            <!-- Timestamps -->
-            <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.lastModificationTimestamp' | translate }}
-              {{ this.presentTimestamp(this.getLastModificationTimestampForBox(box)) }}
-            </span>
-            <span matListItemLine class="list-item-timestamps">
-                {{ 'wh.element.createdTimestamp' | translate }}
-              {{ this.presentTimestamp(box.createdTimestamp) }}
-            </span>
-          </mat-list-item>
+            <div class="wh-tile-footer">
+              <div class="wh-tile-timestamps">
+                <span>
+                  {{ 'wh.element.lastModificationTimestamp' | translate }}
+                  <strong>{{ this.presentTimestamp(this.getLastModificationTimestampForBox(box)) }}</strong>
+                </span>
+                <span>
+                  {{ 'wh.element.createdTimestamp' | translate }}
+                  {{ this.presentTimestamp(box.createdTimestamp) }}
+                </span>
+              </div>
+            </div>
+          </div>
         }
-      </mat-list>
+      </div>
     }
 
     <!-- Items -->
@@ -151,47 +169,52 @@
     && selectedRoomIndex !== null
     && selectedBoxIndex !== null) {
       @let warehouse = warehouses.warehouses[selectedWarehouseIndex];
-      <mat-list>
+      <div class="wh-tiles-grid">
         @for (item of warehouse.rooms[selectedRoomIndex].boxes[selectedBoxIndex].items; track $index) {
-          <mat-list-item class="list-item-class final-item">
-            <!-- Title + actions on the same row -->
-            <div matListItemTitle class="list-item-header">
-              <div class="list-item-title">
-                <mat-icon class="mat-icon-in-list-header-class">sell</mat-icon>
-                {{ item.name }}
+          <div class="wh-tile final-item">
+            <div class="wh-tile-top">
+              <div class="wh-tile-title-group">
+                <div class="wh-tile-icon-badge">
+                  <mat-icon>sell</mat-icon>
+                </div>
+                <strong class="wh-tile-title">{{ item.name }}</strong>
               </div>
-              <div class="list-item-actions">
+              <div class="wh-tile-actions">
                 <button mat-icon-button (click)="editItem($index)">
                   <mat-icon>edit</mat-icon>
                 </button>
                 <button mat-icon-button (click)="removeItem($index)">
-                  <mat-icon>delete</mat-icon>
+                  <mat-icon>delete_outline</mat-icon>
                 </button>
               </div>
             </div>
 
-            <!-- Optional description -->
-            <span matListItemLine class="list-item-description">
-              <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-              @if (item.description) {
-                {{ item.description }}
-              } @else {
-                -
-              }
-            </span>
+            <p class="wh-tile-desc">
+              <mat-icon>category</mat-icon>
+              <span>
+                @if (item.description) {
+                  {{ item.description }}
+                } @else {
+                  -
+                }
+              </span>
+            </p>
 
-            <!-- Timestamps -->
-            <span matListItemLine class="list-item-timestamps">
-              {{ 'wh.element.lastModificationTimestamp' | translate }}
-              {{ this.presentTimestamp(item.updatedTimestamp) }}
-            </span>
-            <span matListItemLine class="list-item-timestamps">
-              {{ 'wh.element.createdTimestamp' | translate }}
-              {{ this.presentTimestamp(item.createdTimestamp) }}
-            </span>
-          </mat-list-item>
+            <div class="wh-tile-footer">
+              <div class="wh-tile-timestamps">
+                <span>
+                  {{ 'wh.element.lastModificationTimestamp' | translate }}
+                  <strong>{{ this.presentTimestamp(item.updatedTimestamp) }}</strong>
+                </span>
+                <span>
+                  {{ 'wh.element.createdTimestamp' | translate }}
+                  {{ this.presentTimestamp(item.createdTimestamp) }}
+                </span>
+              </div>
+            </div>
+          </div>
         }
-      </mat-list>
+      </div>
     }
   }
 </mat-card>

@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {MatListModule} from '@angular/material/list';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {firstValueFrom, Observable} from 'rxjs';
 
@@ -19,7 +18,6 @@ import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {ConfirmDeleteDialogComponent} from "../../_shared-components/confirm-dialog/confirm-delete-dialog.component";
 import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
 import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
-import {MatLineModule} from '@angular/material/core';
 import {TranslatePipe} from "@ngx-translate/core";
 import {DateTime} from "luxon";
 import {DateService} from "../../_services/util/date.service";
@@ -35,9 +33,7 @@ import {EditDialogType} from "../../_models/dialog/warehouse/edit-dialog-type";
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule,
     MatDialogModule,
-    MatLineModule,
     TranslatePipe
   ],
   templateUrl: './warehouse.component.html',
