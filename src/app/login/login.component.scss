@@ -258,7 +258,7 @@
 
     // Clean, modern focus ring on the checkbox square itself instead of a 40px circle
     .mdc-checkbox__native-control:focus-visible ~ .mdc-checkbox__background {
-      outline: 2px solid var(--app-accent-color);
+      outline: 2px solid var(--app-primary-color);
       outline-offset: 2px;
     }
   }
@@ -272,7 +272,7 @@
 }
 
 .terms-link {
-  color: var(--app-accent-color);
+  color: var(--app-primary-color);
   font-weight: 600;
   text-decoration: none;
 

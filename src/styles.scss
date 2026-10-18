@@ -8,8 +8,8 @@ $app-green-color: #039345;
 
 $app-primary-color: $app-green-color;
 $app-on-primary-color: #ffffff;
-$app-accent-color: #4f46e5;
-$app-on-accent-color: #ffffff;
+$app-accent-color: #ffc107;
+$app-on-accent-color: #000000;
 $app-warn-color: #f43f5e;
 $app-on-warn-color: #ffffff;
 
@@ -25,24 +25,24 @@ $footer-element-color: $app-on-primary-color;
 $main-font-color: $app-on-background-color;
 
 // --- DARK THEME VARIABLES ---
-$dark-background: #141e1e;
-$dark-surface: #1a2727;
+$dark-background: #121212;
+$dark-surface: #1e1e1e;
 $dark-text-primary: #f8fafc;
 $dark-text-secondary: #94a3b8;
-$dark-border-primary: rgba(255,255,255,0.08);
-$dark-border-secondary: rgba(255,255,255,0.12);
-$dark-border-hover: rgba(255,255,255,0.2);
+$dark-border-primary: rgba(255, 255, 255, 0.08);
+$dark-border-secondary: rgba(255, 255, 255, 0.14);
+$dark-border-hover: rgba(255, 255, 255, 0.25);
 $dark-error: #fb7185;
-$dark-tab-background: #233535;
-$dark-input-bg: #233535;
+$dark-tab-background: #181818;
+$dark-input-bg: #242424;
 
 // Skeletons
 $skeleton-light-1: #e2e8f0;
 $skeleton-light-2: #f1f5f9;
 $skeleton-light-3: #e2e8f0;
 
-$dark-skeleton-1: #233535;
-$dark-skeleton-2: #2a4040;
+$dark-skeleton-1: #262626;
+$dark-skeleton-2: #333333;
 
 // Alerts
 $alert-warning-bg: #fef3c7;
@@ -82,20 +82,20 @@ $main-palette: (
 );
 
 $accent-palette: (
-  50: #eef2ff,
-  100: #e0e7ff,
-  200: #c7d2fe,
-  300: #a5b4fc,
-  400: #818cf8,
+  50: #fff8e1,
+  100: #ffecb3,
+  200: #ffe082,
+  300: #ffd54f,
+  400: #ffca28,
   500: $app-accent-color,
-  600: #4f46e5,
-  700: #4338ca,
-  800: #3730a3,
-  900: #312e81,
-  A100: #c7d2fe,
-  A200: #818cf8,
-  A400: #4f46e5,
-  A700: #4338ca,
+  600: #ffb300,
+  700: #ffa000,
+  800: #ff8f00,
+  900: #ff6f00,
+  A100: #ffe57f,
+  A200: #ffd740,
+  A400: #ffc400,
+  A700: #ffab00,
   contrast: (500: $app-on-accent-color)
 );
 
@@ -154,9 +154,9 @@ $dark-theme: mat.m2-define-dark-theme((
   --google-btn-text: #1f2937;
   --google-btn-hover: #f8fafd;
   --google-btn-border: #dadce0;
-  --mesh-blob-1: rgba(45, 212, 191, 0.4);
-  --mesh-blob-2: rgba(15, 95, 89, 0.6);
-  --mesh-blob-3: rgba(79, 70, 229, 0.3);
+  --mesh-blob-1: rgba(53, 201, 123, 0.45);
+  --mesh-blob-2: rgba(2, 72, 36, 0.7);
+  --mesh-blob-3: rgba(255, 193, 7, 0.3);
 }
 
 html {
@@ -309,10 +309,15 @@ mat-hint, mat-error { font-size: 0.85rem; }
 .app-card-medium { max-width: 800px; }
 .app-card-narrow { max-width: 500px; }
 
-@media (max-width: 440px) {
+@media (max-width: 600px) {
+  .app-page-container {
+    padding: 4px 0;
+  }
   .app-card-wide, .app-card-medium, .app-card-narrow {
     width: calc(100% - 20px);
-    padding: 1.5rem 10px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    padding: 12px 10px;
   }
 }
 
@@ -427,9 +432,9 @@ mat-hint, mat-error { font-size: 0.85rem; }
   --app-text-secondary: #{$dark-text-secondary};
   --separator-color: #{$dark-text-secondary};
   --separator-line: #{$dark-border-primary};
-  --google-btn-bg: #2a3b3b;
+  --google-btn-bg: #2a2a2a;
   --google-btn-text: #{$dark-text-primary};
-  --google-btn-hover: #344848;
+  --google-btn-hover: #363636;
   --google-btn-border: rgba(255, 255, 255, 0.2);
 
   // MDC Checkbox & Radio Fixes for Dark Mode
@@ -442,10 +447,10 @@ mat-hint, mat-error { font-size: 0.85rem; }
   .mat-pseudo-checkbox-checked,
   .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after,
   .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full {
-    background-color: $app-accent-color !important;
+    background-color: $app-primary-color !important;
   }
   .mat-pseudo-checkbox-checked::after {
-    color: $app-on-accent-color !important;
+    color: $app-on-primary-color !important;
   }
 
   background-color: $dark-background !important;
@@ -532,7 +537,11 @@ mat-hint, mat-error { font-size: 0.85rem; }
 
   /* Accent Button Fix */
   .mat-mdc-button.mat-accent, .mat-mdc-raised-button.mat-accent, .mat-mdc-unelevated-button.mat-accent,
-  .mat-mdc-stroked-button.mat-accent, .mat-mdc-fab.mat-accent, .mat-mdc-mini-fab.mat-accent, .mat-mdc-icon-button.mat-accent {
+  .mat-mdc-stroked-button.mat-accent, .mat-mdc-fab.mat-accent, .mat-mdc-mini-fab.mat-accent, .mat-mdc-icon-button.mat-accent,
+  .mat-mdc-button.mat-accent .mdc-button__label,
+  .mat-mdc-raised-button.mat-accent .mdc-button__label,
+  .mat-mdc-unelevated-button.mat-accent .mdc-button__label,
+  .mat-mdc-stroked-button.mat-accent .mdc-button__label {
     color: $app-on-accent-color !important;
   }
   .mat-mdc-raised-button.mat-accent, .mat-mdc-unelevated-button.mat-accent, .mat-mdc-fab.mat-accent, .mat-mdc-mini-fab.mat-accent {
@@ -546,18 +555,18 @@ mat-hint, mat-error { font-size: 0.85rem; }
   }
 
   .mat-mdc-snack-bar-container .mdc-snackbar__surface {
-    background-color: #1e293b !important;
+    background-color: #262626 !important;
     color: $dark-text-primary !important;
   }
 
   .highlight-tab-content {
-    border-color: $dark-border-primary !important;
+    border-color: $app-primary-color !important;
     background-color: $dark-tab-background !important;
     box-shadow: none !important;
   }
   .mat-mdc-tab .mdc-tab__text-label { color: $dark-text-secondary !important; }
   .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label { color: $dark-text-primary !important; }
-  .mat-mdc-tab .mdc-tab-indicator__content--underline { border-color: $app-accent-color !important; }
+  .mat-mdc-tab .mdc-tab-indicator__content--underline { border-color: $app-primary-color !important; }
 
   .mat-toolbar.mat-primary, .footer {
     background-color: $dark-surface !important;

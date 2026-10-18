@@ -20,7 +20,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--app-accent-color) !important;
+  color: var(--app-primary-color) !important;
   font-weight: 600;
   transition: opacity 0.2s ease;
 
@@ -101,7 +101,7 @@
   }
 
   a {
-    color: var(--app-accent-color);
+    color: var(--app-primary-color);
     text-decoration: none;
     font-weight: 600;
     word-break: break-word;
@@ -155,7 +155,7 @@
 
   code {
     background: rgba(15, 23, 42, 0.05);
-    color: var(--app-accent-color);
+    color: var(--app-primary-color);
     padding: 3px 7px;
     border-radius: 6px;
     font-size: 0.82rem;

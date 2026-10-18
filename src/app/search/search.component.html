@@ -10,7 +10,7 @@
         <mat-label>{{ 'wh.search.roomFilter' | translate }}</mat-label>
         <mat-select multiple [(value)]="selectedRooms" (selectionChange)="applyFilter()">
 
-          @for (warehouse of availableRooms; track $index) {
+          @for (warehouse of availableRooms(); track $index) {
             <mat-optgroup [label]="warehouse.name">
               @for (room of warehouse.rooms; track $index) {
                 <mat-option [value]="room.fullPath">{{ room.name }}</mat-option>
@@ -21,9 +21,9 @@
       </mat-form-field>
     </div>
 
-    @if (dataSource.filteredData.length > 0) {
+    @if (filteredItems().length > 0) {
       <mat-list>
-        @for (item of dataSource.filteredData; track $index) {
+        @for (item of filteredItems(); track $index) {
           <mat-list-item class="list-item-class">
             <!-- Title + actions on the same row -->
             <div matListItemTitle class="list-item-header">
