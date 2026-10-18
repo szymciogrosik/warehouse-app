@@ -1,0 +1,156 @@
+name: CI - PR Test Runner & Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/firebase
+      - release/gh-pages
+#  push:
+#    branches:
+#      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test:
+    name: 🧪 Unit Tests & Code Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup environment configuration files
+        run: |
+          if [ ! -f src/environments/environment.ts ]; then
+            echo "Copying environment-example.ts to environment.ts"
+            cp src/environments/environment-example.ts src/environments/environment.ts
+          fi
+          if [ ! -f src/environments/variables.scss ]; then
+            echo "Copying gh-pages variables.scss to variables.scss"
+            cp src/environments/gh-pages/variables.scss src/environments/variables.scss
+          fi
+
+      - name: 🟩 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: ⚡ Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 📦 Install dependencies
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: npm install
+
+      - name: 🧪 Run Unit Tests with Coverage
+        id: run_tests
+        run: |
+          # Run tests and capture both stdout and exit code
+          set +e
+          npm run test:ci > test-output.log 2>&1
+          TEST_EXIT_CODE=$?
+          set -e
+
+          cat test-output.log
+
+          # Extract test results and coverage details
+          TOTAL_TESTS=$(grep -o -E "TOTAL: [0-9]+ SUCCESS" test-output.log | head -1 || echo "")
+          FAILED_TESTS=$(grep -o -E "[0-9]+ FAILED" test-output.log | head -1 || echo "")
+
+          # Extract coverage summary table
+          COVERAGE_SUMMARY=$(awk '/Coverage summary/{flag=1; next} /=======/{if(flag){flag=0; print; next}} flag' test-output.log | sed -E 's/^[=]+//; s/[=]+$//' || echo "")
+
+          echo "TEST_EXIT_CODE=${TEST_EXIT_CODE}" >> $GITHUB_ENV
+          echo "TOTAL_TESTS=${TOTAL_TESTS}" >> $GITHUB_ENV
+          echo "FAILED_TESTS=${FAILED_TESTS}" >> $GITHUB_ENV
+
+          # Fail step if tests failed
+          if [ ${TEST_EXIT_CODE} -ne 0 ]; then
+            echo "❌ Tests failed!"
+            exit ${TEST_EXIT_CODE}
+          fi
+
+      - name: 📊 Publish Test Report & PR Summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const exitCode = process.env.TEST_EXIT_CODE;
+            const isSuccess = exitCode === '0';
+            const statusIcon = isSuccess ? '✅' : '❌';
+            const statusText = isSuccess ? '**All unit tests passed successfully!**' : '**Unit tests failed! Merge is blocked.**';
+
+            let logContent = '';
+            try {
+              logContent = fs.readFileSync('test-output.log', 'utf8');
+            } catch (e) {
+              logContent = 'Log file not found.';
+            }
+
+            // Extract summary info
+            const totalMatch = logContent.match(/TOTAL: (.*)/);
+            const totalLine = totalMatch ? totalMatch[0] : 'N/A';
+
+            // Extract Coverage Summary block
+            const covMatch = logContent.match(/=+ Coverage summary =+([\s\S]*?)=+/);
+            const coverageBlock = covMatch ? covMatch[1].trim() : 'Coverage report unavailable.';
+
+            const reportMarkdown = `
+            <!-- pr-test-report -->
+            ### ${statusIcon} Automated Test Quality Gate Report
+
+            ${statusText}
+
+            - **Overall Test Result**: \`${totalLine}\`
+            - **Workflow Run**: [#${context.runNumber}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            - **Commit**: \`${context.sha.substring(0, 7)}\`
+
+            #### 📈 Code Coverage Summary
+            \`\`\`text
+            ${coverageBlock}
+            \`\`\`
+
+            ${!isSuccess ? '#### ⚠️ Failure Logs (excerpt)\n```text\n' + logContent.slice(-2000) + '\n```' : ''}
+            `.trim();
+
+            // Add to Job Step Summary
+            await core.summary.addRaw(reportMarkdown).write();
+
+            // If triggered by a Pull Request, add or update PR comment
+            if (context.eventName === 'pull_request') {
+              const issue_number = context.payload.pull_request.number;
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number
+              });
+
+              const botComment = comments.find(c => c.body && c.body.includes('<!-- pr-test-report -->'));
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: reportMarkdown
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue_number,
+                  body: reportMarkdown
+                });
+              }
+            }

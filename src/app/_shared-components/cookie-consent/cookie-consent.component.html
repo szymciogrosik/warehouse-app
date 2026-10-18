@@ -1,0 +1,13 @@
+@if (visible()) {
+  <div class="consent-bar">
+    <div class="consent-content">
+      <span class="consent-icon" aria-hidden="true">🍪</span>
+      <p class="consent-text">
+        {{ 'cookie.banner.message' | translate }}&#32;<a [routerLink]="privacyRoute" class="consent-link">{{ 'cookie.banner.privacyLink' | translate }}</a>&#32;{{ 'cookie.banner.and' | translate }}&#32;<a [routerLink]="cookiesRoute" class="consent-link">{{ 'cookie.banner.cookieLink' | translate }}</a>.
+      </p>
+    </div>
+    <button mat-flat-button color="primary" class="consent-accept-btn" (click)="accept()" id="cookie-consent-accept-btn">
+      {{ 'cookie.banner.accept' | translate }}
+    </button>
+  </div>
+}

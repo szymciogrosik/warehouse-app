@@ -1,12 +1,12 @@
 import {AccessRole} from "./access-role";
 
-export class CustomUser {
-  id: string;
-  uid: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  roles: AccessRole[];
-  photoUrl?: string;
-  isDeleted?: boolean;
+export interface CustomUser {
+  readonly id: string;
+  readonly uid: string;
+  readonly email: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly roles: ReadonlyArray<AccessRole>;
+  readonly photoUrl?: string;
+  readonly isDeleted?: boolean;
 }

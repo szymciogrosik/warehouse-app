@@ -1,20 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {RedirectionEnum} from '../../utils/redirection.enum';
 import {CustomTranslateService} from '../_services/translate/custom-translate.service';
 import {LanguageEnum} from '../_services/translate/language-enum';
 import {AuthService} from '../_services/auth/auth.service';
 import {AccessRoleService} from '../_services/auth/access-role.service';
 import {AccessRole} from '../_models/user/access-role';
-import {CustomUser} from '../_models/user/custom-user';
-import {Observable} from 'rxjs';
 import {Router, RouterModule} from '@angular/router';
 import {ThemeService} from '../_services/util/theme.service';
 import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
@@ -23,37 +22,30 @@ import {MatToolbarModule} from '@angular/material/toolbar';
   standalone: true,
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
     RouterModule,
     MatToolbarModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   protected readonly LanguageEnum = LanguageEnum;
   protected readonly rp = RedirectionEnum;
-  protected isAdmin$: Observable<boolean>;
-  protected currentUser$: Observable<CustomUser | null>;
-  protected isDarkTheme$: Observable<boolean>;
-  protected allowDarkMode$: Observable<boolean>;
 
-  constructor(
-    protected translateService: CustomTranslateService,
-    protected authService: AuthService,
-    private accessService: AccessRoleService,
-    private router: Router,
-    public themeService: ThemeService
-  ) {
-    this.isAdmin$ = this.accessService.isAuthorized$(AccessRole.ADMIN_PAGE_ACCESS);
-    this.currentUser$ = this.authService.loggedUser();
-    this.isDarkTheme$ = this.themeService.isDarkTheme$;
-    this.allowDarkMode$ = this.themeService.allowDarkMode$;
-  }
+  protected translateService = inject(CustomTranslateService);
+  protected authService = inject(AuthService);
+  private accessService = inject(AccessRoleService);
+  private router = inject(Router);
+  public themeService = inject(ThemeService);
 
-  ngOnInit(): void {
-  }
+  protected isAdmin = this.accessService.isAuthorizedSignal(AccessRole.ADMIN_PAGE_ACCESS);
+  protected currentUser = this.authService.currentUser;
+  protected isDarkTheme = toSignal(this.themeService.isDarkTheme$);
+  protected allowDarkMode = toSignal(this.themeService.allowDarkMode$);
+  protected isAuthenticated = this.authService.isLoggedIn;
 
   logout(): void {
     this.authService.logout(true);
@@ -78,3 +70,4 @@ export class NavbarComponent implements OnInit {
   protected readonly AccessRoleService = AccessRoleService;
   protected readonly AccessRole = AccessRole;
 }
+

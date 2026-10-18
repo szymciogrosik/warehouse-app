@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CustomTranslateService} from '../_services/translate/custom-translate.service';
 import {SnackbarService} from '../_services/util/snackbar.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {AuthService} from '../_services/auth/auth.service';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {EmbeddedBrowserPopupComponent} from './embedded-browser-popup/embedded-browser-popup.component';
@@ -10,81 +10,87 @@ import {EmbeddedBrowserWarningData} from '../_models/dialog/embedded-browser-war
 import {FirebaseError} from '@angular/fire/app';
 import {CustomValidators} from '../_services/validator/custom-validators';
 import {MatTabChangeEvent, MatTabsModule} from '@angular/material/tabs';
-import {PublicSettingsService} from '../_database/settings/public-settings.service';
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {PublicSettingsFacade} from '../_database/settings/public-settings.facade';
+import {TranslatePipe} from '@ngx-translate/core';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {SkeletonComponent} from '../_shared-components/skeleton/skeleton.component';
+import {RedirectionEnum} from '../../utils/redirection.enum';
+import {firstValueFrom} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule, MatIconModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatDialogModule, MatTabsModule],
+  imports: [
+    TranslatePipe,
+    MatCardModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatCheckboxModule,
+    RouterModule,
+    SkeletonComponent
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
-  checkingIfUserIsAlreadyLoggedIn: boolean = true;
-  loginForm: FormGroup;
-  registerForm: FormGroup;
-  loading: boolean = false;
-  submitted: boolean = false;
-  hidePassword: boolean = true;
-  isRegistrationMode: boolean = false;
-  returnUrl: string = '';
+export class LoginComponent {
+  loginForm!: FormGroup;
+  registerForm!: FormGroup;
+  readonly loading = signal(false);
+  readonly submitted = signal(false);
+  readonly hidePassword = signal(true);
+  readonly isRegistrationMode = signal(false);
+  returnUrl = '';
 
-  allowForRegistering: boolean = false;
-  fetchingSettings: boolean = true;
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly translateService = inject(CustomTranslateService);
+  private readonly dialog = inject(MatDialog);
+  private readonly publicSettingsFacade = inject(PublicSettingsFacade);
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService,
-    private snackbarService: SnackbarService,
-    private translateService: CustomTranslateService,
-    private dialog: MatDialog,
-    private publicSettingsService: PublicSettingsService
-  ) {
-    setTimeout(() => {
-      this.authService.isAuthenticated().subscribe({
-        next: (isLoggedUser: boolean) => {
-          if (isLoggedUser) {
-            this.router.navigateByUrl(this.returnUrl || '/');
-          } else {
-            this.checkingIfUserIsAlreadyLoggedIn = false;
-          }
-        }
-      });
+  readonly checkingIfUserIsAlreadyLoggedIn = this.authService.isLoading;
+  readonly allowForRegistering = this.publicSettingsFacade.allowForRegistering;
+  readonly fetchingSettings = computed(() => this.publicSettingsFacade.settings() === undefined);
 
-      this.authService.getAuthErrorLogout().subscribe(() => {
-        this.loading = false;
-        this.loginForm.enable();
-      });
-    }, 600);
-  }
+  constructor() {
+    this.createForms();
 
-  ngOnInit(): void {
-    this.publicSettingsService.getDocument('general').subscribe({
-      next: (data) => {
-        if (data && data.allowForRegistering !== undefined) {
-          this.allowForRegistering = data.allowForRegistering;
-        } else {
-          this.allowForRegistering = false;
-        }
-        this.fetchingSettings = false;
-      },
-      error: (err) => {
-        console.error('Failed to fetch public settings.', err);
-        this.allowForRegistering = false;
-        this.fetchingSettings = false;
+    effect(() => {
+      if (this.authService.isLoggedIn()) {
+        this.router.navigate(['/' + RedirectionEnum.ADMIN]);
       }
     });
 
+    this.authService.getAuthErrorLogout()
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.loading.set(false);
+        this.loginForm.enable();
+      });
+
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
+
+  readonly termsRoute = '/' + RedirectionEnum.TERMS;
+  readonly privacyRoute = '/' + RedirectionEnum.PRIVACY_POLICY;
+
+  private createForms(): void {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
@@ -94,11 +100,9 @@ export class LoginComponent implements OnInit {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6), CustomValidators.passwordValidator]]
+      password: ['', [Validators.required, Validators.minLength(6), CustomValidators.passwordValidator]],
+      acceptTerms: [false, [Validators.requiredTrue]]
     });
-
-    // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // convenience getter for easy access to form fields
@@ -111,16 +115,16 @@ export class LoginComponent implements OnInit {
   }
 
   onTabChange(event: MatTabChangeEvent): void {
-    this.isRegistrationMode = event.index === 1;
-    this.hidePassword = true;
+    this.isRegistrationMode.set(event.index === 1);
+    this.hidePassword.set(true);
   }
 
   onSubmitLogin(): void {
-    this.submitted = true;
+    this.submitted.set(true);
     if (this.loginForm.invalid) return;
 
     const {email, password} = this.loginForm.getRawValue();
-    this.loading = true;
+    this.loading.set(true);
     this.loginForm.disable();
 
     this.authService.loginWithEmailAndPassword(email, password)
@@ -129,17 +133,17 @@ export class LoginComponent implements OnInit {
       })
       .catch((err): void => {
         this.snackbarService.openLongSnackBar(err);
-        this.loading = false;
+        this.loading.set(false);
         this.loginForm.enable();
       });
   }
 
   onSubmitRegister(): void {
-    this.submitted = true;
+    this.submitted.set(true);
     if (this.registerForm.invalid) return;
 
     const {email, password, firstName, lastName} = this.registerForm.getRawValue();
-    this.loading = true;
+    this.loading.set(true);
     this.registerForm.disable();
 
     this.authService.registerUserWithDetails(email, password, firstName, lastName)
@@ -152,7 +156,7 @@ export class LoginComponent implements OnInit {
         } else {
           this.snackbarService.openLongSnackBar(err);
         }
-        this.loading = false;
+        this.loading.set(false);
         this.registerForm.enable();
       });
   }
@@ -187,7 +191,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private openWarningPopup() {
+  private async openWarningPopup(): Promise<void> {
     const dialogRef = this.dialog.open(
       EmbeddedBrowserPopupComponent,
       {
@@ -198,28 +202,28 @@ export class LoginComponent implements OnInit {
       }
     );
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        navigator.clipboard.writeText(window.location.href);
-      }
-    });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (result) {
+      navigator.clipboard.writeText(window.location.href);
+    }
   }
 
   private loginGoogleSsoPopup(): void {
-    this.loading = true;
-    if (this.isRegistrationMode && this.allowForRegistering) this.registerForm.disable();
+    this.loading.set(true);
+    if (this.isRegistrationMode() && this.allowForRegistering()) this.registerForm.disable();
     else this.loginForm.disable();
 
-    this.authService.loginWithGoogleSso(this.isRegistrationMode && this.allowForRegistering)
+    this.authService.loginWithGoogleSso(this.isRegistrationMode() && this.allowForRegistering())
       .then((): void => {
         // success; leave loading = true so spinner stays until redirection
       })
       .catch((err): void => {
         this.snackbarService.openLongSnackBar(err);
-        this.loading = false;
-        if (this.isRegistrationMode && this.allowForRegistering) this.registerForm.enable();
+        this.loading.set(false);
+        if (this.isRegistrationMode() && this.allowForRegistering()) this.registerForm.enable();
         else this.loginForm.enable();
       });
   }
 
 }
+

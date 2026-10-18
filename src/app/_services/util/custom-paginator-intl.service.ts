@@ -1,25 +1,25 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, inject, effect} from '@angular/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {CustomTranslateService} from '../translate/custom-translate.service';
 import {TranslateService} from '@ngx-translate/core';
-import {Subject, takeUntil} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Injectable()
-export class CustomPaginatorIntl extends MatPaginatorIntl implements OnDestroy {
-  private destroy$ = new Subject<void>();
+export class CustomPaginatorIntl extends MatPaginatorIntl {
+  private readonly customTranslateService = inject(CustomTranslateService);
+  private readonly translateService = inject(TranslateService);
 
-  constructor(
-    private customTranslateService: CustomTranslateService,
-    private translateService: TranslateService
-  ) {
+  private readonly langChange = toSignal(this.translateService.onLangChange);
+
+  constructor() {
     super();
 
-    this.translateService.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.getTranslations();
-        this.changes.next(); // Trigger the view to update
-      });
+    effect(() => {
+      // React to language changes
+      this.langChange();
+      this.getTranslations();
+      this.changes.next();
+    });
 
     this.getTranslations();
   }
@@ -42,9 +42,4 @@ export class CustomPaginatorIntl extends MatPaginatorIntl implements OnDestroy {
     const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
     return `${startIndex + 1} - ${endIndex} ${ofText} ${length}`;
   };
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 }

@@ -1,7 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, viewChild} from '@angular/core';
 import {UserFormComponent} from '../_shared-components/user-form/user-form.component';
 import {AuthService} from '../_services/auth/auth.service';
-import {CustomUser} from '../_models/user/custom-user';
 import {SnackbarService} from '../_services/util/snackbar.service';
 import {CustomTranslateService} from '../_services/translate/custom-translate.service';
 import {UserDbService} from '../_database/auth/user-db-service.service';
@@ -10,68 +9,55 @@ import {ChangePasswordDialogComponent} from './change-password-dialog/change-pas
 
 import {ImageCropperData, ImageCropperDialogComponent} from './image-cropper-dialog/image-cropper-dialog.component';
 import {ImagePreviewData, ImagePreviewDialogComponent} from './image-preview-dialog/image-preview-dialog.component';
-import {PublicSettingsService} from '../_database/settings/public-settings.service';
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {PublicSettingsFacade} from '../_database/settings/public-settings.facade';
+import {TranslatePipe} from '@ngx-translate/core';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {SkeletonComponent} from '../_shared-components/skeleton/skeleton.component';
+import {firstValueFrom} from 'rxjs';
+import {MatTabsModule} from '@angular/material/tabs';
+import {select_roles} from '../_models/registration/select/select-roles';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
     UserFormComponent,
-    CommonModule,
-    TranslateModule,
+    TranslatePipe,
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SkeletonComponent,
+    MatTabsModule
   ],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent implements OnInit {
-  @ViewChild('userFormComponent') userFormComponent!: UserFormComponent;
-  user: CustomUser | null = null;
-  isLoading = true;
-  allowForProfilePictureChange = false;
+export class ProfileComponent {
+  readonly userFormComponent = viewChild(UserFormComponent);
 
-  constructor(
-    private authService: AuthService,
-    private userDbService: UserDbService,
-    private snackbarService: SnackbarService,
-    private translateService: CustomTranslateService,
-    private dialog: MatDialog,
-    private publicSettingsService: PublicSettingsService
-  ) {
-  }
+  private readonly authService = inject(AuthService);
+  private readonly userDbService = inject(UserDbService);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly translateService = inject(CustomTranslateService);
+  private readonly dialog = inject(MatDialog);
+  private readonly facade = inject(PublicSettingsFacade);
 
-  async ngOnInit(): Promise<void> {
-    try {
-      this.user = await this.authService.loggedUserPromise();
-      this.publicSettingsService.getDocument('general').subscribe({
-        next: data => {
-          if (data && data.allowForProfilePictureChange !== undefined) {
-            this.allowForProfilePictureChange = data.allowForProfilePictureChange;
-          } else {
-            this.allowForProfilePictureChange = false;
-          }
-        },
-        error: err => console.error('Failed to load public settings', err)
-      });
-    } catch (error) {
-      console.error('Failed to load user', error);
-      this.snackbarService.openLongSnackBar(this.translateService.get('profile.error.load'));
-    } finally {
-      this.isLoading = false;
-    }
+  readonly user = this.authService.currentUser;
+  readonly isLoading = this.authService.isLoading;
+  readonly allowForProfilePictureChange = this.facade.allowForProfilePictureChange;
+
+  get currentUserRoles() {
+    const roles = this.user()?.roles || [];
+    return roles.map(r => select_roles.find(sr => sr.value === r)).filter(r => r !== undefined);
   }
 
   openChangePasswordDialog(): void {
@@ -81,24 +67,24 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: any): void {
-    if (event.target.files && event.target.files.length > 0 && this.user) {
+  async onFileSelected(event: any): Promise<void> {
+    const currentUser = this.user();
+    if (event.target.files && event.target.files.length > 0 && currentUser) {
       const dialogRef = this.dialog.open(ImageCropperDialogComponent, {
         width: '600px',
         data: {
           imageChangedEvent: event,
-          authUserUid: this.user.uid,
-          userDocId: this.user.id
+          authUserUid: currentUser.uid,
+          userDocId: currentUser.id
         } as ImageCropperData
       });
 
-      dialogRef.afterClosed().subscribe((photoUrl: string | null) => {
-        // Clear input to allow re-selection of the same file
-        event.target.value = null;
-        if (photoUrl && this.user) {
-          this.user.photoUrl = photoUrl;
-        }
-      });
+      const photoUrl = await firstValueFrom(dialogRef.afterClosed());
+      // Clear input to allow re-selection of the same file
+      event.target.value = null;
+      if (photoUrl && currentUser) {
+        this.authService.updateLocalUser({ photoUrl });
+      }
     }
   }
 
@@ -112,25 +98,29 @@ export class ProfileComponent implements OnInit {
   }
 
   async onFormSubmit(payload: any): Promise<void> {
-    if (!this.user) return;
+    const currentUser = this.user();
+    if (!currentUser) return;
 
     try {
-      this.isLoading = true;
-      await this.userDbService.update(this.user.id, {
+      this.isLoading.set(true);
+      await this.userDbService.update(currentUser.id, {
         firstName: payload.firstName,
         lastName: payload.lastName
       });
-      // Optionally update local context if needed, but standard auth stream might catch it
-      this.user.firstName = payload.firstName;
-      this.user.lastName = payload.lastName;
+
+      this.authService.updateLocalUser({
+        firstName: payload.firstName,
+        lastName: payload.lastName
+      });
 
       this.snackbarService.openSnackBar(this.translateService.get('profile.success.update'));
     } catch (error) {
       console.error('Failed to update user', error);
       this.snackbarService.openLongSnackBar(this.translateService.get('profile.error.update'));
     } finally {
-      this.isLoading = false;
+      this.isLoading.set(false);
     }
   }
 
 }
+

@@ -1,0 +1,105 @@
+<div class="app-page-container">
+  <mat-card class="app-card-medium legal-card">
+
+    <div class="legal-top-nav">
+      <a mat-button [routerLink]="homeRoute" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'legal.backHome' | translate }}
+      </a>
+      <span class="legal-updated">{{ 'legal.lastUpdated' | translate }}</span>
+    </div>
+
+    <mat-card-content class="legal-content">
+      <h1 class="legal-title">{{ 'cookies.title' | translate }}</h1>
+
+      <section>
+        <h2>{{ 'cookies.s1.title' | translate }}</h2>
+        <p [innerHTML]="'cookies.s1.p1' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'cookies.s2.title' | translate }}</h2>
+        <p [innerHTML]="'cookies.s2.p1' | translate"></p>
+
+        <h3>{{ 'cookies.s2.sub1' | translate }}</h3>
+        <div class="table-container">
+          <table class="cookie-table">
+            <thead>
+              <tr>
+                <th>{{ 'cookies.table.name' | translate }}</th>
+                <th>{{ 'cookies.table.purpose' | translate }}</th>
+                <th>{{ 'cookies.table.lifetime' | translate }}</th>
+                <th>{{ 'cookies.table.party' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>__session</code></td>
+                <td>{{ 'cookies.session.sessionRow.purpose' | translate }}</td>
+                <td>{{ 'cookies.session.sessionRow.lifetime' | translate }}</td>
+                <td>Google LLC</td>
+              </tr>
+              <tr>
+                <td>{{ 'cookies.session.tokensRow.name' | translate }}</td>
+                <td>{{ 'cookies.session.tokensRow.purpose' | translate }}</td>
+                <td>{{ 'cookies.session.tokensRow.lifetime' | translate }}</td>
+                <td>Google LLC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top: 24px;">{{ 'cookies.s2.sub2' | translate }}</h3>
+        <div class="table-container">
+          <table class="cookie-table">
+            <thead>
+              <tr>
+                <th>{{ 'cookies.table.key' | translate }}</th>
+                <th>{{ 'cookies.table.purpose' | translate }}</th>
+                <th>{{ 'cookies.table.lifetime' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>selected_language</code></td>
+                <td>{{ 'cookies.local.lang.purpose' | translate }}</td>
+                <td>{{ 'cookies.local.lifetime' | translate }}</td>
+              </tr>
+              <tr>
+                <td><code>dark_mode_enabled</code></td>
+                <td>{{ 'cookies.local.theme.purpose' | translate }}</td>
+                <td>{{ 'cookies.local.lifetime' | translate }}</td>
+              </tr>
+              <tr>
+                <td><code>cookie_consent</code></td>
+                <td>{{ 'cookies.local.consent.purpose' | translate }}</td>
+                <td>{{ 'cookies.local.lifetime' | translate }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>{{ 'cookies.s3.title' | translate }}</h2>
+        <p [innerHTML]="'cookies.s3.p1' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'cookies.s4.title' | translate }}</h2>
+        <p>{{ 'cookies.s4.p1' | translate }}</p>
+        <ul>
+          <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></li>
+          <li><a href="https://support.mozilla.org/kb/enhanced-tracking-protection-firefox-desktop" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+          <li><a href="https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac" target="_blank" rel="noopener">Safari</a></li>
+          <li><a href="https://support.microsoft.com/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener">Microsoft Edge</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'cookies.s5.title' | translate }}</h2>
+        <p [innerHTML]="'cookies.s5.p1' | translate"></p>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</div>

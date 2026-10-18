@@ -1,12 +1,9 @@
 <div class="settings-div">
-  @if (isAuthorized) {
-    <mat-tab-group dynamicHeight>
-      <mat-tab label="{{ 'admin.panel.tab.header.settings.users' | translate }}">
-        <app-users></app-users>
+  <mat-tab-group dynamicHeight>
+    @if (coreSettingsVisible()) {
+      <mat-tab label="{{ 'admin.panel.tab.header.settings.global' | translate }}">
+        <app-global-settings></app-global-settings>
       </mat-tab>
-      <mat-tab label="{{ 'admin.panel.tab.header.settings.public' | translate }}">
-        <app-public-settings></app-public-settings>
-      </mat-tab>
-    </mat-tab-group>
-  }
+    }
+  </mat-tab-group>
 </div>

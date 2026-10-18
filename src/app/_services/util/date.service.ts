@@ -11,11 +11,11 @@ export class DateService {
   }
 
   public presentCurrentDateTime(): string {
-    return this.getCurrentDateTime().toFormat('dd-MM-yyyy HH:mm:ss');
+    return this.getCurrentDateTime().toFormat('dd.MM.yyyy HH:mm:ss');
   }
 
   public presentCurrentDate(): string {
-    return this.getCurrentDateTime().toFormat('dd-MM-yyyy');
+    return this.getCurrentDateTime().toFormat('dd.MM.yyyy');
   }
 
   public getCurrentDateTime(): DateTime {
@@ -23,11 +23,11 @@ export class DateService {
   }
 
   public presentDateTime(dateTime: DateTime): string {
-    return dateTime.toFormat('dd-MM-yyyy HH:mm:ss');
+    return dateTime.toFormat('dd.MM.yyyy HH:mm:ss');
   }
 
   public presentDate(dateTime: DateTime): string {
-    return dateTime.toFormat('dd-MM-yyyy');
+    return dateTime.toFormat('dd.MM.yyyy');
   }
 
   public presentCurrentDateTimeForFileName(): string {

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CustomTranslateService} from "../translate/custom-translate.service";
 
@@ -13,11 +13,10 @@ export class SnackbarService {
 
   static DISMISS_ACTION: string = "snackbar.default.dismiss";
 
-  constructor(
-    private snackBar: MatSnackBar,
-    private translateService: CustomTranslateService
-  ) {
-  }
+  private snackBar = inject(MatSnackBar);
+  private translateService = inject(CustomTranslateService);
+
+  constructor() {}
 
   public openCustomSnackBar(message: string, action: string, duration: number): void {
     this.snackBar.open(message, action, {duration});

@@ -1,4 +1,4 @@
-import {inject, Injectable, Injector, runInInjectionContext} from '@angular/core';
+import {computed, inject, Injectable, Injector, runInInjectionContext, signal} from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -13,7 +13,8 @@ import {
   User,
   deleteUser
 } from '@angular/fire/auth';
-import {BehaviorSubject, firstValueFrom, map, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, map, Observable, Subject, Subscription} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {FirebaseError} from '@angular/fire/app';
 import {Router} from '@angular/router';
 import {SnackbarService} from '../util/snackbar.service';
@@ -27,77 +28,101 @@ import {AccessRole} from '../../_models/user/access-role';
   providedIn: 'root'
 })
 export class AuthService {
-  private userSubject = new BehaviorSubject<CustomUser | null>(null);
-  private user: Observable<CustomUser | null> = this.userSubject.asObservable();
-  private authErrorLogoutSubject = new Subject<void>();
+  private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly standardUserService = inject(StandardUserDbService);
+  private readonly translateService = inject(CustomTranslateService);
+  private readonly injector = inject(Injector);
+
+  private readonly userSubject = new BehaviorSubject<CustomUser | null>(null);
+  private readonly user$ = this.userSubject.asObservable();
+  private readonly authErrorLogoutSubject = new Subject<void>();
+  private userSubscription: Subscription | null = null;
 
   private pendingRegistrationInfo: { firstName: string, lastName: string, roles: AccessRole[] } | null = null;
 
-  private readonly injector: Injector;
+  public readonly currentUser = toSignal(this.user$, {initialValue: null});
+  public readonly isLoggedIn = computed(() => !!this.currentUser());
+  public readonly isLoading = signal(true);
 
-  constructor(
-    private auth: Auth,
-    private router: Router,
-    private snackbarService: SnackbarService,
-    private standardUserService: StandardUserDbService,
-    private translateService: CustomTranslateService
-  ) {
-    this.injector = inject(Injector);
+  constructor() {
     this.listenForAuthChanges();
   }
 
   private listenForAuthChanges() {
-    onAuthStateChanged(this.auth, async (firebaseUser: User | null) => {
+    onAuthStateChanged(this.auth, (firebaseUser: User | null) => {
+      this.isLoading.set(true);
+      this.userSubscription?.unsubscribe();
+
       if (firebaseUser) {
-        try {
-          const foundUser = await this.standardUserService.getUser(firebaseUser.uid, firebaseUser.email);
-          if (foundUser) {
-            if (foundUser.isDeleted) {
+        this.userSubscription = this.standardUserService.watchUser(firebaseUser.uid, firebaseUser.email)
+          .subscribe({
+            next: async (foundUser) => {
+              if (foundUser) {
+                if (foundUser.isDeleted) {
+                  this.logout(false);
+                  this.authErrorLogoutSubject.next();
+                  this.snackbarService.openLongSnackBar(this.translateService.get('login.error.invalidUser'));
+                } else {
+                  this.userSubject.next(foundUser);
+                }
+              } else {
+                // Check if this is a pending registration
+                if (this.pendingRegistrationInfo) {
+                  const newUser: CustomUser = {
+                    id: '',
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email || '',
+                    firstName: this.pendingRegistrationInfo.firstName,
+                    lastName: this.pendingRegistrationInfo.lastName,
+                    roles: this.pendingRegistrationInfo.roles,
+                    isDeleted: false
+                  };
+
+                  await this.standardUserService.create(newUser);
+                  this.pendingRegistrationInfo = null;
+                  // The watchUser subscription will trigger again when the user is created
+                } else {
+                  this.logout(false);
+                  this.authErrorLogoutSubject.next();
+                  this.snackbarService.openLongSnackBar(this.translateService.get('login.error.invalidUser'));
+                }
+              }
+              this.isLoading.set(false);
+            },
+            error: (err) => {
+              console.error(err);
               this.logout(false);
               this.authErrorLogoutSubject.next();
-              this.snackbarService.openLongSnackBar(this.translateService.get('login.error.invalidUser'));
-            } else {
-              this.userSubject.next(foundUser);
+              this.snackbarService.openLongSnackBar(this.translateService.get('login.error.internal'));
+              this.isLoading.set(false);
             }
-          } else {
-            // Check if this is a pending registration
-            if (this.pendingRegistrationInfo) {
-              const newUser = new CustomUser();
-              newUser.uid = firebaseUser.uid;
-              newUser.email = firebaseUser.email || '';
-              newUser.firstName = this.pendingRegistrationInfo.firstName;
-              newUser.lastName = this.pendingRegistrationInfo.lastName;
-              newUser.roles = this.pendingRegistrationInfo.roles;
-              newUser.isDeleted = false;
-
-              await this.standardUserService.create(newUser);
-
-              // Read it back to have ID
-              const storedUser = await this.standardUserService.getUser(firebaseUser.uid, firebaseUser.email);
-              this.userSubject.next(storedUser);
-              this.pendingRegistrationInfo = null;
-            } else {
-              this.logout(false);
-              this.authErrorLogoutSubject.next();
-              this.snackbarService.openLongSnackBar(this.translateService.get('login.error.invalidUser'));
-            }
-          }
-        } catch (err) {
-          console.error(err);
-          this.logout(false);
-          this.authErrorLogoutSubject.next();
-          this.snackbarService.openLongSnackBar(this.translateService.get('login.error.internal'));
-        }
+          });
       } else {
-        this.logout(false);
+        this.unsubscribe();
+        this.isLoading.set(false);
       }
     });
   }
 
   public async registerUser(email: string, password: string): Promise<string> {
-    const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-    if (!userCredential.user?.uid) throw new Error('UID undefined');
-    return userCredential.user.uid;
+    const cleanEmail = email?.trim() || '';
+    const { initializeApp, getApps } = await import('firebase/app');
+    const { getAuth, createUserWithEmailAndPassword: createSecondaryUser, signOut: signSecondaryOut } = await import('firebase/auth');
+
+    const secondaryAppName = 'SecondaryAuthApp';
+    const secondaryApp = getApps().find(app => app.name === secondaryAppName)
+      || initializeApp(this.auth.app.options, secondaryAppName);
+    const secondaryAuth = getAuth(secondaryApp);
+
+    try {
+      const userCredential = await createSecondaryUser(secondaryAuth, cleanEmail, password);
+      if (!userCredential.user?.uid) throw new Error('UID undefined');
+      return userCredential.user.uid;
+    } finally {
+      await signSecondaryOut(secondaryAuth);
+    }
   }
 
   public async registerUserWithDetails(email: string, password: string, firstName: string, lastName: string): Promise<void> {
@@ -182,7 +207,7 @@ export class AuthService {
     if (this.injector) {
       runInInjectionContext(this.injector, () => {
         signOut(this.auth).then(() => {
-          this.userSubject.next(null);
+          this.unsubscribe();
           if (withRedirection) this.router.navigate([RedirectionEnum.LOGIN]);
         }).catch(err => {
           console.error(err);
@@ -192,22 +217,31 @@ export class AuthService {
       });
     } else {
       signOut(this.auth).then(() => {
-        this.userSubject.next(null);
+        this.unsubscribe();
         if (withRedirection) this.router.navigate([RedirectionEnum.LOGIN]);
       });
     }
   }
 
+  private unsubscribe(): void {
+    this.userSubscription?.unsubscribe();
+    this.userSubscription = null;
+    this.userSubject.next(null);
+  }
+
   public isAuthenticated(): Observable<boolean> {
-    return this.user.pipe(map(u => !!u));
+    return this.user$.pipe(map(u => !!u));
   }
 
   public loggedUser(): Observable<CustomUser | null> {
-    return this.user;
+    return this.user$;
   }
 
-  public async loggedUserPromise(): Promise<CustomUser | null> {
-    return await firstValueFrom(this.loggedUser());
+  public updateLocalUser(data: Partial<CustomUser>): void {
+    const current = this.userSubject.value;
+    if (current) {
+      this.userSubject.next({ ...current, ...data });
+    }
   }
 
   public getAuthErrorLogout(): Observable<void> {

@@ -1,33 +1,35 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {TranslateService, Translation} from '@ngx-translate/core';
-import {environment} from '../../../environments/environment';
-import {DateAdapter} from "@angular/material/core";
-import {registerLocaleData} from "@angular/common";
+import {APP_CONFIG} from '../../app.config.token';
+import {DateAdapter} from '@angular/material/core';
+import {registerLocaleData} from '@angular/common';
 import localePl from '@angular/common/locales/pl';
 import localeEn from '@angular/common/locales/en';
-import {LanguageEnum} from "./language-enum";
-import {BehaviorSubject, firstValueFrom} from "rxjs";
+import {LanguageEnum} from './language-enum';
+import {BehaviorSubject, firstValueFrom} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {Settings} from 'luxon';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomTranslateService {
+  private readonly appConfig = inject(APP_CONFIG);
+  private readonly translateService = inject(TranslateService);
+  private readonly dateAdapter = inject(DateAdapter<any>);
 
-  private selectedLanguage: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
-
-  constructor(
-    private translateService: TranslateService,
-    private dateAdapter: DateAdapter<any>
-  ) {
-  }
+  private readonly selectedLanguageSubject = new BehaviorSubject<string | null>(null);
+  public readonly selectedLanguage = toSignal(this.selectedLanguageSubject);
 
   public setLanguage(language: string): void {
+    const localeData = this.findApplicationLocalLanguage(language);
     this.translateService.use(language);
     this.dateAdapter.setLocale(language);
-    registerLocaleData(this.findApplicationLocalLanguage(language));
-    localStorage.setItem(environment.selected_language_key, language);
+    Settings.defaultLocale = language;
+    registerLocaleData(localeData);
+    localStorage.setItem(this.appConfig.selected_language_key, language);
 
-    this.selectedLanguage.next(language);
+    this.selectedLanguageSubject.next(language);
   }
 
   private findApplicationLocalLanguage(language: string): any {

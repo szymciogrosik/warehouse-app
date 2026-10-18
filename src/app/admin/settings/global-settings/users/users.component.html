@@ -1,0 +1,17 @@
+<mat-tab-group>
+  <mat-tab label="{{ 'admin.panel.tab.header.settings.users.active' | translate }}">
+    <div class="highlight-tab-content">
+      <app-smart-table [data]="activeUsers() || []" [columns]="activeUsersColumns" [loading]="!facadeAllUsers()"
+                       filterPlaceholderKey="admin.panel.table.filter.placeholder" [headerAction]="addUserAction">
+      </app-smart-table>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="{{ 'admin.panel.tab.header.settings.users.deleted' | translate }}">
+    <div class="highlight-tab-content">
+      <app-smart-table [data]="deletedUsers() || []" [columns]="deletedUsersColumns" [loading]="!facadeAllUsers()"
+                       filterPlaceholderKey="admin.panel.table.filter.placeholder">
+      </app-smart-table>
+    </div>
+  </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,82 @@
+<div class="app-page-container">
+  <mat-card class="app-card-medium legal-card">
+
+    <div class="legal-top-nav">
+      <a mat-button [routerLink]="homeRoute" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'legal.backHome' | translate }}
+      </a>
+      <span class="legal-updated">{{ 'legal.lastUpdated' | translate }}</span>
+    </div>
+
+    <mat-card-content class="legal-content">
+      <h1 class="legal-title">{{ 'privacy.title' | translate }}</h1>
+
+      <section>
+        <h2>{{ 'privacy.s1.title' | translate }}</h2>
+        <p [innerHTML]="'privacy.s1.p1' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s2.title' | translate }}</h2>
+        <p>{{ 'privacy.s2.p1' | translate }}</p>
+        <ul>
+          <li [innerHTML]="'privacy.s2.item1' | translate"></li>
+          <li [innerHTML]="'privacy.s2.item2' | translate"></li>
+          <li [innerHTML]="'privacy.s2.item3' | translate"></li>
+          <li [innerHTML]="'privacy.s2.item4' | translate"></li>
+          <li [innerHTML]="'privacy.s2.item5' | translate"></li>
+          <li [innerHTML]="'privacy.s2.item6' | translate"></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s3.title' | translate }}</h2>
+        <p>{{ 'privacy.s3.p1' | translate }}</p>
+        <ul>
+          <li>{{ 'privacy.s3.item1' | translate }}</li>
+          <li>{{ 'privacy.s3.item2' | translate }}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s4.title' | translate }}</h2>
+        <p [innerHTML]="'privacy.s4.p1' | translate"></p>
+        <ul>
+          <li [innerHTML]="'privacy.s4.item1' | translate"></li>
+          <li [innerHTML]="'privacy.s4.item2' | translate"></li>
+          <li [innerHTML]="'privacy.s4.item3' | translate"></li>
+          <li [innerHTML]="'privacy.s4.item4' | translate"></li>
+        </ul>
+        <p [innerHTML]="'privacy.s4.p2' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s5.title' | translate }}</h2>
+        <p>{{ 'privacy.s5.p1' | translate }}</p>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s6.title' | translate }}</h2>
+        <p>{{ 'privacy.s6.p1' | translate }}</p>
+        <ul>
+          <li [innerHTML]="'privacy.s6.item1' | translate"></li>
+          <li [innerHTML]="'privacy.s6.item2' | translate"></li>
+          <li [innerHTML]="'privacy.s6.item3' | translate"></li>
+          <li [innerHTML]="'privacy.s6.item4' | translate"></li>
+        </ul>
+        <p [innerHTML]="'privacy.s6.p2' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s7.title' | translate }}</h2>
+        <p>{{ 'privacy.s7.text' | translate }}&#32;<a [routerLink]="rp.SEP + rp.COOKIES">{{ 'privacy.s7.link' | translate }}</a>.</p>
+      </section>
+
+      <section>
+        <h2>{{ 'privacy.s8.title' | translate }}</h2>
+        <p>{{ 'privacy.s8.p1' | translate }}</p>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</div>

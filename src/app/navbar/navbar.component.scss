@@ -64,7 +64,7 @@ button:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 10px;
+  font-size: clamp(0.6rem, 5cqi, 0.8rem);
   font-weight: 500;
   color: #757575;
   text-transform: uppercase;

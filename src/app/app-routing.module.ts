@@ -8,6 +8,9 @@ import {authenticatedGuard} from "./_services/guard/authenticatedGuard";
 import {adminPageGuard} from "./_services/guard/adminPageGuard";
 import {ProfileComponent} from "./profile/profile.component";
 import {SearchComponent} from "./search/search.component";
+import {PrivacyPolicyComponent} from "./legal/privacy-policy/privacy-policy.component";
+import {TermsOfServiceComponent} from "./legal/terms-of-service/terms-of-service.component";
+import {CookiePolicyComponent} from "./legal/cookie-policy/cookie-policy.component";
 
 const appRoutes: Routes = [
   {
@@ -38,8 +41,24 @@ const appRoutes: Routes = [
     component: ProfileComponent,
     canActivate: [authenticatedGuard]
   },
+  {
+    path: RedirectionEnum.PRIVACY_POLICY,
+    component: PrivacyPolicyComponent
+  },
+  {
+    path: RedirectionEnum.TERMS,
+    component: TermsOfServiceComponent
+  },
+  {
+    path: RedirectionEnum.COOKIES,
+    component: CookiePolicyComponent
+  },
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
 ];
 
-export const routing = RouterModule.forRoot(appRoutes);
+export const routing = RouterModule.forRoot(appRoutes, {
+  scrollPositionRestoration: 'top',
+  anchorScrolling: 'enabled'
+});
+

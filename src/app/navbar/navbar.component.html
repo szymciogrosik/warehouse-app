@@ -9,20 +9,20 @@
   <!-- Full menu navbar -->
   <div class="full-menu">
     <!-- Add new link here part 1/2 -->
-    @if (this.authService.isAuthenticated() | async) {
+    @if (isAuthenticated()) {
       <button mat-button class="navbar-button" (click)="navigateToSearchItems()">
         {{ 'navbar.tab.button.search' | translate }}
       </button>
     }
-    @if (isAdmin$ | async) {
+    @if (isAdmin()) {
       <button mat-button class="navbar-button" (click)="navigateToAdminPanel()">
         {{ 'navbar.tab.button.adminPanel' | translate }}
       </button>
     }
     <!-- Theme Toggle -->
-    @if (allowDarkMode$ | async) {
+    @if (allowDarkMode()) {
       <button mat-button class="navbar-button" (click)="themeService.toggleTheme()">
-        <mat-icon style="margin: 0;">{{ (isDarkTheme$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        <mat-icon style="margin: 0;">{{ isAdmin() ? (isDarkTheme() ? 'light_mode' : 'dark_mode') : (isDarkTheme() ? 'light_mode' : 'dark_mode') }}</mat-icon>
       </button>
     }
     <!-- Choose language tab -->
@@ -30,7 +30,7 @@
       <mat-icon style="margin: 0;">language</mat-icon>
     </button>
 
-    @if (currentUser$ | async; as user) {
+    @if (currentUser(); as user) {
       <button mat-button class="navbar-button" (click)="navigateToProfile()">
         <div class="navbar-profile-btn-content">
           @if (user.photoUrl) {
@@ -45,7 +45,7 @@
       <button mat-button class="navbar-button" (click)="logout()">
         {{ 'navbar.tab.button.logout' | translate }}
       </button>
-    } @else if (this.authService.isAuthenticated() | async) {
+    } @else if (isAuthenticated()) {
       <!-- Fallback just in case user object is momentarily null but authenticated is true -->
       <button mat-button class="navbar-button" (click)="navigateToProfile()">
         {{ 'navbar.tab.button.profile' | translate }}
@@ -71,17 +71,17 @@
 
 <mat-menu xPosition="before" #menu="matMenu">
   <!-- Add new link here part 2/2 -->
-  @if (this.authService.isAuthenticated() | async) {
+  @if (isAuthenticated()) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToSearchItems()">
       {{ 'navbar.tab.button.search' | translate }}
     </button>
   }
-  @if (isAdmin$ | async) {
+  @if (isAdmin()) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToAdminPanel()">
       {{ 'navbar.tab.button.adminPanel' | translate }}
     </button>
   }
-  @if (currentUser$ | async; as user) {
+  @if (currentUser(); as user) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToProfile()">
       <mat-icon style="display: flex; align-items: center; justify-content: center; overflow: visible;">
         @if (user.photoUrl) {
@@ -93,20 +93,16 @@
       </mat-icon>
       <span>{{ 'navbar.tab.button.profile' | translate }}</span>
     </button>
-  } @else if (this.authService.isAuthenticated() | async) {
+  } @else if (isAuthenticated()) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToProfile()">
       {{ 'navbar.tab.button.profile' | translate }}
     </button>
-  } @else {
-    <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToLogin()">
-      {{ 'navbar.tab.button.login' | translate }}
-    </button>
   }
   <!-- Theme Toggle -->
-  @if (allowDarkMode$ | async) {
+  @if (allowDarkMode()) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="themeService.toggleTheme()">
-      <mat-icon>{{ (isDarkTheme$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      <span>{{ ((isDarkTheme$ | async) ? 'theme.light' : 'theme.dark') | translate }}</span>
+      <mat-icon>{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      <span>{{ (isDarkTheme() ? 'theme.light' : 'theme.dark') | translate }}</span>
     </button>
   }
   <!-- Choose language tab -->
@@ -115,9 +111,13 @@
     <span>{{ 'language.name' | translate }}</span>
   </button>
 
-  @if (this.authService.isAuthenticated() | async) {
+  @if (isAuthenticated()) {
     <button mat-menu-item class="navbar-button-burger-menu" (click)="logout()">
       {{ 'navbar.tab.button.logout' | translate }}
+    </button>
+  } @else {
+    <button mat-menu-item class="navbar-button-burger-menu" (click)="navigateToLogin()">
+      {{ 'navbar.tab.button.login' | translate }}
     </button>
   }
 </mat-menu>
