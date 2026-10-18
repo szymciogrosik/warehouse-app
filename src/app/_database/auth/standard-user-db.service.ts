@@ -1,32 +1,20 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {UserDbService} from './user-db-service.service';
 import {CustomUser} from '../../_models/user/custom-user';
-import {firstValueFrom} from 'rxjs';
+import {map, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StandardUserDbService {
-  constructor(private userDbService: UserDbService) {
-  }
+  private userDbService = inject(UserDbService);
 
-  public async getUser(uid: string, email: string | null): Promise<CustomUser | null> {
-    if (email === null) {
-      throw new Error('Email cannot be null!');
-    }
+  constructor() {}
 
-    try {
-      const users = await firstValueFrom(this.userDbService.getUser(uid, email));
-      if (users.length === 1) {
-        return users[0];
-      } else if (users.length === 0) {
-        return null;
-      } else {
-        throw new Error('There are more than one user saved with the same uid and id');
-      }
-    } catch (err: unknown) {
-      throw err;
-    }
+  public watchUser(uid: string, _email?: string | null): Observable<CustomUser | null> {
+    return this.userDbService.getUser(uid).pipe(
+      map(user => user ?? null)
+    );
   }
 
   public async create(newUser: CustomUser): Promise<void> {

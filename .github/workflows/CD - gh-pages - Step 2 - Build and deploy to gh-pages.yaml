@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm install --legacy-peer-deps
+        run: npm install
 
       - name: 🔨 Build with gh-pages settings
         run: npm run build-gh-pages

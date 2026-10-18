@@ -5,47 +5,44 @@ import {
   collectionData,
   deleteDoc,
   doc,
+  docData,
   Firestore,
   query,
+  setDoc,
   updateDoc,
   where
 } from '@angular/fire/firestore';
 import {CustomUser} from '../../_models/user/custom-user';
 import {Observable} from 'rxjs';
+import {userConverter} from './user.converter';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDbService {
   private dbPathBase = 'users';
-  private readonly firestore: Firestore;
-  private readonly injector: Injector;
+  private readonly firestore = inject(Firestore);
+  private readonly injector = inject(Injector);
 
-  constructor() {
-    this.firestore = inject(Firestore);
-    this.injector = inject(Injector);
-  }
-
-  public getUser(uid: string, email: string): Observable<CustomUser[]> {
+  public getUser(uid: string, _email?: string): Observable<CustomUser | undefined> {
     return runInInjectionContext(this.injector, () => {
-      const usersRef = collection(this.firestore, this.dbPathBase);
-      const q = query(usersRef, where('uid', '==', uid), where('email', '==', email));
-      return collectionData(q, {idField: 'id'}) as Observable<CustomUser[]>;
+      const docRef = doc(this.firestore, `${this.dbPathBase}/${uid}`).withConverter(userConverter);
+      return docData(docRef);
     });
   }
 
   public getUserByEmail(email: string): Observable<CustomUser[]> {
     return runInInjectionContext(this.injector, () => {
-      const usersRef = collection(this.firestore, this.dbPathBase);
+      const usersRef = collection(this.firestore, this.dbPathBase).withConverter(userConverter);
       const q = query(usersRef, where('email', '==', email));
-      return collectionData(q, {idField: 'id'}) as Observable<CustomUser[]>;
+      return collectionData(q);
     });
   }
 
   public getAll(): Observable<CustomUser[]> {
     return runInInjectionContext(this.injector, () => {
-      const usersRef = collection(this.firestore, this.dbPathBase);
-      return collectionData(usersRef, {idField: 'id'}) as Observable<CustomUser[]>;
+      const usersRef = collection(this.firestore, this.dbPathBase).withConverter(userConverter);
+      return collectionData(usersRef);
     });
   }
 
@@ -55,12 +52,19 @@ export class UserDbService {
   }
 
   public update(docId: string, updatedUser: Partial<CustomUser>): Promise<void> {
+    const { id, uid, ...dataToSave } = updatedUser as any;
     const docRef = doc(this.firestore, `${this.dbPathBase}/${docId}`);
-    return updateDoc(docRef, updatedUser);
+    return updateDoc(docRef, dataToSave);
   }
 
   public async create(newUser: CustomUser): Promise<void> {
-    const usersRef = collection(this.firestore, this.dbPathBase);
-    await addDoc(usersRef, {...newUser});
+    const docId = newUser.uid || newUser.id;
+    if (docId) {
+      const docRef = doc(this.firestore, `${this.dbPathBase}/${docId}`).withConverter(userConverter);
+      await setDoc(docRef, newUser);
+    } else {
+      const usersRef = collection(this.firestore, this.dbPathBase).withConverter(userConverter);
+      await addDoc(usersRef, newUser);
+    }
   }
 }

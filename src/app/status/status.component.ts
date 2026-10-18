@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
-import {Status} from "../_models/status/status";
+import {Component, inject} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {catchError, map, of} from 'rxjs';
 import {AssetsService} from "../_services/util/assets.service";
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
+import {SkeletonComponent} from '../_shared-components/skeleton/skeleton.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
@@ -11,18 +12,23 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   templateUrl: './status.component.html',
   styleUrls: ['./status.component.scss'],
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatCardModule, MatProgressSpinnerModule],
+  imports: [TranslatePipe, MatCardModule, MatProgressSpinnerModule, SkeletonComponent],
 })
 export class StatusComponent {
   private STATUS_URL: string = 'status/status.json';
 
-  lastDeployTime: string = '';
+  private readAssetsService = inject(AssetsService);
 
-  constructor(private readAssetsService: AssetsService) {
-    this.readAssetsService.getResource(this.STATUS_URL).subscribe({
-      next: (data: Status) => this.lastDeployTime = data.lastDeployTime,
-      error: (error) => console.error(error)
-    });
-  }
+  lastDeployTime = toSignal(
+    this.readAssetsService.getResource(this.STATUS_URL).pipe(
+      map((data: any) => data?.lastDeployTime || ''),
+      catchError(error => {
+        console.error(error);
+        return of('');
+      })
+    ),
+    { initialValue: '' }
+  );
 
 }
+

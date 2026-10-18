@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -8,8 +8,9 @@ import {Observable} from "rxjs";
 export class AssetsService {
   public static BASE_PATH: string = './assets/';
 
-  constructor(private httpClient: HttpClient) {
-  }
+  private httpClient = inject(HttpClient);
+
+  constructor() {}
 
   public getResource(resourcePath: string): Observable<any> {
     return this.httpClient.get(AssetsService.BASE_PATH + resourcePath);

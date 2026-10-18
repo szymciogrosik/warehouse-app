@@ -1,11 +1,11 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CustomUser} from "../../_models/user/custom-user";
-import {AccessRole} from "../../_models/user/access-role";
-import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
-import {CustomValidators} from "../../_services/validator/custom-validators";
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, OnInit, output, viewChild} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CustomUser} from '../../_models/user/custom-user';
+import {AccessRole} from '../../_models/user/access-role';
+import {select_roles} from '../../_models/registration/select/select-roles';
+import {CustomTranslateService} from '../../_services/translate/custom-translate.service';
+import {CustomValidators} from '../../_services/validator/custom-validators';
+import {TranslatePipe} from '@ngx-translate/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -16,44 +16,67 @@ import {MatSelectModule} from '@angular/material/select';
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatDialogModule, MatSelectModule],
+  imports: [
+    TranslatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSelectModule
+  ],
   templateUrl: './user-form.component.html',
-  styleUrls: ['./user-form.component.scss']
+  styleUrls: ['./user-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserFormComponent implements OnInit {
-  @Input() user: CustomUser | null = null;
-  @Input() showPassword = false;
-  @Input() showRoles = true;
-  @Input() disableEmail = false;
+  readonly user = input<CustomUser | null>(null);
+  readonly showPassword = input<boolean>(false);
+  readonly showRoles = input<boolean>(true);
+  readonly disableEmail = input<boolean>(false);
 
-  @Output() formSubmit = new EventEmitter<any>();
-
-  @ViewChild('submitBtn') submitBtn!: ElementRef;
+  readonly formSubmit = output<any>();
+  readonly submitBtn = viewChild<ElementRef>('submitBtn');
 
   userForm!: FormGroup;
   hidePassword = true;
-  accessRoleValues: AccessRole[] = Object.values(AccessRole);
+  readonly selectRoles = select_roles;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private translateService: CustomTranslateService,
-  ) {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly translateService = inject(CustomTranslateService);
+
+  constructor() {
+    effect(() => {
+      const user = this.user();
+      if (user && this.userForm) {
+        this.userForm.patchValue({
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          roles: user.roles || []
+        }, { emitEvent: false });
+      }
+    });
   }
 
   ngOnInit(): void {
-    const defaultRoles = this.user?.roles || [];
+    this.createForm();
+  }
 
+  private createForm(): void {
+    const userVal = this.user();
     this.userForm = this.formBuilder.group({
-      email: [{value: this.user?.email || '', disabled: this.disableEmail}, [Validators.required, Validators.email]],
-      firstName: [this.user?.firstName || '', [Validators.required]],
-      lastName: [this.user?.lastName || '', [Validators.required]],
+      email: [{value: userVal?.email || '', disabled: this.disableEmail()}, [Validators.required, Validators.email]],
+      firstName: [userVal?.firstName || '', [Validators.required]],
+      lastName: [userVal?.lastName || '', [Validators.required]],
     });
 
-    if (this.showRoles) {
-      this.userForm.addControl('roles', this.formBuilder.control(defaultRoles));
+    if (this.showRoles()) {
+      this.userForm.addControl('roles', this.formBuilder.control(userVal?.roles || []));
     }
 
-    if (this.showPassword) {
+    if (this.showPassword()) {
       this.userForm.addControl(
         'password',
         this.formBuilder.control('', [Validators.required, Validators.minLength(6), CustomValidators.passwordValidator])
@@ -68,10 +91,14 @@ export class UserFormComponent implements OnInit {
     }
 
     const payload = {...this.userForm.getRawValue()};
+    if (payload.email) {
+      payload.email = payload.email.trim();
+    }
 
-    if (this.user) {
-      payload.id = this.user.id;
-      payload.uid = this.user.uid;
+    const userVal = this.user();
+    if (userVal) {
+      payload.id = userVal.id;
+      payload.uid = userVal.uid;
     }
 
     // We no longer hack the password into payload.id; it stays as payload.password.
@@ -83,7 +110,7 @@ export class UserFormComponent implements OnInit {
   }
 
   triggerSubmit(): void {
-    this.submitBtn.nativeElement.click();
+    this.submitBtn()?.nativeElement.click();
   }
 
   getErrorMessage(formControlName: string): string {
@@ -110,3 +137,4 @@ export class UserFormComponent implements OnInit {
     return this.userForm.controls;
   }
 }
+

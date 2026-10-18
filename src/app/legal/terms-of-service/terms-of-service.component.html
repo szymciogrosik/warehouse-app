@@ -1,0 +1,81 @@
+<div class="app-page-container">
+  <mat-card class="app-card-medium legal-card">
+
+    <div class="legal-top-nav">
+      <a mat-button [routerLink]="homeRoute" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'legal.backHome' | translate }}
+      </a>
+      <span class="legal-updated">{{ 'legal.lastUpdated' | translate }}</span>
+    </div>
+
+    <mat-card-content class="legal-content">
+      <h1 class="legal-title">{{ 'terms.title' | translate }}</h1>
+
+      <section>
+        <h2>{{ 'terms.s1.title' | translate }}</h2>
+        <p [innerHTML]="'terms.s1.p1' | translate"></p>
+        <p>{{ 'terms.s1.p2' | translate }}</p>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s2.title' | translate }}</h2>
+        <ul>
+          <li [innerHTML]="'terms.s2.item1' | translate"></li>
+          <li [innerHTML]="'terms.s2.item2' | translate"></li>
+          <li [innerHTML]="'terms.s2.item3' | translate"></li>
+          <li [innerHTML]="'terms.s2.item4' | translate"></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s3.title' | translate }}</h2>
+        <ul>
+          <li>{{ 'terms.s3.item1' | translate }}</li>
+          <li>{{ 'terms.s3.item2' | translate }}</li>
+          <li>{{ 'terms.s3.item3' | translate }}</li>
+          <li>{{ 'terms.s3.item4' | translate }}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s4.title' | translate }}</h2>
+        <p>{{ 'terms.s4.p1' | translate }}</p>
+        <ul>
+          <li>{{ 'terms.s4.item1' | translate }}</li>
+          <li>{{ 'terms.s4.item2' | translate }}</li>
+          <li>{{ 'terms.s4.item3' | translate }}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s5.title' | translate }}</h2>
+        <p>{{ 'terms.s5.p1' | translate }}</p>
+        <ul>
+          <li>{{ 'terms.s5.item1' | translate }}</li>
+          <li>{{ 'terms.s5.item2' | translate }}</li>
+          <li>{{ 'terms.s5.item3' | translate }}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s6.title' | translate }}</h2>
+        <ul>
+          <li [innerHTML]="'terms.s6.item1' | translate"></li>
+          <li>{{ 'terms.s6.item2' | translate }}</li>
+          <li>{{ 'terms.s6.item3' | translate }}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s7.title' | translate }}</h2>
+        <p [innerHTML]="'terms.s7.p1' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s8.title' | translate }}</h2>
+        <p [innerHTML]="'terms.s8.p1' | translate"></p>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</div>

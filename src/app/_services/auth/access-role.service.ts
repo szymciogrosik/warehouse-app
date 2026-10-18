@@ -1,38 +1,35 @@
-import {Injectable} from '@angular/core';
-import {AuthService} from "./auth.service";
-import {AccessRole} from "../../_models/user/access-role";
-import {catchError, map, Observable, of} from "rxjs";
+import {computed, inject, Injectable, Signal} from '@angular/core';
+import {AuthService} from './auth.service';
+import {AccessRole} from '../../_models/user/access-role';
+import {firstValueFrom} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccessRoleService {
+  private readonly authService = inject(AuthService);
 
-  constructor(
-    private authService: AuthService
-  ) {
-  }
-
-  public isAuthorized(requestedRole: AccessRole): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.authService.loggedUser().subscribe({
-        next: (customUser) => {
-          if (customUser !== null) {
-            resolve(customUser.roles.includes(requestedRole));
-          } else {
-            reject("User is null");
-          }
-        },
-        error: (err) => reject(err)
-      });
+  public isAuthorizedSignal(requestedRole: AccessRole): Signal<boolean> {
+    return computed(() => {
+      const user = this.authService.currentUser();
+      return !!user?.roles.includes(requestedRole);
     });
   }
 
-  public isAuthorized$(requestedRole: AccessRole): Observable<boolean> {
-    return this.authService.loggedUser().pipe(
-      map(customUser => !!customUser && customUser.roles.includes(requestedRole)),
-      catchError(() => of(false))
-    );
+  public hasAnyRoleSignal(requestedRoles: AccessRole[]): Signal<boolean> {
+    return computed(() => {
+      const user = this.authService.currentUser();
+      if (!user?.roles) return false;
+      return requestedRoles.some(role => user.roles.includes(role));
+    });
   }
 
+  public async isAuthorized(requestedRole: AccessRole): Promise<boolean> {
+    try {
+      const user = await firstValueFrom(this.authService.loggedUser());
+      return !!user?.roles.includes(requestedRole);
+    } catch {
+      return false;
+    }
+  }
 }

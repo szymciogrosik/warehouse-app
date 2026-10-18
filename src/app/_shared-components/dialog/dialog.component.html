@@ -2,19 +2,26 @@
   <h1 mat-dialog-title class="dialog-title">{{ this.data.title }}</h1>
 
   <mat-dialog-content class="mat-typography dialog-font dialog-content-container">
-    @if (this.data.popupType !== null) {
+    @if (this.data.popupType !== null || this.data.icon) {
       <div class="dialog-image">
-        @if (this.data.popupType === DialogType.CONFIRMATION) {
+        @if (this.data.icon) {
+          <div class="dialog-custom-image">
+            <mat-icon [color]="this.data.iconColor || 'primary'"
+                      [style.font-size]="this.data.iconSize"
+                      [style.width]="this.data.iconSize"
+                      [style.height]="this.data.iconSize">
+              {{ this.data.icon }}
+            </mat-icon>
+          </div>
+        } @else if (this.data.popupType === DialogType.CONFIRMATION) {
           <div class="dialog-success-image">
             <mat-icon>sentiment_satisfied_alt</mat-icon>
           </div>
-        }
-        @if (this.data.popupType === DialogType.WARNING) {
+        } @else if (this.data.popupType === DialogType.WARNING) {
           <div class="dialog-warning-image">
             <mat-icon>sentiment_dissatisfied</mat-icon>
           </div>
-        }
-        @if (this.data.popupType === DialogType.ERROR) {
+        } @else if (this.data.popupType === DialogType.ERROR) {
           <div class="dialog-error-image">
             <mat-icon>sentiment_very_dissatisfied</mat-icon>
           </div>

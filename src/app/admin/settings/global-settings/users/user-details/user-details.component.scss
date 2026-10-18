@@ -1,0 +1,34 @@
+@use "src/styles.scss" as *;
+
+.dialog-button {
+  width: 100%;
+  margin: 16px;
+}
+
+.dialog-image {
+  text-align: center;
+
+  mat-icon {
+    font-size: clamp(5rem, 5cqi, 8rem);
+    height: clamp(5rem, 5cqi, 8rem);
+    width: clamp(5rem, 5cqi, 8rem);
+  }
+}
+
+.dialog-success-image {
+  color: $app-green-color;
+}
+
+.dialog-warning-image {
+  color: $app-accent-color;
+}
+
+.dialog-error-image {
+  color: $app-red-color;
+}
+
+.user-details-button {
+  width: 100%;
+  height: 56px;
+  font-size: clamp(1rem, 5cqi, 1.2rem);
+}

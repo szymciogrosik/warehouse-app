@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
@@ -64,6 +64,7 @@ export class WarehouseViewComponent implements OnInit {
   private translateService = inject(CustomTranslateService);
   protected dateService = inject(DateService);
   private navService = inject(WarehouseNavigationService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.authService.loggedUser()
@@ -87,10 +88,12 @@ export class WarehouseViewComponent implements OnInit {
                   this.viewLevel = 3; // jump directly into items
                 }
               }
+              this.cdr.markForCheck();
             });
         } else {
           this.userUid = null;
         }
+        this.cdr.markForCheck();
       });
   }
 

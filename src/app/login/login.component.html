@@ -1,19 +1,41 @@
-<div class="registration-content">
-  <mat-card class="app-card-narrow">
-    <mat-card-title>
-      <h1>{{ (isRegistrationMode ? 'login.mode.register' : 'login.mode.login') | translate }}</h1>
-      <p>{{ 'login.header2' | translate }}</p>
-    </mat-card-title>
+<div class="login-page-wrapper">
+  <mat-card class="login-split-card">
 
-    <mat-card-content>
-      @if (!checkingIfUserIsAlreadyLoggedIn) {
-        @if (fetchingSettings) {
-          <div style="text-align: center; padding: 20px;">
-            <mat-spinner [diameter]="50" style="margin: 0 auto;"></mat-spinner>
+    <!-- Left Form Side -->
+    <div class="login-form-side">
+      <div class="login-form-header">
+        <h1>{{ (isRegistrationMode() ? 'login.mode.register' : 'login.mode.login') | translate }}</h1>
+        <p>{{ 'login.header2' | translate }}</p>
+      </div>
+
+      <div class="login-form-content">
+        @if (checkingIfUserIsAlreadyLoggedIn() || fetchingSettings()) {
+          <div style="display: flex; flex-direction: column; gap: 16px; padding: 30px 0 20px;">
+            <app-skeleton height="56px"></app-skeleton>
+            <app-skeleton height="56px"></app-skeleton>
+            <app-skeleton height="36px" style="margin-top: 10px;"></app-skeleton>
           </div>
         } @else {
+          <!-- Google SSO Top -->
+          @if (!loading()) {
+            <button class="google-sso-btn" (click)="openPopupIfEmbeddedBrowserOpenOtherwiseOpenPopup()" type="button">
+              <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                <path fill="none" d="M0 0h48v48H0z"/>
+              </svg>
+              <span>{{ 'login.googleSso.continue' | translate }}</span>
+            </button>
+          }
+
+          <div class="separator">
+            <span>{{ 'login.or' | translate }}</span>
+          </div>
+
           <div class="login-tabs-container">
-            @if (allowForRegistering) {
+            @if (allowForRegistering()) {
               <mat-tab-group (selectedTabChange)="onTabChange($event)" dynamicHeight>
                 <mat-tab label="{{ 'login.mode.login' | translate }}">
                   <div class="tab-content-padding">
@@ -26,26 +48,23 @@
                           <mat-error>{{ this.getErrorMessage('email') }}</mat-error>
                         </mat-form-field>
                       </p>
-
                       <p>
                         <mat-form-field appearance="outline">
                           <mat-label>{{ 'login.enterPassword' | translate }}</mat-label>
-                          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-                                 required>
-                          <button mat-icon-button matSuffix type="button" class="register-button"
-                                  (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
-                                  [attr.aria-pressed]="hidePassword">
-                            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                          <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required>
+                          <button mat-icon-button matSuffix type="button" class="register-button-icon"
+                                  (click)="hidePassword.set(!hidePassword())" [attr.aria-label]="'Hide password'"
+                                  [attr.aria-pressed]="hidePassword()">
+                            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                           </button>
                           <mat-error>{{ this.getErrorMessage('password') }}</mat-error>
                         </mat-form-field>
                       </p>
-
                       <div>
-                        @if (loading) {
+                        @if (loading()) {
                           <mat-spinner [diameter]="30"></mat-spinner>
                         } @else {
-                          <button mat-flat-button type="submit" color="primary" class="register-button">
+                          <button mat-flat-button type="submit" color="primary" class="app-action-button" style="margin-top: 10px !important">
                             {{ 'login.approve.button' | translate }}
                           </button>
                         }
@@ -53,7 +72,6 @@
                     </form>
                   </div>
                 </mat-tab>
-
                 <mat-tab label="{{ 'login.mode.register' | translate }}">
                   <div class="tab-content-padding">
                     <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
@@ -65,7 +83,6 @@
                           <mat-error>{{ this.getErrorMessage('firstName', true) }}</mat-error>
                         </mat-form-field>
                       </p>
-
                       <p>
                         <mat-form-field appearance="outline">
                           <mat-label>{{ 'login.enterLastName' | translate }}</mat-label>
@@ -74,7 +91,6 @@
                           <mat-error>{{ this.getErrorMessage('lastName', true) }}</mat-error>
                         </mat-form-field>
                       </p>
-
                       <p>
                         <mat-form-field appearance="outline">
                           <mat-label>{{ 'login.enterEmail' | translate }}</mat-label>
@@ -83,26 +99,33 @@
                           <mat-error>{{ this.getErrorMessage('email', true) }}</mat-error>
                         </mat-form-field>
                       </p>
-
                       <p>
                         <mat-form-field appearance="outline">
                           <mat-label>{{ 'login.enterPassword' | translate }}</mat-label>
-                          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-                                 required>
-                          <button mat-icon-button matSuffix type="button" class="register-button"
-                                  (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
-                                  [attr.aria-pressed]="hidePassword">
-                            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                          <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required>
+                          <button mat-icon-button matSuffix type="button" class="register-button-icon"
+                                  (click)="hidePassword.set(!hidePassword())" [attr.aria-label]="'Hide password'"
+                                  [attr.aria-pressed]="hidePassword()">
+                            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                           </button>
                           <mat-error>{{ this.getErrorMessage('password', true) }}</mat-error>
                         </mat-form-field>
                       </p>
-
+                    <div class="terms-checkbox-wrapper">
+                        <mat-checkbox formControlName="acceptTerms" color="primary" class="terms-checkbox" [disableRipple]="true">
+                          <span class="terms-label">
+                            {{ 'login.accept.terms' | translate }}&nbsp;<a [routerLink]="termsRoute" class="terms-link" (click)="$event.stopPropagation()">{{ 'login.accept.terms.termsLink' | translate }}</a>&nbsp;{{ 'login.accept.terms.and' | translate }}&nbsp;<a [routerLink]="privacyRoute" class="terms-link" (click)="$event.stopPropagation()">{{ 'login.accept.terms.privacyLink' | translate }}</a>
+                          </span>
+                        </mat-checkbox>
+                        @if ((registerFormControls['acceptTerms']?.touched || submitted()) && registerFormControls['acceptTerms']?.hasError('required')) {
+                          <mat-error class="terms-error">{{ 'login.accept.terms.error' | translate }}</mat-error>
+                        }
+                      </div>
                       <div>
-                        @if (loading) {
+                        @if (loading()) {
                           <mat-spinner [diameter]="30"></mat-spinner>
                         } @else {
-                          <button mat-flat-button type="submit" color="primary" class="register-button">
+                          <button mat-flat-button type="submit" color="primary" class="app-action-button register-submit-btn">
                             {{ 'login.approve.button' | translate }}
                           </button>
                         }
@@ -110,7 +133,6 @@
                     </form>
                   </div>
                 </mat-tab>
-
               </mat-tab-group>
             } @else {
               <!-- Registration not allowed, show only Login Form -->
@@ -124,25 +146,23 @@
                       <mat-error>{{ this.getErrorMessage('email') }}</mat-error>
                     </mat-form-field>
                   </p>
-
                   <p>
                     <mat-form-field appearance="outline">
                       <mat-label>{{ 'login.enterPassword' | translate }}</mat-label>
-                      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
-                      <button mat-icon-button matSuffix type="button" class="register-button"
-                              (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
-                              [attr.aria-pressed]="hidePassword">
-                        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required>
+                      <button mat-icon-button matSuffix type="button" class="register-button-icon"
+                              (click)="hidePassword.set(!hidePassword())" [attr.aria-label]="'Hide password'"
+                              [attr.aria-pressed]="hidePassword()">
+                        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                       </button>
                       <mat-error>{{ this.getErrorMessage('password') }}</mat-error>
                     </mat-form-field>
                   </p>
-
                   <div>
-                    @if (loading) {
+                    @if (loading()) {
                       <mat-spinner [diameter]="30"></mat-spinner>
                     } @else {
-                      <button mat-flat-button type="submit" color="primary" class="register-button">
+                      <button mat-flat-button type="submit" color="primary" class="app-action-button" style="margin-top: 10px !important">
                         {{ 'login.approve.button' | translate }}
                       </button>
                     }
@@ -150,28 +170,22 @@
                 </form>
               </div>
             }
-
-            <div class="separation-line"></div>
-
-            <div>
-              @if (!loading) {
-                <button mat-flat-button color="accent" class="register-button login-with-google"
-                        (click)="openPopupIfEmbeddedBrowserOpenOtherwiseOpenPopup()">
-                  {{ 'login.googleSso' | translate }}
-                </button>
-              }
-            </div>
           </div>
         }
-      }
-      @if (checkingIfUserIsAlreadyLoggedIn) {
-        <div class="checking-if-user-is-logged-in"
-             style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-          <div class="skeleton-loader" style="height: 56px; width: 100%; border-radius: 4px;"></div>
-          <div class="skeleton-loader" style="height: 56px; width: 100%; border-radius: 4px;"></div>
-          <div class="skeleton-loader" style="height: 36px; width: 100%; border-radius: 4px; margin-top: 10px;"></div>
-        </div>
-      }
-    </mat-card-content>
+      </div>
+    </div>
+
+    <!-- Right Visual Side -->
+    <div class="login-visual-side">
+      <div class="mesh-blob-1"></div>
+      <div class="mesh-blob-2"></div>
+      <div class="mesh-blob-3"></div>
+
+      <div class="visual-content">
+        <h2>{{ 'login.promo.title' | translate }}</h2>
+        <p>{{ 'login.promo.subtitle' | translate }}</p>
+      </div>
+    </div>
+
   </mat-card>
 </div>

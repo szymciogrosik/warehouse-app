@@ -1,19 +1,33 @@
-# Angular Firebase Accelerator
+# Warehouse App (Mój magazyn)
 
-Fast Angular app with Firebase Auth + Firestore, deployed to both GitHub Pages and Firebase Hosting.
+Web application for organizing and cataloging inventory across a hierarchy of **Warehouses → Rooms → Boxes → Items**, built with Angular and Firebase (Authentication, Cloud Firestore, Storage, Hosting) and deployed via GitHub Actions.
 
 **Live:**
+- Custom Domain: https://warehouse.codefromheaven.dev/
+- Firebase Hosting: https://warehouse-app-3333.web.app/
+- GitHub Pages: https://szymciogrosik.github.io/warehouse-app/
 
-- GitHub Pages: https://szymciogrosik.github.io/angular-firebase-accelerator/
-- Firebase Hosting: https://angular-firebase-accelerator.web.app/
+---
+
+## Features
+
+- **Hierarchical Inventory Management:** Organize items into Warehouses, Rooms, and Boxes with creation and modification timestamps.
+- **Move & Reorganize:** Move boxes between rooms/warehouses and move items between boxes directly from the edit dialog.
+- **Global Search & Filtering:** Quickly search items by name, description, or location path, with multi-room filtering and one-click jump to the item's box.
+- **Authentication & User Profiles:** Email/Password and Google Sign-In, profile photo upload with image cropper, and password management.
+- **Admin Panel:** Role-based user management (`ADMIN_PAGE_ACCESS`, `ADMIN_CORE_SETTINGS`), user archiving/restoring, and public settings configuration (open registration, dark mode, profile picture changes).
+- **Internationalization & Themes:** Full Polish (`pl`) and English (`en`) translations (`@ngx-translate/core`) and configurable Light/Dark mode.
+- **Legal & GDPR Compliance:** Built-in Privacy Policy, Terms of Service, Cookie Policy, and Cookie Consent banner tailored to the application.
 
 ---
 
 ## Stack
 
-- Angular (latest CLI)
-- Firebase Authentication + Firestore
-- GitHub Actions (deploy to GH Pages and Firebase)
+- Angular 21 (Standalone components, Signals, Zoneless change detection, Angular Material)
+- Firebase Authentication, Cloud Firestore & Cloud Storage
+- Luxon for date/time formatting
+- Karma & Jasmine unit tests
+- GitHub Actions (CI unit tests + CD to GitHub Pages, Firebase Hosting, and FTP)
 
 ---
 
@@ -24,250 +38,125 @@ Fast Angular app with Firebase Auth + Firestore, deployed to both GitHub Pages a
 npm install
 
 # run locally
-ng serve
+npm start
 # open http://localhost:4200
+
+# run tests (interactive watch mode)
+npm test
+
+# run tests once headlessly with coverage
+npm run test:ci
 ```
 
 ---
 
-## Use the template
+## Sync with template (`angular-firebase-accelerator`)
 
-Create a fresh repo from the template. **Do not** copy branches.
+This project is connected to the upstream template repository (`szymciogrosik/angular-firebase-accelerator`).
 
-Create and push two release branches:
+To pull the latest template updates:
 
-```bash
-git checkout -b release/gh-pages
-git push -u origin release/gh-pages
-```
-
-```bash
-git checkout -b release/firebase
-git push -u origin release/firebase
-```
-
----
-
-## Firebase setup
-
-Link to [Firebase](https://console.firebase.google.com/).
-
-1) **Create a project**
-
-2) **Authentication**
-
-- Enable **Email/Password** and **Google** providers.
-- Add your Gmail as auth user: `your-email@gmail.com`, any password. 
-- Copy the generated **uid** and store somewhere. Will be needed soon.
-- Authentication → Settings → **Authorized domains**: add your GitHub Pages domain, e.g. `szymciogrosik.github.io`.
-
-3) **Firestore**
-Setup firestore:
-- Location: Warsaw.
-- Mode: Firestore in **production** mode.
-
-Then create manually a fist user:
-- Create a `users` document for a first user:
-  - Document ID: AdamAbacki (or random uid)
-    - `email` (string): `your-email@gmail.com`
-    - `firstName` (string): `Adam`
-    - `lastName` (string): `Abacki`
-    - `roles` (array of string): `ADMIN_PAGE_ACCESS`
-    - `uid` (string): `<copied from Authentication>`
-- **Rules** → replace with:
-  ```js
-  rules_version = '2';
-
-  service cloud.firestore {
-    match /databases/{database}/documents {
-      // Default deny
-      match /{document=**} {
-        allow read: if false;
-        allow write: if false;
-      }
-
-      // Public settings
-      match /public_settings/{document=**} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Users
-      match /users/{document=**} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null;
-      }
-    }
-  }
-  ```
-
-4) **Web app config**
-
-- Project Settings → General → Your apps → Web → register and copy the config.
-- Add the config to the "Environments" files listed below.
-  - Add your Firebase web config (without the API key) to:
-    - `src/environments/environment-example.ts`
-    - `src/environments/firebase/environment.ts`
-    - `src/environments/ftp/environment.ts`
-    - `src/environments/gh-pages/environment.ts`
-  - Copy `environment-example.ts` → `environment.ts` and fill in API key.
-
-5) **Repo strings to update**
-
-Replace every `angular-firebase-accelerator` with your local app name.
-
-In those files, provide a Firebase app ID:
-- `.firebaserc`
-- `CD - firebase - Step 2 - Build and deploy to firebase-release.yaml` → two places
-- `README.md` link to Firebase Hosting
-
-Rename the secret env var:
-- `FIREBASE_SERVICE_ACCOUNT_ANGULAR_FIREBASE_ACCELERATOR` → use your generated secret name from GitHub.
-
-6) **Firebase CLI**
-
-```bash
-npm i -g firebase-tools
-firebase login
-```
-
-7) **Change firebase project**
-```bash
-firebase use --add
-```
-
-8) **Initialize Hosting (GitHub integration)**
-   Run it. If you configure both sites separately, do it twice.
-
+1. Fetch and merge the latest template changes without committing:
    ```bash
-   firebase init
-   # Choose: Hosting
-   # Public directory: Enter (keep default)
-   # Single-page app rewrite to /index.html: Yes
-   # Set up automatic builds and deploys with GitHub: Yes
-   # Provide user/repository (i.e. szymciogrosik/angular-firebase-accelerator)
-   # Run a build script before deploy? No
-   # Automatic deployment when a PR is merged? No
+   ./script_sync_with_template.sh
+   ```
+2. Resolve any merge conflicts, keeping warehouse-specific features, routes, colors (`#039345`), and translations.
+3. Verify the build and tests:
+   ```bash
+   npm run build
+   npm run test:ci
+   ```
+4. Commit and push:
+   ```bash
+   git commit -m "Merged latest changes from template repository"
+   git push origin main
    ```
 
-9) **Revert unwanted changes in `firebase.json`** if init overwrote custom settings.
+---
+
+## Firebase setup & Security Rules
+
+Link to [Firebase Console](https://console.firebase.google.com/).
+
+### Firestore collections
+- `public_settings/{docId}` – global public flags (`allowForRegistering`, `allowForProfilePictureChange`, `allowDarkMode`).
+- `users/{uid}` – user profiles and roles (`ADMIN_PAGE_ACCESS`, `ADMIN_CORE_SETTINGS`), keyed by Firebase Auth `uid`.
+- `warehouses/{uid}` – user's warehouses, rooms, boxes, and items tree, keyed by Firebase Auth `uid`.
+
+### Firestore Security Rules
+```javascript
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper function to check if the caller is an admin
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        ('ADMIN_CORE_SETTINGS' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles ||
+         'ADMIN_PAGE_ACCESS' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles);
+    }
+
+    // Public settings (allowForRegistering, themes, etc.)
+    match /public_settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth != null && (
+        userId == request.auth.uid ||
+        isAdmin()
+      );
+
+      allow create: if request.auth != null && (
+        (userId == request.auth.uid && request.resource.data.roles.size() == 0) ||
+        isAdmin()
+      );
+
+      allow update: if request.auth != null && (
+        (
+          userId == request.auth.uid &&
+          request.resource.data.roles == resource.data.roles &&
+          request.resource.data.isDeleted == resource.data.isDeleted
+        ) ||
+        isAdmin()
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // Warehouses collection
+    match /warehouses/{userId} {
+      allow read, write: if request.auth != null && (
+        userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+  }
+}
+```
+
+### Environments
+Firebase web configuration is stored in:
+- `src/environments/environment-example.ts`
+- `src/environments/firebase/environment.ts`
+- `src/environments/ftp/environment.ts`
+- `src/environments/gh-pages/environment.ts`
+
+For local development, copy `src/environments/environment-example.ts` to `src/environments/environment.ts` and provide your `FIREBASE_API_KEY`.
 
 ---
 
-## GitHub configuration
+## CI / CD & Deployment
 
-1) **Actions permissions**  
-   Settings → Actions → General → Workflow permissions:
-
-- Read and write permissions
-- Allow GitHub Actions to create and approve pull requests
-
-2) **GH pages environment**  
-   Settings → Pages:
-
-- Build and deployment: GitHub Actions
-- Environments → `github-pages`
-  - Deployment branches and tags: add `release/gh-pages`
-  - Secrets: add `FIREBASE_API_KEY` (from the Firebase web app)
-
-3) **Firebase environment**  
-   Settings → Environments → `firebase`
-
-- Secrets: add `FIREBASE_API_KEY` (same key)
-
-4) **Service account secret**  
-   During `firebase init` with GitHub, a repo secret like  
-   `FIREBASE_SERVICE_ACCOUNT_<PROJECT_NAME>` is created. Verify if it is and keep it.
-
----
-
-## Connect with template (ONLY FIRST TIME)
-
-1. Add the template repo as a remote source named "template":
-```bash
-git remote add template https://github.com/szymciogrosik/angular-firebase-accelerator.git
-```
-
-2. Fetch the latest template data: 
-```bash 
-git fetch template main
-```
-
-3. Make sure you are on your main branch with a clean working tree: 
-```bash 
-git checkout main
-```
-
-4. Merge the template changes into your code first time
-```bash 
-git merge template/main --allow-unrelated-histories --no-edit --no-commit
-```
- 
-5. Resolve the Conflicts in IntelliJ At this exact point, Git will pause the merge and say CONFLICT. 
-- Open IntelliJ IDEA. 
-- IntelliJ will detect the conflicting files. You can right-click them -> Git -> Resolve Conflicts. 
-- Use IntelliJ's side-by-side three-way merge tool to pick which changes you want from the template vs. what you want to keep in your original app.
-
-6. Commit and Push: 
-Once all conflicts are marked as resolved in IntelliJ, finalize the merge process: 
-```bash 
-git commit -m "Permanently link template history"
-```
-```bash 
-git push origin main
-```
-
----
-
-## Sync with template (Do this every time you want updates from template repo)
-
-1. Fetch the latest template data: 
-```bash 
-git fetch template main
-```
-
-2. Make sure you are on your main branch with a clean working tree: 
-```bash 
-git checkout main
-```
-
-3. Merge the template changes into your code
-```bash 
-git merge template/main --no-edit --no-commit
-```
- 
-4. Resolve the Conflicts in IntelliJ At this exact point, Git will pause the merge and say CONFLICT. 
-- Open IntelliJ IDEA. 
-- IntelliJ will detect the conflicting files. You can right-click them -> Git -> Resolve Conflicts. 
-- Use IntelliJ's side-by-side three-way merge tool to pick which changes you want from the template vs. what you want to keep in your original app.
-
-5. Commit and Push: 
-Once all conflicts are marked as resolved in IntelliJ, finalize the merge process: 
-```bash 
-git commit -m "Merged latest changes from template repository" 
-```
-```bash 
-git push origin main
-```
-
----
-
-## Troubleshooting
-- 403 when deploying to Firebase: enable **IAM Service Account Credentials API**.
-- Auth popup blocked on GH Pages: add your GH Pages domain in **Authorized domains**.
-- GH Action cannot push to `gh-pages`: verify **Read and write permissions** and the `github-pages` environment configuration.
-- Change Angular CLI version when needed
-```bash
-npm uninstall -g @angular/cli
-npm cache clean --force
-npm cache verify
-npm install -g @angular/cli@<version>
-ng version
-```
-
----
-
-## Links
-
-- Angular CLI: https://github.com/angular/angular-cli
-- Firebase CLI: https://firebase.google.com/docs/cli
+- **Pull Request Quality Gate:** `.github/workflows/ci-pr-tests.yaml` runs unit tests and coverage on PRs targeting `main`, `release/firebase`, or `release/gh-pages`.
+- **Firebase Release:** Pushing to `release/firebase` triggers `.github/workflows/CD - firebase - Step 2 - Build and deploy to firebase-release.yaml`.
+- **GitHub Pages Release:** Pushing to `release/gh-pages` triggers `.github/workflows/CD - gh-pages - Step 2 - Build and deploy to gh-pages.yaml`.
+- **FTP Release:** Pushing to `release/ftp` triggers `.github/workflows/CD - ftp - Step 2 - Build and deploy to ftp-release.yaml`.

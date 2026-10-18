@@ -2,7 +2,7 @@
   <mat-card class="app-card-wide">
     <mat-card-title>
       <h1>{{ 'admin.panel.header' | translate }}</h1>
-      <p>{{ 'admin.panel.helloMessage' | translate }}{{ this.loggedUserName }}!</p>
+      <p>{{ 'admin.panel.helloMessage' | translate }}{{ this.loggedUserName() }}!</p>
     </mat-card-title>
     <mat-card-content>
       @if (!environment.production) {
@@ -13,7 +13,7 @@
         </mat-card>
       }
       <mat-tab-group dynamicHeight>
-        @if (settingsVisible) {
+        @if (settingsTabVisible()) {
           <mat-tab label="{{ 'admin.panel.tab.header.settings' | translate }}">
             <div>
               <app-settings></app-settings>

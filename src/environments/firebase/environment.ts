@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   buildVersion: 'BUILD_VERSION_TEMPLATE',
   default_language: 'pl',
   selected_language_key: 'Language',

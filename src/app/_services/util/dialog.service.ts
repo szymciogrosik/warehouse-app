@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {DialogComponent} from "../../_shared-components/dialog/dialog.component";
 import {DialogData} from "../../_models/dialog/dialog-data";
 import {MatDialog} from "@angular/material/dialog";
@@ -9,11 +9,10 @@ import {CustomTranslateService} from "../translate/custom-translate.service";
 })
 export class DialogService {
 
-  constructor(
-    private dialog: MatDialog,
-    private translateService: CustomTranslateService,
-  ) {
-  }
+  private dialog = inject(MatDialog);
+  private translateService = inject(CustomTranslateService);
+  
+  constructor() {}
 
   public openConfirmDialog(messageKey: string) {
     return this.dialog.open(
@@ -22,13 +21,13 @@ export class DialogService {
         maxWidth: '600px',
         width: '400px',
         disableClose: true,
-        data: new DialogData(
-          this.translateService.get('admin.panel.settings.warning.popupWarning'),
-          null,
-          this.translateService.get(messageKey),
-          this.translateService.get('registeredUsers.details.cancel'),
-          this.translateService.get('registeredUsers.details.confirm')
-        )
+        data: {
+          title: this.translateService.get('admin.panel.settings.warning.popupWarning'),
+          popupType: null,
+          message: this.translateService.get(messageKey),
+          cancelButtonText: this.translateService.get('registeredUsers.details.cancel'),
+          confirmButtonText: this.translateService.get('registeredUsers.details.confirm')
+        }
       }
     );
   }

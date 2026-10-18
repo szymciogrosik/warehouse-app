@@ -4,9 +4,10 @@ export interface EditDialogData {
   title: string;
   name: string;
   description: string;
-  editType: EditDialogType;
+  editType: EditDialogType | null;
   warehouses?: any[];
-  selectedWarehouseIndex: number;
-  selectedRoomIndex?: number;
-  selectedBoxIndex?: number;
+  selectedWarehouseIndex: number | null;
+  selectedRoomIndex?: number | null;
+  selectedBoxIndex?: number | null;
 }
+

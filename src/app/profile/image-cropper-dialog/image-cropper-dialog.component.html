@@ -3,7 +3,7 @@
 
   <mat-dialog-content class="mat-typography dialog-font">
     <div style="margin-top: 10px;">
-      <image-cropper [imageChangedEvent]="data.imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+      <image-cropper [imageChangedEvent]="data.imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1"
                      [roundCropper]="true" format="webp" [resizeToWidth]="512" (imageCropped)="imageCropped($event)">
       </image-cropper>
     </div>
@@ -18,7 +18,7 @@
       <button type="submit" mat-raised-button color="primary" class="app-action-button" (click)="onSave()"
               [disabled]="isSaving || !croppedImageBlob">
         @if (isSaving) {
-          <mat-spinner diameter="20"></mat-spinner>
+          <app-skeleton width="60px" height="14px" borderRadius="10px" style="margin: 0 auto;"></app-skeleton>
         } @else {
           {{ 'dialog.save' | translate }}
         }

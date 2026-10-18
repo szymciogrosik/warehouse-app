@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {environment} from '../../environments/environment';
+import {ChangeDetectionStrategy, Component, OnInit, inject} from '@angular/core';
+import {APP_CONFIG} from '../app.config.token';
 import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {WarehouseViewComponent} from './warehouse/warehouse.component';
@@ -9,12 +9,12 @@ import {WarehouseViewComponent} from './warehouse/warehouse.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatCardModule, WarehouseViewComponent]
+  imports: [CommonModule, MatCardModule, WarehouseViewComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  protected readonly environment = inject(APP_CONFIG);
 
-  ngOnInit(): void {}
-
-  protected readonly environment = environment;
+  ngOnInit(): void {
+  }
 }

@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Injectable, effect, inject} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {PublicSettingsService} from '../../_database/settings/public-settings.service';
+import {PublicSettingsFacade} from '../../_database/settings/public-settings.facade';
 
 @Injectable({
   providedIn: 'root'
@@ -15,33 +15,27 @@ export class ThemeService {
   private isDarkTheme = new BehaviorSubject<boolean>(false);
   public isDarkTheme$ = this.isDarkTheme.asObservable();
 
-  constructor(private publicSettingsService: PublicSettingsService) {
-    // Always start in light mode immediately — before Firebase responds
+  private facade = inject(PublicSettingsFacade);
+
+  constructor() {
+    // Always start in light mode immediately
     this.applyTheme(false);
 
-    // Load the Firebase setting and then decide theme
-    this.publicSettingsService.getDocument('general').subscribe({
-      next: data => {
-        const allow = data?.allowDarkMode === true;
+    effect(() => {
+      const settings = this.facade.settings();
+      if (settings !== undefined) {
+        const allow = settings ? settings.allowDarkMode : false;
         this.allowDarkMode.next(allow);
 
         if (allow) {
-          // Only restore user's saved preference when dark mode is allowed
           const savedTheme = localStorage.getItem(this.THEME_KEY);
           const isDark = savedTheme !== null ? JSON.parse(savedTheme) : false;
           this.isDarkTheme.next(isDark);
           this.applyTheme(isDark);
         } else {
-          // Dark mode disabled — always light
           this.isDarkTheme.next(false);
           this.applyTheme(false);
         }
-      },
-      error: () => {
-        // On error, fall back to light theme
-        this.allowDarkMode.next(false);
-        this.isDarkTheme.next(false);
-        this.applyTheme(false);
       }
     });
   }

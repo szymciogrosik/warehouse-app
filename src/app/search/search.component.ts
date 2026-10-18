@@ -1,4 +1,4 @@
-import {Component, OnInit, inject, DestroyRef} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, inject, DestroyRef, signal} from '@angular/core';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -67,10 +67,11 @@ interface ItemTableRow {
   ]
 })
 export class SearchComponent implements OnInit {
-  protected availableRooms: { name: string; rooms: { name: string; fullPath: string }[] }[] = [];
+  protected availableRooms = signal<{ name: string; rooms: { name: string; fullPath: string }[] }[]>([]);
   protected selectedRooms: string[] = [];
   protected displayedColumns: string[] = ['position', 'name', 'description', 'location'];
   protected dataSource = new MatTableDataSource<ItemTableRow>([]);
+  protected filteredItems = signal<ItemTableRow[]>([]);
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
@@ -79,9 +80,11 @@ export class SearchComponent implements OnInit {
   private navService = inject(WarehouseNavigationService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+  private cdr = inject(ChangeDetectorRef);
 
   protected warehouses: Warehouses | null = null;
   private userUid: string | null = null;
+  private currentTextFilter = '';
 
   ngOnInit(): void {
     this.authService
@@ -97,16 +100,21 @@ export class SearchComponent implements OnInit {
               this.warehouses = ws;
               if (ws) {
                 this.dataSource.data = this.flattenItems(ws);
+                this.applyFilter();
               }
+              this.cdr.markForCheck();
             });
         }
       });
   }
 
   protected applyFilter(event?: Event): void {
-    const textFilter = event ? (event.target as HTMLInputElement).value.trim().toLowerCase() : '';
+    if (event) {
+      this.currentTextFilter = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    }
+    const textFilter = this.currentTextFilter;
 
-    this.dataSource.filterPredicate = (row: ItemTableRow, filter: string) => {
+    this.dataSource.filterPredicate = (row: ItemTableRow) => {
       const matchesText =
         !textFilter ||
         row.name.toLowerCase().includes(textFilter) ||
@@ -121,6 +129,7 @@ export class SearchComponent implements OnInit {
 
     // force re-evaluation even if content looks same
     this.dataSource.filter = textFilter + '|' + this.selectedRooms.sort().join(',') + '|' + Date.now();
+    this.filteredItems.set([...this.dataSource.filteredData]);
   }
 
   private flattenItems(ws: Warehouses): ItemTableRow[] {
@@ -153,10 +162,17 @@ export class SearchComponent implements OnInit {
       roomMap.push(warehouseEntry);
     });
 
-    this.availableRooms = roomMap;
+    this.availableRooms.set(roomMap);
 
-    // default: all rooms selected
-    this.selectedRooms = roomMap.flatMap(w => w.rooms.map(r => r.fullPath));
+    const allRoomPaths = roomMap.flatMap(w => w.rooms.map(r => r.fullPath));
+    if (this.selectedRooms.length === 0) {
+      this.selectedRooms = allRoomPaths;
+    } else {
+      this.selectedRooms = this.selectedRooms.filter(r => allRoomPaths.includes(r));
+      if (this.selectedRooms.length === 0) {
+        this.selectedRooms = allRoomPaths;
+      }
+    }
 
     return rows;
   }

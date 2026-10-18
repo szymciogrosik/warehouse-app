@@ -6,7 +6,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslateDirective, TranslatePipe} from '@ngx-translate/core';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatMenuModule} from "@angular/material/menu";
 import {RouterModule} from "@angular/router";
@@ -28,7 +28,8 @@ import {MatInputModule} from "@angular/material/input";
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatIconModule,
-    TranslateModule,
+    TranslatePipe,
+    TranslateDirective,
     MatDialogModule,
     MatMenuModule,
     RouterModule,
@@ -49,7 +50,8 @@ import {MatInputModule} from "@angular/material/input";
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatIconModule,
-    TranslateModule,
+    TranslatePipe,
+    TranslateDirective,
     MatDialogModule,
     MatMenuModule,
     RouterModule,

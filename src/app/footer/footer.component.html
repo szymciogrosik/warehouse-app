@@ -1,8 +1,15 @@
 <mat-toolbar class="footer footer-shadow">
   <div class="footer-content">
     <span class="copyrights">
-      © Szymon Gross 2026
+      {{ 'footer.copyrights' | translate }}
     </span>
+    <div class="legal-links">
+      <a [routerLink]="rp.SEP + rp.PRIVACY_POLICY" class="legal-link">{{ 'footer.legal.privacy' | translate }}</a>
+      <span class="legal-sep">·</span>
+      <a [routerLink]="rp.SEP + rp.TERMS" class="legal-link">{{ 'footer.legal.terms' | translate }}</a>
+      <span class="legal-sep">·</span>
+      <a [routerLink]="rp.SEP + rp.COOKIES" class="legal-link">{{ 'footer.legal.cookies' | translate }}</a>
+    </div>
     <span class="icons-container">
       <button mat-icon-button aria-label="Instagram link"
               (click)="this.openLink('https://www.instagram.com/szymciogrosik/')">
