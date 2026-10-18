@@ -1,3 +1,13 @@
 <div class="app-page-container">
-  <warehouse-view></warehouse-view>
+  @if (isAuthLoading()) {
+    <mat-card class="app-card-wide home-skeleton-card">
+      <app-skeleton width="45%" height="36px" borderRadius="12px"></app-skeleton>
+      <app-skeleton width="75%" height="20px" borderRadius="8px"></app-skeleton>
+      <app-skeleton width="100%" height="140px" borderRadius="18px"></app-skeleton>
+    </mat-card>
+  } @else if (isLoggedIn()) {
+    <warehouse-view></warehouse-view>
+  } @else {
+    <app-starter-showcase></app-starter-showcase>
+  }
 </div>
