@@ -7,6 +7,6 @@ export interface CustomUser {
   readonly firstName: string;
   readonly lastName: string;
   readonly roles: ReadonlyArray<AccessRole>;
-  readonly photoUrl?: string;
+  readonly photoUrl?: string | null;
   readonly isDeleted?: boolean;
 }

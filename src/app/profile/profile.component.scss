@@ -40,6 +40,16 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
+.remove-photo-fab {
+  position: absolute !important;
+  bottom: 0;
+  left: 0;
+  transform: translate(-25%, 25%);
+  width: 40px !important;
+  height: 40px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
 .avatar-wrapper {
   width: 150px;
   height: 150px;
@@ -70,7 +80,7 @@
 }
 
 .avatar-fallback {
-  font-size: clamp(4rem, 5cqi, 6rem);
+  font-size: clamp(4rem, 5cqi, 4.75rem);
   font-weight: 500;
   color: #757575;
   text-transform: uppercase;

@@ -50,7 +50,7 @@
 
       <section>
         <h2>{{ 'terms.s5.title' | translate }}</h2>
-        <p>{{ 'terms.s5.p1' | translate }}</p>
+        <p [innerHTML]="'terms.s5.p1' | translate"></p>
         <ul>
           <li>{{ 'terms.s5.item1' | translate }}</li>
           <li>{{ 'terms.s5.item2' | translate }}</li>
@@ -60,8 +60,9 @@
 
       <section>
         <h2>{{ 'terms.s6.title' | translate }}</h2>
+        <p>{{ 'terms.s6.p1' | translate }}</p>
         <ul>
-          <li [innerHTML]="'terms.s6.item1' | translate"></li>
+          <li>{{ 'terms.s6.item1' | translate }}</li>
           <li>{{ 'terms.s6.item2' | translate }}</li>
           <li>{{ 'terms.s6.item3' | translate }}</li>
         </ul>
@@ -69,12 +70,21 @@
 
       <section>
         <h2>{{ 'terms.s7.title' | translate }}</h2>
-        <p [innerHTML]="'terms.s7.p1' | translate"></p>
+        <ul>
+          <li [innerHTML]="'terms.s7.item1' | translate"></li>
+          <li>{{ 'terms.s7.item2' | translate }}</li>
+          <li>{{ 'terms.s7.item3' | translate }}</li>
+        </ul>
       </section>
 
       <section>
         <h2>{{ 'terms.s8.title' | translate }}</h2>
         <p [innerHTML]="'terms.s8.p1' | translate"></p>
+      </section>
+
+      <section>
+        <h2>{{ 'terms.s9.title' | translate }}</h2>
+        <p [innerHTML]="'terms.s9.p1' | translate"></p>
       </section>
     </mat-card-content>
   </mat-card>

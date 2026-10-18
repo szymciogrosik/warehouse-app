@@ -81,8 +81,8 @@ Inspect conflicted and modified files using `git status`. Resolve conflicts by f
   - Interactive states: Never apply `translateY` or position-shifting animations to cards on hover.
 
 ### E. Dependencies (`package.json`, `package-lock.json`)
-- Merge new packages or updated dependency versions from the template.
-- If dependencies were added or upgraded, execute `npm install` to keep node modules and lockfile synchronized.
+- Merge new packages or updated dependency versions in `package.json`, preserving downstream-specific packages while adopting template upgrades.
+- Do not manually resolve conflicts in `package-lock.json`—it will be cleanly regenerated.
 
 ---
 
@@ -95,27 +95,40 @@ For every newly merged or updated template component:
 
 ---
 
-## 5. Build Verification & Issue Resolution
+## 5. Lockfile Regeneration, Build Verification & Issue Resolution
 
-Always verify that the entire application compiles cleanly after resolving conflicts:
+After merging and resolving conflicts, always regenerate `package-lock.json`, verify that the application compiles cleanly, and stage the changes:
 
-```bash
-npx ng build --configuration=local
-```
-
-1. Fix all TypeScript compilation errors, missing imports, or type mismatches.
-2. Resolve any SCSS compile or variable reference errors.
-3. Re-run `npx ng build --configuration=local` until the exit code is `0`.
-4. Stage resolved files with `git add <file>`.
+1. **Regenerate `package-lock.json`**:
+   Remove the existing `package-lock.json` and generate a fresh one to ensure a clean dependency tree without merge artifacts:
+   ```bash
+   rm -f package-lock.json
+   npm install
+   ```
+2. **Verify Build**:
+   Run the local build to ensure everything compiles cleanly:
+   ```bash
+   npx ng build --configuration=local
+   ```
+   - Fix all TypeScript compilation errors, missing imports, or type mismatches.
+   - Resolve any SCSS compile or variable reference errors.
+   - Re-run `npx ng build --configuration=local` until the exit code is `0`.
+3. **Stage Resolved Files & Lockfile**:
+   Stage all resolved files and explicitly ensure the newly generated `package-lock.json` is added to git:
+   ```bash
+   git add package-lock.json
+   git add <resolved-files>
+   ```
 
 ---
 
 ## 6. Completion & Developer Handoff
 
-Once all conflicts are resolved and the build succeeds:
-1. Run `git status` to confirm a clean, conflict-free state with staged/unstaged changes.
+Once all conflicts are resolved, `package-lock.json` is regenerated and staged, and the build succeeds:
+1. Run `git status` to confirm a clean, conflict-free state with staged changes (including `package-lock.json`).
 2. Provide a clear summary to the developer:
    - Summary of resolved conflicts and adopted template features.
+   - Confirmation that `package-lock.json` was removed, freshly regenerated, and added to git.
    - Confirmation of successful build (`npx ng build --configuration=local`).
    - Remind the developer to review diffs and commit manually when ready:
      ```bash

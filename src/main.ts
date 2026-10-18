@@ -5,7 +5,6 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {getAuth, provideAuth} from '@angular/fire/auth';
 import {getFirestore, provideFirestore} from '@angular/fire/firestore';
-import {getStorage, provideStorage} from '@angular/fire/storage';
 import {getAnalytics, provideAnalytics} from '@angular/fire/analytics';
 import {provideTranslateService} from '@ngx-translate/core';
 import {AppComponent} from './app/app.component';
@@ -58,7 +57,6 @@ bootstrapApplication(AppComponent, {
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()),
     provideAnalytics(() => getAnalytics()),
     {provide: MatPaginatorIntl, useClass: CustomPaginatorIntl},
   ]
