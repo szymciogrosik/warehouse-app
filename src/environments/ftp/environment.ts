@@ -11,5 +11,9 @@ export const environment = {
     messagingSenderId: "27177972910",
     appId: "1:27177972910:web:c5b492c693e8733d7ca93f",
     measurementId: "G-JH7W8YS56Z"
+  },
+  cloudinary: {
+    cloudName: "CLOUDINARY_CLOUD_NAME",
+    uploadPreset: "CLOUDINARY_UPLOAD_PRESET"
   }
 };

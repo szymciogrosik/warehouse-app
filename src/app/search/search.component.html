@@ -1,12 +1,13 @@
 <div class="app-page-container">
   <mat-card class="app-card-wide">
     <div class="filter-container">
-      <mat-form-field appearance="outline" class="filter-field">
+      <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
         <mat-label>{{ 'wh.search.filter' | translate }}</mat-label>
         <input matInput type="text" (keyup)="applyFilter($event)"
                placeholder="{{ 'wh.search.placeholder' | translate }}" #input>
+        <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="filter-field">
+      <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
         <mat-label>{{ 'wh.search.roomFilter' | translate }}</mat-label>
         <mat-select multiple [(value)]="selectedRooms" (selectionChange)="applyFilter()">
 
@@ -22,58 +23,64 @@
     </div>
 
     @if (filteredItems().length > 0) {
-      <mat-list>
+      <div class="wh-tiles-grid">
         @for (item of filteredItems(); track $index) {
-          <mat-list-item class="list-item-class">
-            <!-- Title + actions on the same row -->
-            <div matListItemTitle class="list-item-header">
-              <div class="list-item-title" (click)="navigateToBox(item)">
-                <mat-icon class="mat-icon-in-list-header-class">sell</mat-icon>
-                {{ item.name }}
+          <div class="wh-tile">
+            <div class="wh-tile-top">
+              <div class="wh-tile-title-group clickable-title" (click)="navigateToBox(item)">
+                <div class="wh-tile-icon-badge">
+                  <mat-icon>sell</mat-icon>
+                </div>
+                <strong class="wh-tile-title">{{ item.name }}</strong>
               </div>
-              <div class="list-item-actions">
-                <button mat-icon-button class="mat-icon-class" (click)="editItem(item)">
+              <div class="wh-tile-actions">
+                <button mat-icon-button (click)="editItem(item)">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button class="mat-icon-class" (click)="removeItem(item)">
-                  <mat-icon>delete</mat-icon>
+                <button mat-icon-button (click)="removeItem(item)">
+                  <mat-icon>delete_outline</mat-icon>
                 </button>
-                <button mat-icon-button class="mat-icon-class" (click)="navigateToBox(item)">
+                <button mat-icon-button (click)="navigateToBox(item)">
                   <mat-icon>open_in_new</mat-icon>
                 </button>
               </div>
             </div>
 
-            <!-- Optional description -->
-            <span matListItemLine class="list-item-description">
-          <mat-icon class="mat-icon-in-list-class">category</mat-icon>
-              @if (item.description) {
-                {{ item.description }}
-              } @else {
-                -
-              }
-        </span>
+            <p class="wh-tile-desc">
+              <mat-icon>category</mat-icon>
+              <span>
+                @if (item.description) {
+                  {{ item.description }}
+                } @else {
+                  -
+                }
+              </span>
+            </p>
 
-            <span matListItemLine class="list-item-description">
-          <mat-icon class="mat-icon-in-list-class">location_on</mat-icon>
-              {{ item.location }}
-        </span>
+            <div class="wh-tile-location-badge" (click)="navigateToBox(item)">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ item.location }}</span>
+            </div>
 
-            <!-- Timestamps -->
-            <span matListItemLine class="list-item-timestamps">
-          {{ 'wh.element.lastModificationTimestamp' | translate }}
-              {{ this.presentTimestamp(item.updatedTimestamp) }}
-        </span>
-            <span matListItemLine class="list-item-timestamps">
-          {{ 'wh.element.createdTimestamp' | translate }}
-              {{ this.presentTimestamp(item.createdTimestamp) }}
-        </span>
-          </mat-list-item>
+            <div class="wh-tile-footer">
+              <div class="wh-tile-timestamps">
+                <span>
+                  {{ 'wh.element.lastModificationTimestamp' | translate }}
+                  <strong>{{ this.presentTimestamp(item.updatedTimestamp) }}</strong>
+                </span>
+                <span>
+                  {{ 'wh.element.createdTimestamp' | translate }}
+                  {{ this.presentTimestamp(item.createdTimestamp) }}
+                </span>
+              </div>
+            </div>
+          </div>
         }
-      </mat-list>
+      </div>
     } @else {
       <div class="no-results">
-        {{ 'wh.search.noResult' | translate }} "{{ input.value }}"
+        <mat-icon>search_off</mat-icon>
+        <span>{{ 'wh.search.noResult' | translate }} "{{ input.value }}"</span>
       </div>
     }
   </mat-card>

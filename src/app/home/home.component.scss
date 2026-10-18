@@ -1,6 +1,17 @@
 @use "src/styles.scss" as *;
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .home-content {
   flex: 1 0 auto; // Takes available space, pushing the footer down
   overflow-y: auto; // Adds scroll to content if needed
+}
+
+.home-skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

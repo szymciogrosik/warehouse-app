@@ -4,7 +4,8 @@
   <mat-dialog-content class="mat-typography dialog-font">
     <div style="margin-top: 10px;">
       <image-cropper [imageChangedEvent]="data.imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1"
-                     [roundCropper]="true" format="webp" [resizeToWidth]="512" (imageCropped)="imageCropped($event)">
+                     [roundCropper]="true" format="webp" [resizeToWidth]="512" (imageCropped)="imageCropped($event)"
+                     (loadImageFailed)="loadImageFailed()">
       </image-cropper>
     </div>
   </mat-dialog-content>

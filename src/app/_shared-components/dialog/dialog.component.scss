@@ -11,12 +11,25 @@
 
 .dialog-image {
   text-align: center;
+  margin: 24px 0 28px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   mat-icon {
-    font-size: clamp(5rem, 5cqi, 8rem);
-    height: clamp(5rem, 5cqi, 8rem);
-    width: clamp(5rem, 5cqi, 8rem);
+    font-size: clamp(5.5rem, 6cqi, 7.5rem);
+    height: clamp(5.5rem, 6cqi, 7.5rem);
+    width: clamp(5.5rem, 6cqi, 7.5rem);
+    line-height: 1;
   }
+}
+
+.dialog-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--app-text-secondary);
+  text-align: left;
+  margin-bottom: 8px;
 }
 
 .dialog-success-image {

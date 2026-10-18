@@ -1,0 +1,416 @@
+<div class="showcase-wrapper">
+  <!-- 1. MONUMENTAL HERO CARD -->
+  <mat-card class="hero-bento-card">
+    <div class="hero-mesh-backdrop" aria-hidden="true">
+      <div class="mesh-orb orb-1"></div>
+      <div class="mesh-orb orb-2"></div>
+      <div class="mesh-orb orb-3"></div>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-top-row">
+        <div class="status-pill">
+          <span class="pulse-dot"></span>
+          <span>{{ copy().badge }}</span>
+        </div>
+
+        <div class="session-chip">
+          @if (user(); as currentUser) {
+            @if (currentUser.photoUrl) {
+              <img [src]="currentUser.photoUrl" alt="Avatar" class="chip-avatar">
+            } @else {
+              <span class="chip-initials">{{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}</span>
+            }
+            <span class="chip-text">{{ copy().welcomeBack }} <strong>{{ currentUser.firstName }}</strong></span>
+          } @else {
+            <mat-icon class="chip-icon">visibility</mat-icon>
+            <span class="chip-text">{{ copy().guestMode }}</span>
+          }
+        </div>
+      </div>
+
+      <h1 class="hero-headline">
+        {{ copy().heroTitlePrefix }}
+        <span class="hero-headline-accent">{{ copy().heroTitleAccent }}</span>
+      </h1>
+
+      <p class="hero-lead">
+        {{ copy().heroSubtitle }}
+      </p>
+
+      <div class="hero-cta-row">
+        @if (!isLoggedIn()) {
+          <a mat-raised-button color="primary" class="hero-btn-primary" [routerLink]="rp.SEP + rp.LOGIN">
+            <mat-icon>login</mat-icon>
+            <span>{{ copy().ctaLogin }}</span>
+          </a>
+        } @else {
+          <a mat-raised-button color="primary" class="hero-btn-primary" [routerLink]="rp.SEP + rp.PROFILE">
+            <mat-icon>account_circle</mat-icon>
+            <span>{{ copy().ctaProfile }}</span>
+          </a>
+        }
+        <button type="button" mat-stroked-button class="hero-btn-secondary" (click)="scrollToPlayground()">
+          <mat-icon>explore</mat-icon>
+          <span>{{ copy().ctaExplore }}</span>
+        </button>
+      </div>
+
+      <div class="hero-metrics-strip">
+        <div class="metric-item">
+          <mat-icon class="metric-icon">account_tree</mat-icon>
+          <div class="metric-copy">
+            <span class="metric-label">{{ copy().metricHierarchyLabel }}</span>
+            <strong class="metric-value">{{ copy().metricHierarchyValue }}</strong>
+          </div>
+        </div>
+
+        <div class="metric-item">
+          <mat-icon class="metric-icon">manage_search</mat-icon>
+          <div class="metric-copy">
+            <span class="metric-label">{{ copy().metricSearchLabel }}</span>
+            <strong class="metric-value">{{ copy().metricSearchValue }}</strong>
+          </div>
+        </div>
+
+        <div class="metric-item">
+          <mat-icon class="metric-icon">cloud_sync</mat-icon>
+          <div class="metric-copy">
+            <span class="metric-label">{{ copy().metricSyncLabel }}</span>
+            <strong class="metric-value">{{ copy().metricSyncValue }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- 2. INTERACTIVE BENTO PLAYGROUND -->
+  <div id="bento-playground" class="bento-grid">
+
+    <!-- TILE 1 (FULL WIDTH): WITHOUT LOGIN VS WITH LOGIN COMPARISON -->
+    <mat-card class="bento-card bento-span-3">
+      <div class="bento-header">
+        <span class="bento-eyebrow">{{ copy().compareTag }}</span>
+        <h2>{{ copy().compareTitle }}</h2>
+        <p>{{ copy().compareSubtitle }}</p>
+      </div>
+
+      <div class="comparison-grid">
+        <!-- Guest Column -->
+        <div class="comparison-column guest-column">
+          <div class="col-header">
+            <span class="col-badge">{{ copy().guestColBadge }}</span>
+            <div class="col-title-row">
+              <mat-icon class="col-icon">visibility</mat-icon>
+              <h3>{{ copy().guestColTitle }}</h3>
+            </div>
+            <p class="col-desc">{{ copy().guestColDesc }}</p>
+          </div>
+
+          <ul class="comparison-list">
+            @for (point of copy().guestPoints; track point) {
+              <li>
+                <mat-icon class="list-icon guest-check">check_circle_outline</mat-icon>
+                <span>{{ point }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Logged-In Standard User Column -->
+        <div class="comparison-column member-column">
+          <div class="col-header">
+            <span class="col-badge member-badge">{{ copy().memberColBadge }}</span>
+            <div class="col-title-row">
+              <mat-icon class="col-icon member-icon">verified</mat-icon>
+              <h3>{{ copy().memberColTitle }}</h3>
+            </div>
+            <p class="col-desc">{{ copy().memberColDesc }}</p>
+          </div>
+
+          <ul class="comparison-list">
+            @for (point of copy().memberPoints; track point) {
+              <li>
+                <mat-icon class="list-icon member-check">task_alt</mat-icon>
+                <span>{{ point }}</span>
+              </li>
+            }
+          </ul>
+
+          @if (!isLoggedIn()) {
+            <div class="comparison-cta-wrap">
+              <a mat-raised-button color="primary" class="app-action-button" [routerLink]="rp.SEP + rp.LOGIN">
+                <mat-icon>rocket_launch</mat-icon>
+                <span>{{ copy().compareCta }}</span>
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- TILE 2 (SPAN 2): INTERACTIVE CORE BUSINESS WORKFLOW PREVIEW -->
+    <mat-card class="bento-card bento-span-2">
+      <div class="bento-header">
+        <span class="bento-eyebrow">{{ copy().workflowTag }}</span>
+        <h2>{{ copy().workflowTitle }}</h2>
+        <p>{{ copy().workflowSubtitle }}</p>
+      </div>
+
+      <div class="pipeline-diagram" role="tablist">
+        <button type="button" class="pipeline-node" [class.active]="activeStep() === 'hierarchy'"
+                (click)="selectStep('hierarchy')">
+          <mat-icon class="node-icon">warehouse</mat-icon>
+          <div class="node-meta">
+            <span class="node-step">01 • HIERARCHY</span>
+            <strong>{{ currentLang() === 'en' ? 'Warehouses & Locations' : 'Magazyny i Lokalizacje' }}</strong>
+          </div>
+        </button>
+
+        <div class="pipeline-connector" aria-hidden="true">
+          <mat-icon>east</mat-icon>
+        </div>
+
+        <button type="button" class="pipeline-node" [class.active]="activeStep() === 'catalog'"
+                (click)="selectStep('catalog')">
+          <mat-icon class="node-icon">inventory_2</mat-icon>
+          <div class="node-meta">
+            <span class="node-step">02 • CATALOG</span>
+            <strong>{{ currentLang() === 'en' ? 'Boxes & Relocation' : 'Pudełka i Ruch' }}</strong>
+          </div>
+        </button>
+
+        <div class="pipeline-connector" aria-hidden="true">
+          <mat-icon>east</mat-icon>
+        </div>
+
+        <button type="button" class="pipeline-node" [class.active]="activeStep() === 'search'"
+                (click)="selectStep('search')">
+          <mat-icon class="node-icon">manage_search</mat-icon>
+          <div class="node-meta">
+            <span class="node-step">03 • SEARCH</span>
+            <strong>{{ currentLang() === 'en' ? 'Instant Finder' : 'Szybkie Szukanie' }}</strong>
+          </div>
+        </button>
+      </div>
+
+      <div class="pipeline-inspector">
+        <div class="inspector-top">
+          <div>
+            <span class="inspector-badge">{{ currentStepDetails().stepBadge }}</span>
+            <h3>{{ currentStepDetails().title }}</h3>
+            <span class="inspector-sub">{{ currentStepDetails().subtitle }}</span>
+          </div>
+        </div>
+
+        <p class="inspector-desc">{{ currentStepDetails().description }}</p>
+
+        <div class="path-preview-banner">
+          <mat-icon>route</mat-icon>
+          <code>{{ currentStepDetails().pathPreview }}</code>
+        </div>
+
+        <div class="inspector-specs">
+          @for (spec of currentStepDetails().highlights; track spec.label) {
+            <div class="spec-pill">
+              <span class="spec-label">{{ spec.label }}</span>
+              <span class="spec-value">{{ spec.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- TILE 3 (SPAN 1): POST-LOGIN WORKSPACE & PROFILE PREVIEW -->
+    <mat-card class="bento-card">
+      <div class="bento-header">
+        <span class="bento-eyebrow">{{ copy().workspaceTag }}</span>
+        <h2>{{ copy().workspaceTitle }}</h2>
+        <p>{{ copy().workspaceSubtitle }}</p>
+      </div>
+
+      <div class="workspace-stats-row">
+        <div class="ws-stat">
+          <strong class="ws-stat-val">2</strong>
+          <span class="ws-stat-lbl">{{ copy().workspaceWarehousesLabel }}</span>
+        </div>
+        <div class="ws-stat">
+          <strong class="ws-stat-val">6</strong>
+          <span class="ws-stat-lbl">{{ copy().workspaceBoxesLabel }}</span>
+        </div>
+        <div class="ws-stat">
+          <strong class="ws-stat-val">{{ demoItems().length }}</strong>
+          <span class="ws-stat-lbl">{{ copy().workspaceItemsLabel }}</span>
+        </div>
+      </div>
+
+      <div class="workspace-tree-card">
+        <span class="tree-heading">{{ copy().workspaceTreeTitle }}</span>
+        <div class="tree-node root-node">
+          <mat-icon>warehouse</mat-icon>
+          <span>{{ currentLang() === 'en' ? 'Home' : 'Dom' }}</span>
+        </div>
+        <div class="tree-node child-room">
+          <mat-icon>meeting_room</mat-icon>
+          <span>{{ currentLang() === 'en' ? 'Garage (2 boxes)' : 'Garaż (2 pudełka)' }}</span>
+        </div>
+        <div class="tree-node child-box">
+          <mat-icon>inventory_2</mat-icon>
+          <span>{{ currentLang() === 'en' ? 'Rack A • Box #1' : 'Regał A • Pudełko #1' }}</span>
+        </div>
+        <div class="tree-node child-room">
+          <mat-icon>meeting_room</mat-icon>
+          <span>{{ currentLang() === 'en' ? 'Basement & Home Office' : 'Piwnica i Domowe Biuro' }}</span>
+        </div>
+      </div>
+
+      <div class="workspace-profile-card">
+        <span class="profile-preview-badge">{{ copy().workspaceProfileBadge }}</span>
+        <strong>{{ copy().workspaceProfileTitle }}</strong>
+        <p>{{ copy().workspaceProfileDesc }}</p>
+      </div>
+
+      @if (!isLoggedIn()) {
+        <a mat-stroked-button class="app-action-button" [routerLink]="rp.SEP + rp.LOGIN">
+          <mat-icon>person_add</mat-icon>
+          <span>{{ copy().workspaceCta }}</span>
+        </a>
+      }
+    </mat-card>
+
+    <!-- TILE 4 (FULL WIDTH): LIVE BUSINESS CASE SANDBOX -->
+    <mat-card class="bento-card bento-span-3">
+      <div class="bento-header">
+        <span class="bento-eyebrow">{{ copy().sandboxTag }}</span>
+        <h2>{{ copy().sandboxTitle }}</h2>
+        <p>{{ copy().sandboxSubtitle }}</p>
+      </div>
+
+      <div class="sandbox-toolbar">
+        <mat-form-field appearance="outline" class="sandbox-search-field" subscriptSizing="dynamic">
+          <mat-label>{{ copy().sandboxSearchLabel }}</mat-label>
+          <input matInput type="text" [value]="searchQuery()" (input)="onSearchInput($event)"
+                 [placeholder]="copy().sandboxSearchPlaceholder">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <div class="room-filter-pills" role="group">
+          <button type="button" class="room-pill" [class.active]="selectedRoomFilter() === 'all'"
+                  (click)="setRoomFilter('all')">
+            <mat-icon>apps</mat-icon>
+            <span>{{ copy().roomFilterAll }}</span>
+          </button>
+          <button type="button" class="room-pill" [class.active]="selectedRoomFilter() === 'garage'"
+                  (click)="setRoomFilter('garage')">
+            <mat-icon>handyman</mat-icon>
+            <span>{{ copy().roomFilterGarage }}</span>
+          </button>
+          <button type="button" class="room-pill" [class.active]="selectedRoomFilter() === 'basement'"
+                  (click)="setRoomFilter('basement')">
+            <mat-icon>ac_unit</mat-icon>
+            <span>{{ copy().roomFilterBasement }}</span>
+          </button>
+          <button type="button" class="room-pill" [class.active]="selectedRoomFilter() === 'office'"
+                  (click)="setRoomFilter('office')">
+            <mat-icon>computer</mat-icon>
+            <span>{{ copy().roomFilterOffice }}</span>
+          </button>
+        </div>
+
+        <div class="sandbox-QuickActions">
+          <button type="button" mat-raised-button color="primary" (click)="addSampleItem()">
+            <mat-icon>add_circle</mat-icon>
+            <span>{{ copy().sandboxQuickAddBtn }}</span>
+          </button>
+          <button type="button" mat-stroked-button (click)="resetDemoItems()">
+            <mat-icon>restart_alt</mat-icon>
+            <span>{{ copy().sandboxResetBtn }}</span>
+          </button>
+        </div>
+      </div>
+
+      @if (filteredDemoItems().length > 0) {
+        <div class="sandbox-items-grid">
+          @for (item of filteredDemoItems(); track item.id) {
+            <div class="sandbox-item-tile">
+              <div class="item-tile-top">
+                <div class="item-title-group">
+                  <mat-icon class="item-sell-icon">sell</mat-icon>
+                  <strong>{{ currentLang() === 'en' ? item.nameEn : item.namePl }}</strong>
+                </div>
+                <span class="item-timestamp">{{ item.updatedAt }}</span>
+              </div>
+
+              <p class="item-desc">
+                <mat-icon>category</mat-icon>
+                <span>{{ currentLang() === 'en' ? item.descEn : item.descPl }}</span>
+              </p>
+
+              <div class="item-location-badge">
+                <mat-icon>location_on</mat-icon>
+                <span>
+                  {{ currentLang() === 'en' ? item.warehouseEn : item.warehousePl }}
+                  → {{ currentLang() === 'en' ? item.roomEn : item.roomPl }}
+                  → {{ currentLang() === 'en' ? item.boxEn : item.boxPl }}
+                </span>
+              </div>
+
+              <div class="item-tile-actions">
+                <button type="button" mat-stroked-button (click)="inspectItemPath(item)">
+                  <mat-icon>open_in_new</mat-icon>
+                  <span>{{ copy().sandboxInspectBtn }}</span>
+                </button>
+                <button type="button" mat-stroked-button (click)="simulateMoveItem(item)">
+                  <mat-icon>drive_file_move</mat-icon>
+                  <span>{{ copy().sandboxMoveBtn }}</span>
+                </button>
+                <button type="button" mat-stroked-button (click)="removeDemoItem(item.id)">
+                  <mat-icon>delete_outline</mat-icon>
+                  <span>{{ copy().sandboxDeleteBtn }}</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="sandbox-empty-state">
+          <mat-icon>search_off</mat-icon>
+          <span>{{ copy().sandboxNoResults }}</span>
+        </div>
+      }
+    </mat-card>
+
+    <!-- TILE 5 (FULL WIDTH): LEGAL & TRUST FOOTER BAR -->
+    <mat-card class="bento-card bento-span-3 compliance-bar">
+      <div class="compliance-info">
+        <div class="compliance-icon-wrap">
+          <mat-icon>verified_user</mat-icon>
+        </div>
+        <div>
+          <h3>{{ copy().footerBarTitle }}</h3>
+          <p>{{ copy().footerBarSubtitle }}</p>
+        </div>
+      </div>
+
+      <div class="compliance-links">
+        <a mat-stroked-button [routerLink]="rp.SEP + rp.PRIVACY_POLICY">
+          <mat-icon>gpp_good</mat-icon>
+          <span>{{ copy().linkPrivacy }}</span>
+        </a>
+        <a mat-stroked-button [routerLink]="rp.SEP + rp.TERMS">
+          <mat-icon>description</mat-icon>
+          <span>{{ copy().linkTerms }}</span>
+        </a>
+        <a mat-stroked-button [routerLink]="rp.SEP + rp.COOKIES">
+          <mat-icon>cookie</mat-icon>
+          <span>{{ copy().linkCookies }}</span>
+        </a>
+        <a mat-stroked-button [routerLink]="rp.SEP + rp.STATUS">
+          <mat-icon>dns</mat-icon>
+          <span>{{ copy().linkStatus }}</span>
+        </a>
+      </div>
+    </mat-card>
+
+  </div>
+</div>

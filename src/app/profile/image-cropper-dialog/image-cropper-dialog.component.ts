@@ -38,6 +38,11 @@ export class ImageCropperDialogComponent {
     this.croppedImageBlob = event.blob;
   }
 
+  loadImageFailed(): void {
+    this.snackbarService.openLongSnackBar(this.translateService.get('profile.photo.error.invalidFormat'));
+    this.dialogRef.close(null);
+  }
+
   onCancel(): void {
     this.dialogRef.close(null);
   }
@@ -47,9 +52,9 @@ export class ImageCropperDialogComponent {
     this.isSaving = true;
 
     try {
-      // 1. Upload to Firebase Storage
-      const path = `users/${this.data.authUserUid}/profile.webp`;
-      const photoUrl = await this.storageService.uploadFile(path, this.croppedImageBlob);
+      // 1. Upload to Cloudinary
+      const folder = `users/${this.data.authUserUid}`;
+      const photoUrl = await this.storageService.uploadFile(folder, this.croppedImageBlob, 'profile.webp');
 
       // 2. Update Firestore User Document
       await this.userDbService.update(this.data.userDocId, {photoUrl});

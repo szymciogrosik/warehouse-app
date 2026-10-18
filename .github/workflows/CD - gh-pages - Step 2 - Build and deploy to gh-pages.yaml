@@ -24,6 +24,8 @@ jobs:
       - name: Replace config in environment.ts
         run: |
           sed -i "s/FIREBASE_API_KEY/${{ secrets.FIREBASE_API_KEY }}/g" src/environments/gh-pages/environment.ts
+          sed -i "s/CLOUDINARY_CLOUD_NAME/${{ secrets.CLOUDINARY_CLOUD_NAME }}/g" src/environments/gh-pages/environment.ts
+          sed -i "s/CLOUDINARY_UPLOAD_PRESET/${{ secrets.CLOUDINARY_UPLOAD_PRESET }}/g" src/environments/gh-pages/environment.ts
 
       - name: Replace build version in environment.ts
         run: |

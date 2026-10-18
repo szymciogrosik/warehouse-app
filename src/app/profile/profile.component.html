@@ -34,11 +34,17 @@
                     }
                   </div>
                   @if (allowForProfilePictureChange()) {
+                    @if (user()!.photoUrl) {
+                      <button mat-mini-fab color="warn" class="remove-photo-fab" (click)="onRemovePhoto()"
+                              [matTooltip]="'profile.button.removePhoto' | translate">
+                        <mat-icon>delete_outline</mat-icon>
+                      </button>
+                    }
                     <button mat-mini-fab color="primary" class="change-photo-fab" (click)="fileInput.click()"
                             [matTooltip]="'profile.button.changePhoto' | translate">
                       <mat-icon>photo_camera</mat-icon>
                     </button>
-                    <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+                    <input type="file" #fileInput hidden [accept]="allowedImageAccept" (change)="onFileSelected($event)">
                   }
                 </div>
               </div>
