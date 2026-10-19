@@ -1,5 +1,5 @@
 <div class="app-page-container">
-  <mat-card class="app-card-narrow">
+  <mat-card class="app-card-medium">
     <mat-card-title>
       <h1>{{ 'profile.title' | translate }}</h1>
       <p>{{ 'profile.subtitle' | translate }}</p>
@@ -100,6 +100,125 @@
                 </div>
               }
             }
+          </div>
+        </mat-tab>
+
+        <mat-tab label="{{ 'profile.tab.security' | translate }}">
+          <div class="tab-content-wrapper bento-vault-container">
+            <!-- Header Hero Banner -->
+            <div class="vault-hero-banner">
+              <div class="vault-hero-badge">
+                <mat-icon>shield</mat-icon>
+              </div>
+              <div class="vault-hero-text">
+                <h3>{{ 'vault.title' | translate }}</h3>
+                <p>{{ 'vault.subtitle' | translate }}</p>
+              </div>
+            </div>
+
+            <!-- Bento Security Grid -->
+            <div class="bento-vault-grid">
+              <!-- Card 1: Vault Status -->
+              <mat-card class="bento-security-card">
+                <div class="security-card-header">
+                  <div class="security-card-icon-badge" [class.unlocked]="isVaultUnlocked()">
+                    <mat-icon>{{ isVaultUnlocked() ? 'lock_open' : 'lock' }}</mat-icon>
+                  </div>
+                  <div class="security-card-titles">
+                    <span class="security-card-tag">{{ (isVaultUnlocked() ? 'vault.status.unlocked' : 'vault.status.locked') | translate }}</span>
+                    <h4>{{ 'vault.status.active' | translate }}</h4>
+                  </div>
+                </div>
+                <div class="security-card-body">
+                  <p>{{ 'vault.status.cardDesc' | translate }}</p>
+                </div>
+                <div class="security-card-footer">
+                  @if (isVaultUnlocked()) {
+                    <button mat-stroked-button color="warn" class="app-action-button" (click)="onLockVault()">
+                      <mat-icon>lock</mat-icon>&nbsp;{{ 'vault.lockNow' | translate }}
+                    </button>
+                  } @else {
+                    <button mat-raised-button color="primary" class="app-action-button" (click)="openUnlockPinDialog()">
+                      <mat-icon>lock_open</mat-icon>&nbsp;{{ 'vault.unlockNow' | translate }}
+                    </button>
+                  }
+                </div>
+              </mat-card>
+
+              <!-- Card 2: 4-Digit PIN -->
+              <mat-card class="bento-security-card">
+                <div class="security-card-header">
+                  <div class="security-card-icon-badge">
+                    <mat-icon>dialpad</mat-icon>
+                  </div>
+                  <div class="security-card-titles">
+                    <span class="security-card-tag">{{ (hasVaultPin() ? 'vault.pin.isSet' : 'vault.pin.notSet') | translate }}</span>
+                    <h4>{{ 'vault.pin.title' | translate }}</h4>
+                  </div>
+                </div>
+                <div class="security-card-body">
+                  <p>{{ 'vault.pin.desc' | translate }}</p>
+                </div>
+                <div class="security-card-footer">
+                  @if (hasVaultPin()) {
+                    <div class="split-buttons">
+                      <button mat-stroked-button class="app-action-button" (click)="openSetPinDialog()">
+                        {{ 'vault.pin.change' | translate }}
+                      </button>
+                      <button mat-button color="warn" class="app-action-button" (click)="onRemovePin()">
+                        {{ 'vault.pin.remove' | translate }}
+                      </button>
+                    </div>
+                  } @else {
+                    <button mat-raised-button color="accent" class="app-action-button" (click)="openSetPinDialog()">
+                      <mat-icon>add</mat-icon>&nbsp;{{ 'vault.pin.set' | translate }}
+                    </button>
+                  }
+                </div>
+              </mat-card>
+
+              <!-- Card 3: Emergency Recovery Key -->
+              <mat-card class="bento-security-card">
+                <div class="security-card-header">
+                  <div class="security-card-icon-badge">
+                    <mat-icon>vpn_key</mat-icon>
+                  </div>
+                  <div class="security-card-titles">
+                    <span class="security-card-tag">AES-256</span>
+                    <h4>{{ 'vault.recovery.title' | translate }}</h4>
+                  </div>
+                </div>
+                <div class="security-card-body">
+                  <p>{{ 'vault.recovery.desc' | translate }}</p>
+                </div>
+                <div class="security-card-footer">
+                  <button mat-stroked-button color="primary" class="app-action-button" (click)="openRecoveryKeyDialog()">
+                    <mat-icon>vpn_key</mat-icon>&nbsp;{{ 'vault.recovery.view' | translate }}
+                  </button>
+                </div>
+              </mat-card>
+
+              <!-- Card 4: Inspect Cloud Database Record -->
+              <mat-card class="bento-security-card">
+                <div class="security-card-header">
+                  <div class="security-card-icon-badge">
+                    <mat-icon>visibility</mat-icon>
+                  </div>
+                  <div class="security-card-titles">
+                    <span class="security-card-tag">Zero-Knowledge</span>
+                    <h4>{{ 'vault.inspect.title' | translate }}</h4>
+                  </div>
+                </div>
+                <div class="security-card-body">
+                  <p>{{ 'vault.inspect.desc' | translate }}</p>
+                </div>
+                <div class="security-card-footer">
+                  <button mat-raised-button color="primary" class="app-action-button" (click)="openRawInspectorDialog()">
+                    <mat-icon>search</mat-icon>&nbsp;{{ 'vault.inspect.button' | translate }}
+                  </button>
+                </div>
+              </mat-card>
+            </div>
           </div>
         </mat-tab>
       </mat-tab-group>

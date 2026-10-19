@@ -31,6 +31,98 @@
   white-space: normal;
 }
 
+.security-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  margin-left: 8px;
+  border-radius: 20px;
+  border: 1px solid var(--app-accent-color);
+  background-color: var(--app-accent-selected-bg);
+  color: var(--app-accent-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background-color: var(--app-accent-color);
+    color: #ffffff;
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  @media (max-width: 768px), (hover: none) {
+    border-color: var(--app-accent-color) !important;
+  }
+}
+
+.vault-locked-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  text-align: center;
+  border-radius: 20px;
+  background-color: var(--app-surface-color);
+  border: 1px dashed var(--separator-line);
+  margin: 16px 0;
+
+  @media (max-width: 768px), (hover: none) {
+    border-color: var(--app-accent-color) !important;
+  }
+}
+
+.locked-icon-badge {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background-color: var(--app-accent-selected-bg);
+  border: 1px solid var(--app-accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    color: var(--app-accent-color);
+  }
+}
+
+.locked-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--app-text-primary);
+}
+
+.locked-desc {
+  font-size: 0.9rem;
+  color: var(--app-text-secondary);
+  max-width: 400px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.locked-unlock-btn {
+  width: 100%;
+  max-width: 260px;
+}
+
 .nav-right {
   display: flex;
   align-items: center;

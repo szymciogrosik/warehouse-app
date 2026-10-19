@@ -1,0 +1,143 @@
+.recovery-dialog-container {
+  padding: 24px;
+  background-color: var(--app-surface-color);
+  color: var(--app-text-primary);
+  border-radius: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 500px;
+
+  @media (max-width: 768px), (hover: none) {
+    border: 1px solid var(--app-accent-color) !important;
+  }
+}
+
+.recovery-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.recovery-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background-color: var(--app-accent-selected-bg);
+  border: 1px solid var(--app-accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+    color: var(--app-accent-color);
+  }
+}
+
+.recovery-header-text {
+  flex: 1;
+}
+
+.recovery-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--app-text-primary);
+}
+
+.recovery-subtitle {
+  font-size: 0.85rem;
+  color: var(--app-text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.recovery-close-btn {
+  color: var(--app-text-secondary);
+}
+
+.recovery-key-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.key-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.key-value-box {
+  background-color: var(--app-accent-selected-bg);
+  border: 2px dashed var(--app-accent-color);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-all;
+}
+
+.key-text {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--app-text-primary);
+}
+
+.recovery-warning-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--app-text-primary);
+  font-size: 0.825rem;
+  line-height: 1.4;
+  margin-bottom: 20px;
+
+  mat-icon {
+    color: #f59e0b;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+}
+
+.recovery-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.recovery-confirm-action {
+  width: 100%;
+  margin-top: 16px;
+  display: flex;
+}
+
+.recovery-confirm-btn {
+  width: 100% !important;
+  flex: 1 1 100%;
+  min-height: 48px;
+  font-weight: 600;
+  border-radius: 12px;
+}

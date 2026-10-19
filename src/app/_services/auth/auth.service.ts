@@ -23,6 +23,8 @@ import {CustomTranslateService} from '../translate/custom-translate.service';
 import {CustomUser} from '../../_models/user/custom-user';
 import {RedirectionEnum} from '../../../utils/redirection.enum';
 import {AccessRole} from '../../_models/user/access-role';
+import {VaultService} from '../security/vault.service';
+import {VaultMetaDbService} from '../../_database/security/vault-meta-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +36,8 @@ export class AuthService {
   private readonly standardUserService = inject(StandardUserDbService);
   private readonly translateService = inject(CustomTranslateService);
   private readonly injector = inject(Injector);
+  private readonly vaultService = inject(VaultService);
+  private readonly vaultMetaDb = inject(VaultMetaDbService);
 
   private readonly userSubject = new BehaviorSubject<CustomUser | null>(null);
   private readonly user$ = this.userSubject.asObservable();
@@ -56,6 +60,7 @@ export class AuthService {
       this.userSubscription?.unsubscribe();
 
       if (firebaseUser) {
+        this.vaultService.initForUser(firebaseUser.uid);
         this.userSubscription = this.standardUserService.watchUser(firebaseUser.uid, firebaseUser.email)
           .subscribe({
             next: async (foundUser) => {
@@ -131,12 +136,39 @@ export class AuthService {
       lastName: lastName,
       roles: []
     };
-    await createUserWithEmailAndPassword(this.auth, email, password);
+    try {
+      this.vaultService.isAutoUnlocking.set(true);
+      const cred = await createUserWithEmailAndPassword(this.auth, email, password);
+      if (cred.user?.uid) {
+        this.vaultService.initForUser(cred.user.uid);
+        try {
+          await this.vaultService.setupVaultWithPassword(password);
+        } catch (e) {
+          console.warn('Initial vault setup warning:', e);
+        }
+      }
+    } finally {
+      this.vaultService.isAutoUnlocking.set(false);
+    }
   }
 
   public async loginWithEmailAndPassword(email: string, password: string): Promise<void> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      this.vaultService.isAutoUnlocking.set(true);
+      const cred = await signInWithEmailAndPassword(this.auth, email, password);
+      if (cred.user?.uid) {
+        this.vaultService.initForUser(cred.user.uid);
+        try {
+          const meta = await this.vaultMetaDb.getMetadata(cred.user.uid);
+          if (meta?.hasPasswordKey) {
+            await this.vaultService.unlockWithPassword(password);
+          } else if (!meta) {
+            await this.vaultService.setupVaultWithPassword(password);
+          }
+        } catch (vaultErr) {
+          console.warn('Vault auto-unlock warning:', vaultErr);
+        }
+      }
     } catch (err: any) {
       console.error(err);
       if (err instanceof FirebaseError || err?.code) {
@@ -145,6 +177,8 @@ export class AuthService {
         }
       }
       throw this.translateService.get('login.error.internal');
+    } finally {
+      this.vaultService.isAutoUnlocking.set(false);
     }
   }
 
@@ -188,6 +222,13 @@ export class AuthService {
 
     try {
       await updatePassword(this.auth.currentUser, newPassword);
+      if (this.vaultService.isUnlocked()) {
+        try {
+          await this.vaultService.rewrapWithPassword(newPassword);
+        } catch (vaultErr) {
+          console.warn('Failed to rewrap vault with new password:', vaultErr);
+        }
+      }
     } catch (error) {
       console.error('Failed to update password', error);
       throw error;
@@ -224,6 +265,7 @@ export class AuthService {
   }
 
   private unsubscribe(): void {
+    this.vaultService.clearSession();
     this.userSubscription?.unsubscribe();
     this.userSubscription = null;
     this.userSubject.next(null);

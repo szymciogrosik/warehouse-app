@@ -1,0 +1,50 @@
+<div class="inspector-dialog-container">
+  <div class="inspector-header">
+    <div class="inspector-badge">
+      <mat-icon>security</mat-icon>
+    </div>
+    <div class="inspector-header-text">
+      <h2 class="inspector-title">{{ 'vault.inspect.title' | translate }}</h2>
+      <p class="inspector-subtitle">{{ 'vault.inspect.desc' | translate }}</p>
+    </div>
+    <button mat-icon-button class="inspector-close-btn" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="trust-banner" [class.trust-banner-encrypted]="isEncrypted()">
+    <mat-icon>{{ isEncrypted() ? 'lock' : 'info' }}</mat-icon>
+    <div class="trust-banner-content">
+      <strong>{{ (isEncrypted() ? 'vault.status.active' : 'vault.inspect.unencryptedNotice') | translate }}</strong>
+      <span>{{ 'vault.badge.tooltip' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="raw-data-card">
+    <div class="raw-data-header">
+      <div class="raw-data-label">
+        <mat-icon>cloud_queue</mat-icon>
+        <span>Firestore Collection: <code>warehouses/&#123;uid&#125;</code></span>
+      </div>
+      @if (isEncrypted()) {
+        <span class="cipher-pill">AES-256-GCM</span>
+      }
+    </div>
+
+    @if (isLoading()) {
+      <div class="skeleton-box">
+        <app-skeleton height="24px" width="70%"></app-skeleton>
+        <app-skeleton height="24px" width="90%"></app-skeleton>
+        <app-skeleton height="24px" width="60%"></app-skeleton>
+      </div>
+    } @else {
+      <pre class="raw-code-block"><code>{{ rawJson() }}</code></pre>
+    }
+  </div>
+
+  <div class="inspector-confirm-action">
+    <button mat-raised-button color="primary" class="app-action-button inspector-confirm-btn" (click)="close()">
+      {{ 'login.approve.button' | translate }}
+    </button>
+  </div>
+</div>

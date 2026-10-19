@@ -12,6 +12,8 @@ import { DateService } from '../_services/util/date.service';
 import { WarehouseNavigationService } from '../_services/warehouse/warehouse-navigation.service';
 import { Warehouses } from '../_models/warehouse/warehouses';
 import { RedirectionEnum } from '../../utils/redirection.enum';
+import { VaultService } from '../_services/security/vault.service';
+import { signal } from '@angular/core';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -113,7 +115,16 @@ describe('SearchComponent', () => {
         { provide: CustomTranslateService, useValue: mockTranslateService },
         { provide: DateService, useValue: mockDateService },
         { provide: Router, useValue: mockRouter },
-        { provide: MatDialog, useValue: mockDialog }
+        { provide: MatDialog, useValue: mockDialog },
+        {
+          provide: VaultService,
+          useValue: {
+            status: signal('UNLOCKED'),
+            isUnlocked: signal(true),
+            hasPin: signal(true),
+            isConfigured: signal(true)
+          }
+        }
       ]
     })
       .overrideComponent(SearchComponent, {

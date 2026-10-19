@@ -22,7 +22,18 @@
       </mat-form-field>
     </div>
 
-    @if (filteredItems().length > 0) {
+    @if (isVaultLocked()) {
+      <div class="vault-locked-state">
+        <div class="locked-icon-badge">
+          <mat-icon>lock</mat-icon>
+        </div>
+        <h3 class="locked-title">{{ 'vault.lockedState.title' | translate }}</h3>
+        <p class="locked-desc">{{ 'vault.lockedState.desc' | translate }}</p>
+        <button mat-raised-button color="primary" class="app-action-button locked-unlock-btn" (click)="openUnlockDialog()">
+          <mat-icon>lock_open</mat-icon>&nbsp;{{ 'vault.lockedState.unlockButton' | translate }}
+        </button>
+      </div>
+    } @else if (filteredItems().length > 0) {
       <div class="wh-tiles-grid">
         @for (item of filteredItems(); track $index) {
           <div class="wh-tile">

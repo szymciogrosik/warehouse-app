@@ -3,14 +3,23 @@ import { Firestore } from '@angular/fire/firestore';
 import { WarehouseDbService } from './warehouse.service';
 import { Warehouses } from '../../_models/warehouse/warehouses';
 
+import { VaultService } from '../../_services/security/vault.service';
+import { of } from 'rxjs';
+
 describe('WarehouseDbService', () => {
   let service: WarehouseDbService;
 
   beforeEach(() => {
+    const mockVault = {
+      isUnlocked: jasmine.createSpy('isUnlocked').and.returnValue(false),
+      onVaultStateChanged$: of(false)
+    };
+
     TestBed.configureTestingModule({
       providers: [
         WarehouseDbService,
-        { provide: Firestore, useValue: {} }
+        { provide: Firestore, useValue: {} },
+        { provide: VaultService, useValue: mockVault }
       ]
     });
     service = TestBed.inject(WarehouseDbService);

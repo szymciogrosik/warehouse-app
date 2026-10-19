@@ -1,0 +1,41 @@
+<div class="recovery-dialog-container">
+  <div class="recovery-header">
+    <div class="recovery-badge">
+      <mat-icon>vpn_key</mat-icon>
+    </div>
+    <div class="recovery-header-text">
+      <h2 class="recovery-title">{{ 'vault.recovery.title' | translate }}</h2>
+      <p class="recovery-subtitle">{{ 'vault.recovery.desc' | translate }}</p>
+    </div>
+    <button mat-icon-button class="recovery-close-btn" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="recovery-key-display">
+    <span class="key-label">{{ 'vault.recovery.keyLabel' | translate }}</span>
+    <div class="key-value-box">
+      <span class="key-text">{{ recoveryKey() }}</span>
+    </div>
+  </div>
+
+  <div class="recovery-warning-box">
+    <mat-icon>warning_amber</mat-icon>
+    <span>{{ 'vault.recovery.warningText' | translate }}</span>
+  </div>
+
+  <div class="recovery-actions">
+    <button mat-stroked-button class="app-action-button" (click)="copyToClipboard()">
+      <mat-icon>content_copy</mat-icon>&nbsp;{{ 'vault.recovery.copy' | translate }}
+    </button>
+    <button mat-raised-button color="accent" class="app-action-button" (click)="downloadKeyFile()">
+      <mat-icon>file_download</mat-icon>&nbsp;{{ 'vault.recovery.download' | translate }}
+    </button>
+  </div>
+
+  <div class="recovery-confirm-action">
+    <button mat-raised-button color="primary" class="app-action-button recovery-confirm-btn" (click)="close()">
+      {{ 'login.approve.button' | translate }}
+    </button>
+  </div>
+</div>

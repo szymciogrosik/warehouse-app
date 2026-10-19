@@ -1,0 +1,206 @@
+.pin-dialog-container {
+  position: relative;
+  padding: 32px 24px 24px 24px;
+  background-color: var(--app-surface-color);
+  color: var(--app-text-primary);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+
+  @media (max-width: 768px), (hover: none) {
+    border: 1px solid var(--app-accent-color) !important;
+  }
+}
+
+.pin-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--app-text-secondary);
+}
+
+.pin-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.pin-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: var(--app-accent-selected-bg);
+  border: 1px solid var(--app-accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--app-accent-color);
+  }
+}
+
+.pin-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: var(--app-text-primary);
+  word-break: break-word;
+}
+
+.pin-subtitle {
+  font-size: 0.875rem;
+  color: var(--app-text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Dots Indicator */
+.pin-dots-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--separator-color);
+  background: transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.filled {
+    background-color: var(--app-accent-color);
+    border-color: var(--app-accent-color);
+    transform: scale(1.15);
+  }
+}
+
+/* Keypad Grid */
+.pin-keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 16px;
+}
+
+.keypad-key {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--separator-line);
+  background-color: var(--app-surface-color);
+  color: var(--app-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    border-color: var(--app-accent-color);
+    background-color: var(--app-accent-selected-bg);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @media (max-width: 768px), (hover: none) {
+    border-color: var(--app-accent-color) !important;
+  }
+}
+
+.keypad-icon-key {
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: var(--app-text-secondary);
+  }
+}
+
+.key-digit {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.keypad-empty {
+  width: 64px;
+  height: 64px;
+}
+
+/* Error Banner */
+.pin-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background-color: rgba(244, 63, 94, 0.1);
+  border: 1px solid var(--app-warn-color);
+  color: var(--app-warn-color);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  animation: shake 0.3s ease-in-out;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.pin-footer-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.pin-recovery-link {
+  color: var(--app-text-secondary);
+  font-size: 0.85rem;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--app-accent-color);
+  }
+}
+
+.recovery-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
