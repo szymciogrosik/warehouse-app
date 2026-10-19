@@ -59,6 +59,9 @@ export class VaultService {
   }
 
   public shouldPromptPinSetup(): boolean {
+    if (!this.currentUid) {
+      return false;
+    }
     if (this.hasPromptedPinThisSession || this.isAutoUnlocking()) {
       return false;
     }
@@ -73,6 +76,9 @@ export class VaultService {
   }
 
   public shouldPromptUnlock(): boolean {
+    if (!this.currentUid) {
+      return false;
+    }
     if (this.hasPromptedUnlockThisSession || this.isAutoUnlocking()) {
       return false;
     }
@@ -94,8 +100,8 @@ export class VaultService {
     this.rawMasterKeyBytes = null;
     this._metadata.set(null);
     this._status.set('NOT_CONFIGURED');
-    this.unlockSubject.next(false);
     this.metadataLoadedSubject.next(false);
+    this.unlockSubject.next(false);
     this._pendingRecoveryKey.set(null);
     this.hasPromptedPinThisSession = false;
     this.hasPromptedUnlockThisSession = false;

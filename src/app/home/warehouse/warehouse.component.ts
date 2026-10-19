@@ -107,7 +107,15 @@ export class WarehouseViewComponent implements OnInit {
     }
   }
 
+  private isUserAuthenticated(): boolean {
+    const hasLoggedInFn = typeof this.authService.isLoggedIn === 'function';
+    return (hasLoggedInFn ? this.authService.isLoggedIn() : !!this.userUid) && !!this.userUid;
+  }
+
   private async checkVaultOnboarding(): Promise<void> {
+    if (!this.isUserAuthenticated()) {
+      return;
+    }
     const isUnlocking = typeof this.vaultService.isAutoUnlocking === 'function' ? this.vaultService.isAutoUnlocking() : false;
     const dialogsCount = this.dialog?.openDialogs?.length ?? 0;
     if (this.isCheckingOnboarding || dialogsCount > 0 || isUnlocking) {
@@ -144,7 +152,7 @@ export class WarehouseViewComponent implements OnInit {
     this.vaultService.metadataLoaded$
       ?.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((loaded) => {
-        if (loaded) {
+        if (loaded && this.isUserAuthenticated()) {
           this.checkVaultOnboarding();
         }
       });
@@ -152,7 +160,9 @@ export class WarehouseViewComponent implements OnInit {
     this.vaultService.onVaultStateChanged$
       ?.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.checkVaultOnboarding();
+        if (this.isUserAuthenticated()) {
+          this.checkVaultOnboarding();
+        }
       });
 
     this.authService.loggedUser()

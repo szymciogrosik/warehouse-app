@@ -25,6 +25,7 @@ import {RedirectionEnum} from '../../../utils/redirection.enum';
 import {AccessRole} from '../../_models/user/access-role';
 import {VaultService} from '../security/vault.service';
 import {VaultMetaDbService} from '../../_database/security/vault-meta-db.service';
+import {MatDialog} from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,7 @@ export class AuthService {
   private readonly injector = inject(Injector);
   private readonly vaultService = inject(VaultService);
   private readonly vaultMetaDb = inject(VaultMetaDbService);
+  private readonly dialog = inject(MatDialog, {optional: true});
 
   private readonly userSubject = new BehaviorSubject<CustomUser | null>(null);
   private readonly user$ = this.userSubject.asObservable();
@@ -245,11 +247,12 @@ export class AuthService {
   }
 
   public logout(withRedirection: boolean): void {
+    this.dialog?.closeAll();
     if (this.injector) {
       runInInjectionContext(this.injector, () => {
         signOut(this.auth).then(() => {
           this.unsubscribe();
-          if (withRedirection) this.router.navigate([RedirectionEnum.LOGIN]);
+          if (withRedirection) this.router.navigate([RedirectionEnum.SEP + RedirectionEnum.LOGIN]);
         }).catch(err => {
           console.error(err);
           this.userSubject.next(null);
@@ -259,12 +262,13 @@ export class AuthService {
     } else {
       signOut(this.auth).then(() => {
         this.unsubscribe();
-        if (withRedirection) this.router.navigate([RedirectionEnum.LOGIN]);
+        if (withRedirection) this.router.navigate([RedirectionEnum.SEP + RedirectionEnum.LOGIN]);
       });
     }
   }
 
   private unsubscribe(): void {
+    this.dialog?.closeAll();
     this.vaultService.clearSession();
     this.userSubscription?.unsubscribe();
     this.userSubscription = null;
