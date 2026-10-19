@@ -218,7 +218,7 @@ const SHOWCASE_DICTIONARY: Record<'pl' | 'en', ShowcaseCopy> = {
     guestPoints: [
       'Przeklikanie 3-kroków przepływu organizacji magazynu',
       'Wyszukiwanie i filtrowanie przykładowych przedmiotów na żywo',
-      'Symulacja dodawania, przenoszenia i usuwania rzeczy w piaskownicy',
+      'Symulacja dodawania, przenoszenia i usuwania rzeczy w demo',
       'Dostęp do stron informacyjnych, statusu i dokumentów prawnych'
     ],
     memberColBadge: 'PO ZALOGOWANIU (STANDARDOWY UŻYTKOWNIK)',
@@ -278,7 +278,7 @@ const SHOWCASE_DICTIONARY: Record<'pl' | 'en', ShowcaseCopy> = {
       }
     },
 
-    sandboxTag: '03 / INTERAKTYWNA PIASKOWNICA NA ŻYWO',
+    sandboxTag: '03 / INTERAKTYWNE DEMO NA ŻYWO',
     sandboxTitle: 'Przetestuj wyszukiwarkę i operacje na przedmiotach',
     sandboxSubtitle:
       'Poniżej znajduje się działająca miniatura Twojego przyszłego magazynu. Filtruj przedmioty po frazie lub pokoju, dodaj przykładowy element albo przetestuj podgląd lokalizacji.',
@@ -309,7 +309,7 @@ const SHOWCASE_DICTIONARY: Record<'pl' | 'en', ShowcaseCopy> = {
       'Zarządzaj swoimi danymi, ustaw własne zdjęcie profilowe (automatycznie przycinane i optymalizowane) i korzystaj z wygodnego przełącznika języka oraz motywu.',
     workspaceCta: 'Załóż darmowe konto lub zaloguj się',
 
-    toastAddedMsg: 'Dodano przykładowy przedmiot do pudełka w piaskownicy! Po zalogowaniu zmiany zapisują się w chmurze.',
+    toastAddedMsg: 'Dodano przykładowy przedmiot do pudełka w aplikacji demo! Po zalogowaniu zmiany zapisują się w chmurze.',
     toastMovedMsg: 'Przeniesiono przedmiot do innego pokoju i zaktualizowano datę modyfikacji!',
     toastDeletedMsg: 'Przedmiot został usunięty z podglądu demo.',
     toastResetMsg: 'Przywrócono początkową listę przykładowych przedmiotów.',
