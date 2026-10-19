@@ -13,6 +13,10 @@
   overflow: auto;
 }
 
+app-navbar {
+  flex-shrink: 0;
+}
+
 .main-content {
-  flex-grow: 1;
+  flex: 1 0 auto;
 }

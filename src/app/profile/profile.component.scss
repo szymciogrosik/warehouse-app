@@ -121,7 +121,11 @@
   transition: border-color 0.3s ease, background-color 0.3s ease;
 
   &:hover {
-    border-color: var(--app-primary-color) !important;
+    border-color: var(--app-accent-color) !important;
+  }
+
+  @media (max-width: 768px), (hover: none) {
+    border-color: var(--app-accent-color) !important;
   }
 
   mat-card-header {
