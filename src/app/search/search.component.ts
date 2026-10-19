@@ -30,6 +30,8 @@ import {ConfirmDeleteDialogComponent} from '../_shared-components/confirm-dialog
 import {EditDialogComponent} from '../_shared-components/edit-dialog/edit-dialog.component';
 import {EditDialogType} from '../_models/dialog/warehouse/edit-dialog-type';
 import {WhSharedElem} from '../_models/warehouse/shared/wh-shared-elem';
+import {VaultService} from '../_services/security/vault.service';
+import {PinDialogComponent} from '../_shared-components/pin-dialog/pin-dialog.component';
 
 interface ItemTableRow {
   name: string;
@@ -76,6 +78,16 @@ export class SearchComponent implements OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
+  protected readonly vaultService = inject(VaultService);
+
+  readonly isVaultLocked = () => this.vaultService.status() === 'LOCKED';
+
+  openUnlockDialog(): void {
+    this.dialog.open(PinDialogComponent, {
+      width: '400px',
+      data: { mode: 'UNLOCK' }
+    });
+  }
 
   protected warehouses: Warehouses | null = null;
   private userUid: string | null = null;

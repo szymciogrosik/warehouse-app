@@ -1,14 +1,16 @@
-import { TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
-import { Auth } from '@angular/fire/auth';
-import { Router } from '@angular/router';
-import { SnackbarService } from '../util/snackbar.service';
-import { StandardUserDbService } from '../../_database/auth/standard-user-db.service';
-import { CustomTranslateService } from '../translate/custom-translate.service';
-import { of, firstValueFrom } from 'rxjs';
-import { CustomUser } from '../../_models/user/custom-user';
-import { AccessRole } from '../../_models/user/access-role';
-import { provideZonelessChangeDetection } from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {AuthService} from './auth.service';
+import {Auth} from '@angular/fire/auth';
+import {Router} from '@angular/router';
+import {SnackbarService} from '../util/snackbar.service';
+import {StandardUserDbService} from '../../_database/auth/standard-user-db.service';
+import {CustomTranslateService} from '../translate/custom-translate.service';
+import {of, firstValueFrom} from 'rxjs';
+import {CustomUser} from '../../_models/user/custom-user';
+import {AccessRole} from '../../_models/user/access-role';
+import {provideZonelessChangeDetection} from '@angular/core';
+import {VaultService} from '../security/vault.service';
+import {VaultMetaDbService} from '../../_database/security/vault-meta-db.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -30,11 +32,12 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     mockAuth = {
-      app: { options: {} },
+      app: {options: {}},
       currentUser: null,
       signOut: jasmine.createSpy('signOut').and.returnValue(Promise.resolve()),
       onAuthStateChanged: jasmine.createSpy('onAuthStateChanged').and.callFake((cb: any) => {
-        return () => {};
+        return () => {
+        };
       })
     };
 
@@ -45,15 +48,32 @@ describe('AuthService', () => {
     mockTranslateService = jasmine.createSpyObj('CustomTranslateService', ['get']);
     mockTranslateService.get.and.callFake((k: string) => `translated_${k}`);
 
+    const mockVaultService = jasmine.createSpyObj('VaultService', [
+      'initForUser',
+      'clearSession',
+      'unlockWithPassword',
+      'setupVaultWithPassword',
+      'rewrapWithPassword',
+      'isUnlocked'
+    ]);
+    mockVaultService.isUnlocked.and.returnValue(false);
+    mockVaultService.unlockWithPassword.and.returnValue(Promise.resolve(true));
+    mockVaultService.setupVaultWithPassword.and.returnValue(Promise.resolve({recoveryKey: 'WMS-1234-5678-9012-3456'}));
+
+    const mockVaultMetaDbService = jasmine.createSpyObj('VaultMetaDbService', ['getMetadata']);
+    mockVaultMetaDbService.getMetadata.and.returnValue(Promise.resolve(null));
+
     TestBed.configureTestingModule({
       providers: [
         AuthService,
         provideZonelessChangeDetection(),
-        { provide: Auth, useValue: mockAuth },
-        { provide: Router, useValue: mockRouter },
-        { provide: SnackbarService, useValue: mockSnackbarService },
-        { provide: StandardUserDbService, useValue: mockStandardUserDbService },
-        { provide: CustomTranslateService, useValue: mockTranslateService }
+        {provide: Auth, useValue: mockAuth},
+        {provide: Router, useValue: mockRouter},
+        {provide: SnackbarService, useValue: mockSnackbarService},
+        {provide: StandardUserDbService, useValue: mockStandardUserDbService},
+        {provide: CustomTranslateService, useValue: mockTranslateService},
+        {provide: VaultService, useValue: mockVaultService},
+        {provide: VaultMetaDbService, useValue: mockVaultMetaDbService}
       ]
     });
 
@@ -73,14 +93,14 @@ describe('AuthService', () => {
     (service as any).userSubject.next(sampleUser);
     expect(service.currentUser()?.firstName).toBe('Jan');
 
-    service.updateLocalUser({ firstName: 'Adam' });
+    service.updateLocalUser({firstName: 'Adam'});
     expect(service.currentUser()?.firstName).toBe('Adam');
     expect(service.currentUser()?.email).toBe('test@example.com');
   });
 
   it('should not update local user when current user is null', () => {
     (service as any).userSubject.next(null);
-    service.updateLocalUser({ firstName: 'Adam' });
+    service.updateLocalUser({firstName: 'Adam'});
     expect(service.currentUser()).toBeNull();
   });
 

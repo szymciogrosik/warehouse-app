@@ -79,15 +79,42 @@ describe('StarterShowcaseComponent', () => {
   });
 
   it('should switch workflow steps when selectStep is called', () => {
+    expect((component as any).activeStep()).toBe('security');
+    expect((component as any).currentStepDetails().stepBadge).toContain('01');
+
+    (component as any).selectStep('hierarchy');
     expect((component as any).activeStep()).toBe('hierarchy');
+    expect((component as any).currentStepDetails().stepBadge).toContain('02');
 
     (component as any).selectStep('catalog');
     expect((component as any).activeStep()).toBe('catalog');
-    expect((component as any).currentStepDetails().stepBadge).toContain('02');
+    expect((component as any).currentStepDetails().stepBadge).toContain('03');
 
     (component as any).selectStep('search');
     expect((component as any).activeStep()).toBe('search');
-    expect((component as any).currentStepDetails().stepBadge).toContain('03');
+    expect((component as any).currentStepDetails().stepBadge).toContain('04');
+  });
+
+  it('should toggle security view mode between user and admin', () => {
+    expect((component as any).securityViewMode()).toBe('user');
+
+    (component as any).setSecurityViewMode('admin');
+    expect((component as any).securityViewMode()).toBe('admin');
+
+    (component as any).setSecurityViewMode('user');
+    expect((component as any).securityViewMode()).toBe('user');
+  });
+
+  it('should open admin inspector dialog with raw encrypted JSON representation', () => {
+    (component as any).openAdminInspectorDemo();
+
+    expect(mockDialogService.openConfirmDialogWithData).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        title: (component as any).copy().dialogSecurityTitle,
+        icon: 'lock',
+        iconColor: 'primary'
+      })
+    );
   });
 
   it('should filter demo items by room and by search query', () => {

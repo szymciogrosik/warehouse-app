@@ -8,8 +8,8 @@ $app-green-color: #039345;
 
 $app-primary-color: $app-green-color;
 $app-on-primary-color: #ffffff;
-$app-accent-color: #ffc107;
-$app-on-accent-color: #000000;
+$app-accent-color: $app-green-color;
+$app-on-accent-color: #ffffff;
 $app-warn-color: #f43f5e;
 $app-on-warn-color: #ffffff;
 
@@ -19,6 +19,7 @@ $app-surface-color: #ffffff;
 $app-on-background-color: #0f172a;
 $app-text-secondary: #64748b;
 $app-border-color: rgba(15, 23, 42, 0.05);
+$app-mobile-border-color: rgba(3, 147, 69, 0.35);
 
 $navbar-element-color: $app-on-primary-color;
 $footer-element-color: $app-on-primary-color;
@@ -32,6 +33,7 @@ $dark-text-secondary: #94a3b8;
 $dark-border-primary: rgba(255, 255, 255, 0.08);
 $dark-border-secondary: rgba(255, 255, 255, 0.14);
 $dark-border-hover: rgba(255, 255, 255, 0.25);
+$dark-mobile-border: rgba(85, 255, 148, 0.45);
 $dark-error: #fb7185;
 $dark-tab-background: #181818;
 $dark-input-bg: #242424;
@@ -49,8 +51,10 @@ $alert-warning-bg: #fef3c7;
 $alert-warning-text: #92400e;
 $alert-warning-accent: #f59e0b;
 $alert-warning-border: #fde68a;
-$dark-alert-warning-bg: rgba(245, 158, 11, 0.1);
-$dark-alert-warning-text: #fcd34d;
+$dark-alert-warning-bg: #1c1917; // Neutral dark zinc/stone background
+$dark-alert-warning-text: #fef9c3; // Crisp high-contrast light warm yellow
+$dark-alert-warning-border: rgba(245, 158, 11, 0.5);
+$dark-alert-warning-accent: #f59e0b;
 
 $navbar-font-size: clamp(1rem, 5cqi, 1.1rem);
 $footer-font-size: 14px; // Matches mat-button size in navbar
@@ -77,26 +81,36 @@ $main-palette: (
     700: $app-on-primary-color,
     800: $app-on-primary-color,
     900: $app-on-primary-color,
-    A200: $app-on-accent-color
+    A200: #0f172a
   )
 );
 
 $accent-palette: (
-  50: #fff8e1,
-  100: #ffecb3,
-  200: #ffe082,
-  300: #ffd54f,
-  400: #ffca28,
+  50: #e3f9ec,
+  100: #b9edcf,
+  200: #8ce1b1,
+  300: #5ed493,
+  400: #35c97b,
   500: $app-accent-color,
-  600: #ffb300,
-  700: #ffa000,
-  800: #ff8f00,
-  900: #ff6f00,
-  A100: #ffe57f,
-  A200: #ffd740,
-  A400: #ffc400,
-  A700: #ffab00,
-  contrast: (500: $app-on-accent-color)
+  600: #05954a,
+  700: #047e3e,
+  800: #036733,
+  900: #024824,
+  A100: #8cffb5,
+  A200: #55ff94,
+  A400: #1fff72,
+  A700: #00e15d,
+  contrast: (
+    500: $app-on-accent-color,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #0f172a,
+    A200: #0f172a,
+    A400: #0f172a,
+    A700: #ffffff
+  )
 );
 
 $warn-palette: (
@@ -150,13 +164,20 @@ $dark-theme: mat.m2-define-dark-theme((
   --app-text-secondary: #{$app-text-secondary};
   --separator-color: #{$app-text-secondary};
   --separator-line: #{$app-border-color};
+  --mobile-card-border: #{$app-mobile-border-color};
+  --app-accent-selected-bg: rgba(3, 147, 69, 0.08);
+  --app-accent-selected-border: var(--app-accent-color);
   --google-btn-bg: #{$app-surface-color};
   --google-btn-text: #1f2937;
   --google-btn-hover: #f8fafd;
   --google-btn-border: #dadce0;
   --mesh-blob-1: rgba(53, 201, 123, 0.45);
   --mesh-blob-2: rgba(2, 72, 36, 0.7);
-  --mesh-blob-3: rgba(255, 193, 7, 0.3);
+  --mesh-blob-3: rgba(53, 201, 123, 0.3);
+  --alert-warning-bg: #{$alert-warning-bg};
+  --alert-warning-text: #{$alert-warning-text};
+  --alert-warning-border: #{$alert-warning-border};
+  --alert-warning-accent: #{$alert-warning-accent};
 }
 
 html {
@@ -212,7 +233,7 @@ mat-card {
   padding: clamp(1rem, 5cqi, 2rem) clamp(0.5rem, 5cqi, 2rem);
   background-color: $app-surface-color !important;
   border-radius: 20px !important; // Bento style
-  border: 1px solid $app-border-color;
+  border: 1px solid var(--app-primary-color) !important;
   box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.02) !important;
   transition: box-shadow 0.3s ease;
 
@@ -257,6 +278,12 @@ mat-card-content {
   &:active {
     transform: scale(0.98);
   }
+}
+
+// Button Toggles
+.mat-button-toggle-checked,
+.mat-button-toggle-checked .mat-button-toggle-label-content {
+  font-weight: 800 !important;
 }
 
 // Forms
@@ -323,7 +350,7 @@ mat-hint, mat-error { font-size: 0.85rem; }
 
 // Tabs
 .highlight-tab-content {
-  border: 2px solid var(--app-primary-color) !important;
+  border: 1px solid var(--app-primary-color) !important;
   border-radius: 16px;
   padding: 24px;
   margin-top: 16px;
@@ -342,26 +369,29 @@ mat-hint, mat-error { font-size: 0.85rem; }
 
 // Action Groups
 .app-alert-warning {
-  background-color: $alert-warning-bg;
-  color: $alert-warning-text;
-  border-radius: 12px;
-  border: 2px solid $alert-warning-border;
-  border-left: 6px solid $alert-warning-accent;
+  background-color: var(--alert-warning-bg) !important;
+  color: var(--alert-warning-text) !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--alert-warning-border) !important;
+  border-left: 6px solid var(--alert-warning-accent) !important;
   margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   padding: 0;
 
   mat-card-content {
     display: flex;
     align-items: center;
     padding: 16px !important;
+    background-color: transparent !important;
+    color: var(--alert-warning-text) !important;
 
-    span {
+    span, p {
+      color: var(--alert-warning-text) !important;
       word-break: break-word;
       white-space: normal;
     }
   }
-  mat-icon { color: $alert-warning-accent; flex-shrink: 0; margin-right: 8px; }
+  mat-icon { color: var(--alert-warning-accent) !important; flex-shrink: 0; margin-right: 8px; }
 }
 
 .app-full-width-actions, .app-popup-full-width-actions {
@@ -427,15 +457,23 @@ mat-hint, mat-error { font-size: 0.85rem; }
   @include mat.all-component-colors($dark-theme);
 
   // CSS Variable Overrides
+  --app-accent-color: #55ff94;
   --app-surface-color: #{$dark-surface};
   --app-text-primary: #{$dark-text-primary};
   --app-text-secondary: #{$dark-text-secondary};
   --separator-color: #{$dark-text-secondary};
   --separator-line: #{$dark-border-primary};
+  --mobile-card-border: #{$dark-mobile-border};
+  --app-accent-selected-bg: rgba(85, 255, 148, 0.16);
+  --app-accent-selected-border: #{$dark-mobile-border};
   --google-btn-bg: #2a2a2a;
   --google-btn-text: #{$dark-text-primary};
   --google-btn-hover: #363636;
   --google-btn-border: rgba(255, 255, 255, 0.2);
+  --alert-warning-bg: #{$dark-alert-warning-bg};
+  --alert-warning-text: #{$dark-alert-warning-text};
+  --alert-warning-border: #{$dark-alert-warning-border};
+  --alert-warning-accent: #{$dark-alert-warning-accent};
 
   // MDC Checkbox & Radio Fixes for Dark Mode
   --mdc-checkbox-unselected-icon-color: #{$dark-text-secondary};
@@ -487,6 +525,10 @@ mat-hint, mat-error { font-size: 0.85rem; }
     color: $dark-text-primary !important;
     border-color: $dark-border-primary !important;
     box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.1) !important;
+  }
+
+  mat-card, .mat-mdc-card {
+    border-color: var(--app-primary-color) !important;
   }
 
   /* Table borders */
@@ -553,10 +595,22 @@ mat-hint, mat-error { font-size: 0.85rem; }
     color: $app-on-accent-color !important;
   }
 
-  .app-alert-warning {
-    background-color: $dark-alert-warning-bg !important;
-    color: $dark-alert-warning-text !important;
-    border-left-color: $dark-alert-warning-text !important;
+  .app-alert-warning,
+  mat-card.app-alert-warning {
+    background-color: var(--alert-warning-bg) !important;
+    color: var(--alert-warning-text) !important;
+    border: 1px solid var(--alert-warning-border) !important;
+    border-left: 6px solid var(--alert-warning-accent) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+
+    mat-card-content, span, p, div {
+      background-color: transparent !important;
+      color: var(--alert-warning-text) !important;
+    }
+
+    mat-icon {
+      color: var(--alert-warning-accent) !important;
+    }
   }
 
   .mat-mdc-snack-bar-container .mdc-snackbar__surface {

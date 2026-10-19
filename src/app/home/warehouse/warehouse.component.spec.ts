@@ -10,6 +10,8 @@ import { CustomTranslateService } from '../../_services/translate/custom-transla
 import { DateService } from '../../_services/util/date.service';
 import { WarehouseNavigationService } from '../../_services/warehouse/warehouse-navigation.service';
 import { Warehouses } from '../../_models/warehouse/warehouses';
+import { VaultService } from '../../_services/security/vault.service';
+import { signal } from '@angular/core';
 
 describe('WarehouseViewComponent', () => {
   let component: WarehouseViewComponent;
@@ -119,7 +121,26 @@ describe('WarehouseViewComponent', () => {
     mockDateService = jasmine.createSpyObj('DateService', ['presentDateTime']);
     mockDateService.presentDateTime.and.returnValue('2026-01-01 10:00');
 
-    mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
+    mockDialog = jasmine.createSpyObj('MatDialog', ['open'], {
+      openDialogs: []
+    });
+    mockDialog.open.and.returnValue({ afterClosed: () => of(true) } as any);
+
+    const mockVaultService = {
+      status: signal('UNLOCKED'),
+      isUnlocked: signal(true),
+      hasPin: signal(true),
+      isConfigured: signal(true),
+      lockVault: jasmine.createSpy('lockVault'),
+      metadataLoaded$: of(true),
+      onVaultStateChanged$: of(false),
+      isAutoUnlocking: signal(false),
+      shouldPromptUnlock: jasmine.createSpy('shouldPromptUnlock').and.returnValue(false),
+      markUnlockPrompted: jasmine.createSpy('markUnlockPrompted'),
+      shouldPromptPinSetup: jasmine.createSpy('shouldPromptPinSetup').and.returnValue(false),
+      markPinPrompted: jasmine.createSpy('markPinPrompted'),
+      consumePendingRecoveryKey: jasmine.createSpy('consumePendingRecoveryKey').and.returnValue(null)
+    };
 
     await TestBed.configureTestingModule({
       imports: [WarehouseViewComponent, NoopAnimationsModule],
@@ -129,7 +150,8 @@ describe('WarehouseViewComponent', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: CustomTranslateService, useValue: mockTranslateService },
         { provide: DateService, useValue: mockDateService },
-        { provide: MatDialog, useValue: mockDialog }
+        { provide: MatDialog, useValue: mockDialog },
+        { provide: VaultService, useValue: mockVaultService }
       ]
     })
       .overrideComponent(WarehouseViewComponent, {
@@ -373,4 +395,37 @@ describe('WarehouseViewComponent', () => {
       expect(component.getLastModificationTimestampForWarehouse(emptyWh)).toBe('2026-01-01T12:00:00.000Z');
     });
   });
+
+  describe('Vault Onboarding Checks', () => {
+    it('should prompt PIN setup when shouldPromptPinSetup is true', async () => {
+      const vaultSvc = TestBed.inject(VaultService) as any;
+      vaultSvc.shouldPromptPinSetup.and.returnValue(true);
+
+      await (component as any).checkVaultOnboarding();
+
+      expect(vaultSvc.markPinPrompted).toHaveBeenCalled();
+      expect(mockDialog.open).toHaveBeenCalled();
+    });
+
+    it('should prompt unlock dialog when shouldPromptUnlock is true', async () => {
+      const vaultSvc = TestBed.inject(VaultService) as any;
+      vaultSvc.shouldPromptUnlock.and.returnValue(true);
+
+      await (component as any).checkVaultOnboarding();
+
+      expect(vaultSvc.markUnlockPrompted).toHaveBeenCalled();
+      expect(mockDialog.open).toHaveBeenCalled();
+    });
+
+    it('should display recovery key dialog if a recovery key is pending after PIN dialog closes', async () => {
+      const vaultSvc = TestBed.inject(VaultService) as any;
+      vaultSvc.shouldPromptPinSetup.and.returnValue(true);
+      vaultSvc.consumePendingRecoveryKey.and.returnValue('WMS-ABCD-EFGH-1234-5678');
+
+      await (component as any).checkVaultOnboarding();
+
+      expect(mockDialog.open).toHaveBeenCalledTimes(2);
+    });
+  });
 });
+

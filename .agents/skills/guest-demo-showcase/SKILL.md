@@ -61,7 +61,7 @@ Structure the page using the Bento Box design system from [`ui-guidelines`](../u
 - **3 Business Value Highlights (`.hero-metrics-strip`)**: Three concise pillars summarizing the main benefits for standard users.
 
 ### B. Interactive Bento Playground (`#bento-playground` / `.bento-grid`)
-Organize the business showcase into clean, responsive Bento cards (`mat-card.bento-card`):
+Organize the business showcase into clean, responsive Bento cards (`mat-card.bento-card`). Ensure `.bento-grid` (or `#bento-playground`) includes `scroll-margin-top: 24px;` (or `32px`) so scrolling via `scrollIntoView({behavior: 'smooth', block: 'start'})` leaves comfortable visual padding at the top of the viewport:
 
 1. **Guest vs. Logged-In Access Comparison Card (`.bento-span-2` or side-by-side cards)**:
    - Two distinct visual columns or interactive cards contrasting:
@@ -81,8 +81,9 @@ Organize the business showcase into clean, responsive Bento cards (`mat-card.ben
 ## 5. Implementation Checklist & Standards
 
 1. **Strict [`ui-guidelines`](../ui-guidelines/SKILL.md) Compliance**:
-   - **Bento Cards & Whitespace**: Generous padding (`28px`), soft rounded corners (`24px`–`28px`), soft shadows, and subtle `1px solid var(--separator-line)` borders.
-   - **CSS Variables Only**: Consume `var(--app-surface-color)`, `var(--app-background-color)`, `var(--app-text-primary)`, `var(--app-text-secondary)`, `var(--app-primary-color)`, `var(--app-accent-color)`, `var(--separator-line)`. **Never hardcode HEX/RGB colors** in component SCSS.
+   - **Bento Cards & Whitespace**: Generous padding (`28px`), soft rounded corners (`24px`–`28px`), soft shadows, and subtle `1px solid var(--separator-line)` borders on desktop that transition to `var(--app-accent-color)` on hover—and are **permanently set to `var(--app-accent-color)` on mobile/touch viewports** (`@media (max-width: 768px), (hover: none)`).
+   - **Interactive Selected Sub-Elements**: Any selectable sub-element or tab controlling interactive content (e.g. pipeline nodes, segmented toggles, media stage tabs) must be distinguished using **multi-factor selected styling** (background tint `var(--app-accent-selected-bg)`, thicker `2px` accent border / halo, and accented icon badges) so the active choice remains immediately recognizable and consistent on both desktop and mobile.
+   - **CSS Variables Only**: Consume `var(--app-surface-color)`, `var(--app-background-color)`, `var(--app-text-primary)`, `var(--app-text-secondary)`, `var(--app-primary-color)`, `var(--app-accent-color)`, `var(--separator-line)`, `var(--app-accent-selected-bg)`. **Never hardcode HEX/RGB colors** in component SCSS.
    - **Calm Motion**: **NEVER** use `translateY` or position-shifting transforms on card hover—only transition `border-color` or `box-shadow`.
    - **Mobile-First Overflow Protection**: Always set `margin: 0 !important;` on `mat-card` inside grids/wrappers, and apply `word-break: break-word; white-space: normal;` on text elements inside flex/grid containers.
    - **No Hardcoded Template Texts**: Provide full Polish (`pl`) and English (`en`) translations via `src/assets/i18n/` (`TranslatePipe`) or a reactive dictionary bound to `CustomTranslateService.selectedLanguage()`.

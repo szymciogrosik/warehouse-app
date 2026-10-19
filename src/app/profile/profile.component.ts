@@ -24,6 +24,10 @@ import {firstValueFrom} from 'rxjs';
 import {MatTabsModule} from '@angular/material/tabs';
 import {select_roles} from '../_models/registration/select/select-roles';
 import {StorageService} from '../_services/storage/storage.service';
+import {VaultService} from '../_services/security/vault.service';
+import {PinDialogComponent} from '../_shared-components/pin-dialog/pin-dialog.component';
+import {RawInspectorDialogComponent} from '../_shared-components/raw-inspector-dialog/raw-inspector-dialog.component';
+import {RecoveryKeyDialogComponent} from '../_shared-components/recovery-key-dialog/recovery-key-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -57,10 +61,15 @@ export class ProfileComponent {
   private readonly dialogService = inject(DialogService);
   private readonly facade = inject(PublicSettingsFacade);
   private readonly storageService = inject(StorageService);
+  private readonly vaultService = inject(VaultService);
 
   readonly user = this.authService.currentUser;
   readonly isLoading = this.authService.isLoading;
   readonly allowForProfilePictureChange = this.facade.allowForProfilePictureChange;
+
+  readonly vaultStatus = this.vaultService.status;
+  readonly isVaultUnlocked = this.vaultService.isUnlocked;
+  readonly hasVaultPin = this.vaultService.hasPin;
 
   get currentUserRoles() {
     const roles = this.user()?.roles || [];
@@ -167,5 +176,73 @@ export class ProfileComponent {
     }
   }
 
+  openSetPinDialog(): void {
+    this.dialog.open(PinDialogComponent, {
+      width: '400px',
+      data: { mode: 'SET' }
+    });
+  }
+
+  openUnlockPinDialog(): void {
+    this.dialog.open(PinDialogComponent, {
+      width: '400px',
+      data: { mode: 'UNLOCK' }
+    });
+  }
+
+  openRawInspectorDialog(): void {
+    this.dialog.open(RawInspectorDialogComponent, {
+      width: '600px',
+      maxWidth: '92vw'
+    });
+  }
+
+  onLockVault(): void {
+    this.vaultService.lockVault();
+    this.snackbarService.openSnackBar(this.translateService.get('vault.lockedState.title'));
+  }
+
+  async onRemovePin(): Promise<void> {
+    const confirmed = await firstValueFrom(
+      this.dialogService.openConfirmDialogWithData({
+        title: this.translateService.get('vault.pin.remove'),
+        popupType: null,
+        message: this.translateService.get('vault.pin.removeConfirm'),
+        icon: 'lock_open',
+        iconColor: 'warn',
+        confirmButtonText: this.translateService.get('wh.button.delete'),
+        cancelButtonText: this.translateService.get('wh.button.cancel')
+      }).afterClosed()
+    );
+
+    if (confirmed) {
+      await this.vaultService.removePin();
+      this.snackbarService.openSnackBar(this.translateService.get('vault.pinDialog.pinRemovedSuccess'));
+    }
+  }
+
+  async openRecoveryKeyDialog(): Promise<void> {
+    if (!this.vaultService.isUnlocked()) {
+      const unlocked = await firstValueFrom(
+        this.dialog.open(PinDialogComponent, {
+          width: '400px',
+          data: { mode: 'UNLOCK' }
+        }).afterClosed()
+      );
+      if (!unlocked) return;
+    }
+
+    try {
+      const recoveryKey = await this.vaultService.refreshRecoveryKey();
+      this.dialog.open(RecoveryKeyDialogComponent, {
+        width: '500px',
+        maxWidth: '92vw',
+        data: { recoveryKey }
+      });
+    } catch (err: any) {
+      this.snackbarService.openLongSnackBar(err?.message || this.translateService.get('login.error.internal'));
+    }
+  }
 }
+
 

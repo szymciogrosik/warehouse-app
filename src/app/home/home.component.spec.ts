@@ -13,6 +13,7 @@ import {WarehouseDbService} from '../_database/warehouse/warehouse.service';
 import {DateService} from '../_services/util/date.service';
 import {APP_CONFIG} from '../app.config.token';
 import {LanguageEnum} from '../_services/translate/language-enum';
+import {VaultService} from '../_services/security/vault.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -51,7 +52,24 @@ describe('HomeComponent', () => {
         {provide: DialogService, useValue: jasmine.createSpyObj('DialogService', ['openConfirmDialogWithData'])},
         {provide: WarehouseDbService, useValue: mockWarehouseDb},
         {provide: DateService, useValue: {presentDateTime: () => ''}},
-        {provide: APP_CONFIG, useValue: {default_language: LanguageEnum.POLISH}}
+        {provide: APP_CONFIG, useValue: {default_language: LanguageEnum.POLISH}},
+        {
+          provide: VaultService,
+          useValue: {
+            status: signal('UNLOCKED'),
+            isUnlocked: signal(true),
+            hasPin: signal(true),
+            isConfigured: signal(true),
+            metadataLoaded$: of(true),
+            onVaultStateChanged$: of(false),
+            isAutoUnlocking: signal(false),
+            shouldPromptUnlock: () => false,
+            shouldPromptPinSetup: () => false,
+            consumePendingRecoveryKey: () => null,
+            markPinPrompted: () => {},
+            markUnlockPrompted: () => {}
+          }
+        }
       ]
     }).compileComponents();
 

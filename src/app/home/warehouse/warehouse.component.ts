@@ -15,8 +15,13 @@ import {WhItem} from '../../_models/warehouse/wh-item';
 import {WarehouseDbService} from '../../_database/warehouse/warehouse.service';
 import {AuthService} from '../../_services/auth/auth.service';
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {ConfirmDeleteDialogComponent} from "../../_shared-components/confirm-dialog/confirm-delete-dialog.component";
 import {EditDialogComponent} from "../../_shared-components/edit-dialog/edit-dialog.component";
+import {PinDialogComponent} from "../../_shared-components/pin-dialog/pin-dialog.component";
+import {RecoveryKeyDialogComponent} from "../../_shared-components/recovery-key-dialog/recovery-key-dialog.component";
+import {RawInspectorDialogComponent} from "../../_shared-components/raw-inspector-dialog/raw-inspector-dialog.component";
+import {VaultService} from "../../_services/security/vault.service";
 import {CustomTranslateService} from "../../_services/translate/custom-translate.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {DateTime} from "luxon";
@@ -34,6 +39,7 @@ import {EditDialogType} from "../../_models/dialog/warehouse/edit-dialog-type";
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatTooltipModule,
     TranslatePipe
   ],
   templateUrl: './warehouse.component.html',
@@ -52,6 +58,7 @@ export class WarehouseViewComponent implements OnInit {
   selectedRoomIndex: number | null = null;
   selectedBoxIndex: number | null = null;
   private firstLoading: boolean = true;
+  private isCheckingOnboarding = false;
 
   private warehouseDb = inject(WarehouseDbService);
   private authService = inject(AuthService);
@@ -61,8 +68,103 @@ export class WarehouseViewComponent implements OnInit {
   protected dateService = inject(DateService);
   private navService = inject(WarehouseNavigationService);
   private cdr = inject(ChangeDetectorRef);
+  protected readonly vaultService = inject(VaultService);
+
+  readonly isVaultUnlocked = this.vaultService.isUnlocked;
+  readonly isVaultLocked = () => this.vaultService.status() === 'LOCKED';
+
+  openUnlockDialog(): void {
+    this.vaultService.markUnlockPrompted();
+    this.dialog.open(PinDialogComponent, {
+      width: '400px',
+      data: { mode: 'UNLOCK' }
+    });
+  }
+
+  openRawInspector(): void {
+    this.dialog.open(RawInspectorDialogComponent, {
+      width: '600px',
+      maxWidth: '92vw'
+    });
+  }
+
+  private async promptPinSetup(): Promise<void> {
+    this.vaultService.markPinPrompted();
+    const dialogRef = this.dialog.open(PinDialogComponent, {
+      width: '400px',
+      data: { mode: 'SET' }
+    });
+
+    await firstValueFrom(dialogRef.afterClosed());
+
+    const pendingKey = this.vaultService.consumePendingRecoveryKey();
+    if (pendingKey) {
+      this.dialog.open(RecoveryKeyDialogComponent, {
+        width: '520px',
+        maxWidth: '92vw',
+        data: { recoveryKey: pendingKey }
+      });
+    }
+  }
+
+  private isUserAuthenticated(): boolean {
+    const hasLoggedInFn = typeof this.authService.isLoggedIn === 'function';
+    return (hasLoggedInFn ? this.authService.isLoggedIn() : !!this.userUid) && !!this.userUid;
+  }
+
+  private async checkVaultOnboarding(): Promise<void> {
+    if (!this.isUserAuthenticated()) {
+      return;
+    }
+    const isUnlocking = typeof this.vaultService.isAutoUnlocking === 'function' ? this.vaultService.isAutoUnlocking() : false;
+    const dialogsCount = this.dialog?.openDialogs?.length ?? 0;
+    if (this.isCheckingOnboarding || dialogsCount > 0 || isUnlocking) {
+      return;
+    }
+    this.isCheckingOnboarding = true;
+    try {
+      if (typeof this.vaultService.shouldPromptUnlock === 'function' && this.vaultService.shouldPromptUnlock()) {
+        this.openUnlockDialog();
+        return;
+      }
+
+      if (typeof this.vaultService.shouldPromptPinSetup === 'function' && this.vaultService.shouldPromptPinSetup()) {
+        await this.promptPinSetup();
+        return;
+      }
+
+      const pendingRecovery = typeof this.vaultService.consumePendingRecoveryKey === 'function'
+        ? this.vaultService.consumePendingRecoveryKey()
+        : null;
+      if (pendingRecovery) {
+        this.dialog.open(RecoveryKeyDialogComponent, {
+          width: '520px',
+          maxWidth: '92vw',
+          data: { recoveryKey: pendingRecovery }
+        });
+      }
+    } finally {
+      this.isCheckingOnboarding = false;
+    }
+  }
 
   ngOnInit(): void {
+    this.vaultService.metadataLoaded$
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((loaded) => {
+        if (loaded && this.isUserAuthenticated()) {
+          this.checkVaultOnboarding();
+        }
+      });
+
+    this.vaultService.onVaultStateChanged$
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (this.isUserAuthenticated()) {
+          this.checkVaultOnboarding();
+        }
+      });
+
     this.authService.loggedUser()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(user => {

@@ -66,6 +66,14 @@
         </div>
 
         <div class="metric-item">
+          <mat-icon class="metric-icon">shield</mat-icon>
+          <div class="metric-copy">
+            <span class="metric-label">{{ copy().metricSecurityLabel }}</span>
+            <strong class="metric-value">{{ copy().metricSecurityValue }}</strong>
+          </div>
+        </div>
+
+        <div class="metric-item">
           <mat-icon class="metric-icon">manage_search</mat-icon>
           <div class="metric-copy">
             <span class="metric-label">{{ copy().metricSearchLabel }}</span>
@@ -149,7 +157,145 @@
       </div>
     </mat-card>
 
-    <!-- TILE 2 (SPAN 2): INTERACTIVE CORE BUSINESS WORKFLOW PREVIEW -->
+    <!-- TILE 2 (FULL WIDTH): ZERO-KNOWLEDGE SECURITY LAB & PROOF -->
+    <mat-card class="bento-card bento-span-3 security-lab-card">
+      <div class="bento-header">
+        <span class="bento-eyebrow">{{ copy().securityTag }}</span>
+        <h2>{{ copy().securityTitle }}</h2>
+        <p>{{ copy().securitySubtitle }}</p>
+      </div>
+
+      <!-- Segmented View Switcher -->
+      <div class="security-switcher-wrap">
+        <div class="security-switcher-pills" role="tablist">
+          <button type="button" class="security-view-pill"
+                  [class.active]="securityViewMode() === 'user'"
+                  (click)="setSecurityViewMode('user')">
+            <mat-icon>lock_open</mat-icon>
+            <span>{{ copy().securityToggleUser }}</span>
+          </button>
+          <button type="button" class="security-view-pill"
+                  [class.active]="securityViewMode() === 'admin'"
+                  (click)="setSecurityViewMode('admin')">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>{{ copy().securityToggleAdmin }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Simulation Window -->
+      <div class="security-stage-container">
+        @if (securityViewMode() === 'user') {
+          <div class="security-screen user-screen">
+            <div class="screen-top-bar">
+              <div class="screen-badge decrypted-badge">
+                <mat-icon>verified</mat-icon>
+                <span>{{ copy().securityUserBadge }}</span>
+              </div>
+            </div>
+
+            <div class="screen-header">
+              <mat-icon class="screen-icon user-icon">devices</mat-icon>
+              <div>
+                <h3>{{ copy().securityUserHeading }}</h3>
+                <p>{{ copy().securityUserDesc }}</p>
+              </div>
+            </div>
+
+            <div class="sample-decrypted-tree">
+              <div class="vault-sample-box">
+                <div class="vault-box-header">
+                  <mat-icon>inventory_2</mat-icon>
+                  <strong>{{ currentLang() === 'en' ? 'Garage • Rack A • Box #1 (Power Tools)' : 'Garaż • Regał A • Pudełko #1 (Elektronarzędzia)' }}</strong>
+                </div>
+                <div class="vault-box-items">
+                  <div class="vault-item-chip">
+                    <mat-icon>check_circle</mat-icon>
+                    <span>{{ currentLang() === 'en' ? 'DeWalt 18V Impact Driver (Case + 2x 5Ah batteries)' : 'Wkrętarka udarowa DeWalt 18V (Walizka + 2x akumulator 5Ah)' }}</span>
+                  </div>
+                  <div class="vault-item-chip">
+                    <mat-icon>check_circle</mat-icon>
+                    <span>{{ currentLang() === 'en' ? 'Fluke 115 Digital Multimeter (Test leads + 9V battery)' : 'Multimetr cyfrowy Fluke 115 (Przewody pomiarowe + bateria 9V)' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="security-screen admin-screen">
+            <div class="screen-top-bar">
+              <div class="screen-badge encrypted-badge">
+                <mat-icon>lock</mat-icon>
+                <span>{{ copy().securityAdminBadge }}</span>
+              </div>
+            </div>
+
+            <div class="screen-header">
+              <mat-icon class="screen-icon admin-icon">cloud_off</mat-icon>
+              <div>
+                <h3>{{ copy().securityAdminHeading }}</h3>
+                <p>{{ copy().securityAdminDesc }}</p>
+              </div>
+            </div>
+
+            <div class="raw-ciphertext-console">
+              <div class="console-header">
+                <span class="console-dot dot-red"></span>
+                <span class="console-dot dot-yellow"></span>
+                <span class="console-dot dot-green"></span>
+                <span class="console-title">Firestore: /warehouses/u_9x8f72a1e0b</span>
+              </div>
+              <pre class="console-code"><code>{{ '{' }}
+  "vaultVersion": 1,
+  "algorithm": "AES-256-GCM",
+  "salt": "8f4c2b9a10d3e5f7618294a5c3b1e7f9",
+  "iv": "c2e8b19f04d73a6e8b2c1f5a",
+  "encryptedPayload": "7d9e1f3a8b2c4e6f3b0c1a9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b...",
+  "authTag": "5f9b1c2d3e4a7b8c",
+  "adminAccess": "DENIED — NO PRIVATE KEY ON SERVER",
+  "humanReadableText": "NULL — ZERO KNOWLEDGE ARCHITECTURE"
+{{ '}' }}</code></pre>
+            </div>
+
+            <div class="admin-action-row">
+              <button type="button" mat-stroked-button class="inspect-payload-btn" (click)="openAdminInspectorDemo()">
+                <mat-icon>data_object</mat-icon>
+                <span>{{ copy().securityInspectPayloadBtn }}</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- 3 Trust Pillars -->
+      <div class="security-pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon-wrap">
+            <mat-icon>vpn_key</mat-icon>
+          </div>
+          <h4>{{ copy().securityPillar1Title }}</h4>
+          <p>{{ copy().securityPillar1Desc }}</p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon-wrap">
+            <mat-icon>security</mat-icon>
+          </div>
+          <h4>{{ copy().securityPillar2Title }}</h4>
+          <p>{{ copy().securityPillar2Desc }}</p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon-wrap">
+            <mat-icon>key_off</mat-icon>
+          </div>
+          <h4>{{ copy().securityPillar3Title }}</h4>
+          <p>{{ copy().securityPillar3Desc }}</p>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- TILE 3 (SPAN 2): INTERACTIVE CORE BUSINESS WORKFLOW PREVIEW -->
     <mat-card class="bento-card bento-span-2">
       <div class="bento-header">
         <span class="bento-eyebrow">{{ copy().workflowTag }}</span>
@@ -158,11 +304,24 @@
       </div>
 
       <div class="pipeline-diagram" role="tablist">
+        <button type="button" class="pipeline-node" [class.active]="activeStep() === 'security'"
+                (click)="selectStep('security')">
+          <mat-icon class="node-icon">shield</mat-icon>
+          <div class="node-meta">
+            <span class="node-step">01 • SECURITY</span>
+            <strong>{{ currentLang() === 'en' ? 'PIN & Vault' : 'PIN i Szyfrowanie' }}</strong>
+          </div>
+        </button>
+
+        <div class="pipeline-connector" aria-hidden="true">
+          <mat-icon>east</mat-icon>
+        </div>
+
         <button type="button" class="pipeline-node" [class.active]="activeStep() === 'hierarchy'"
                 (click)="selectStep('hierarchy')">
           <mat-icon class="node-icon">warehouse</mat-icon>
           <div class="node-meta">
-            <span class="node-step">01 • HIERARCHY</span>
+            <span class="node-step">02 • HIERARCHY</span>
             <strong>{{ currentLang() === 'en' ? 'Warehouses & Locations' : 'Magazyny i Lokalizacje' }}</strong>
           </div>
         </button>
@@ -175,8 +334,8 @@
                 (click)="selectStep('catalog')">
           <mat-icon class="node-icon">inventory_2</mat-icon>
           <div class="node-meta">
-            <span class="node-step">02 • CATALOG</span>
-            <strong>{{ currentLang() === 'en' ? 'Boxes & Relocation' : 'Pudełka i Ruch' }}</strong>
+            <span class="node-step">03 • CATALOG</span>
+            <strong>{{ currentLang() === 'en' ? 'Boxes & Relocation' : 'Pudełka i Przenoszenie' }}</strong>
           </div>
         </button>
 
@@ -188,7 +347,7 @@
                 (click)="selectStep('search')">
           <mat-icon class="node-icon">manage_search</mat-icon>
           <div class="node-meta">
-            <span class="node-step">03 • SEARCH</span>
+            <span class="node-step">04 • SEARCH</span>
             <strong>{{ currentLang() === 'en' ? 'Instant Finder' : 'Szybkie Szukanie' }}</strong>
           </div>
         </button>

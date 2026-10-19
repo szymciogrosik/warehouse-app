@@ -1,0 +1,113 @@
+<div class="pin-dialog-container">
+  <!-- Close Button -->
+  <button mat-icon-button class="pin-close-btn" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  @if (mode() === 'RECOVERY') {
+    <!-- Recovery Key Unlock View -->
+    <div class="pin-header">
+      <div class="pin-badge">
+        <mat-icon>vpn_key</mat-icon>
+      </div>
+      <h2 class="pin-title">{{ 'vault.pinDialog.enterRecovery' | translate }}</h2>
+      <p class="pin-subtitle">{{ 'vault.pinDialog.recoveryHint' | translate }}</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="pin-error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <div class="recovery-form">
+      <mat-form-field appearance="outline" class="app-full-width">
+        <mat-label>{{ 'vault.recovery.title' | translate }}</mat-label>
+        <input matInput
+               [(ngModel)]="recoveryKeyInput"
+               placeholder="WMS-XXXX-XXXX-XXXX-XXXX"
+               [disabled]="isBusy()"
+               (keyup.enter)="executeRecoveryUnlock()">
+      </mat-form-field>
+
+      <div class="app-popup-full-width-actions" style="margin-top: 16px;">
+        <button mat-button class="app-action-button" (click)="switchToPin()" [disabled]="isBusy()">
+          {{ 'vault.pin.title' | translate }}
+        </button>
+        <button mat-raised-button color="primary" class="app-action-button"
+                [disabled]="!recoveryKeyInput().trim() || isBusy()"
+                (click)="executeRecoveryUnlock()">
+          {{ 'vault.unlockNow' | translate }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- 4-Digit Numeric PIN View -->
+    <div class="pin-header">
+      <div class="pin-badge">
+        <mat-icon>{{ mode() === 'SET' ? 'pin' : 'lock' }}</mat-icon>
+      </div>
+      <h2 class="pin-title">
+        @if (mode() === 'SET') {
+          {{ (isConfirmingStep() ? 'vault.pinDialog.confirmPin' : 'vault.pinDialog.setPin') | translate }}
+        } @else {
+          {{ 'vault.pinDialog.enterPin' | translate }}
+        }
+      </h2>
+      <p class="pin-subtitle">
+        @if (mode() === 'SET') {
+          {{ (isConfirmingStep() ? 'vault.pinDialog.confirmHint' : 'vault.pinDialog.setupPromptDesc') | translate }}
+        } @else {
+          {{ 'vault.lockedState.desc' | translate }}
+        }
+      </p>
+    </div>
+
+    <!-- 4-Dots Display -->
+    <div class="pin-dots-row">
+      @let currentDigits = (mode() === 'SET' && isConfirmingStep()) ? confirmPin() : pin();
+      @for (i of [0, 1, 2, 3]; track i) {
+        <div class="pin-dot" [class.filled]="currentDigits.length > i"></div>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <div class="pin-error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Numeric Keypad Grid -->
+    <div class="pin-keypad-grid">
+      @for (d of digits; track $index) {
+        @if (d === '') {
+          <div class="keypad-empty"></div>
+        } @else if (d === 'backspace') {
+          <button type="button" class="keypad-key keypad-icon-key" (click)="onBackspace()" [disabled]="isBusy()">
+            <mat-icon>backspace</mat-icon>
+          </button>
+        } @else {
+          <button type="button" class="keypad-key" (click)="onDigitClick(d)" [disabled]="isBusy()">
+            <span class="key-digit">{{ d }}</span>
+          </button>
+        }
+      }
+    </div>
+
+    @if (mode() === 'UNLOCK') {
+      <div class="pin-footer-actions">
+        <button mat-button class="pin-recovery-link" (click)="switchToRecovery()" [disabled]="isBusy()">
+          {{ 'vault.pinDialog.useRecovery' | translate }}
+        </button>
+      </div>
+    } @else if (mode() === 'SET') {
+      <div class="pin-footer-actions">
+        <button mat-button class="pin-recovery-link" (click)="close()" [disabled]="isBusy()">
+          {{ 'vault.pinDialog.skipForNow' | translate }}
+        </button>
+      </div>
+    }
+  }
+</div>
