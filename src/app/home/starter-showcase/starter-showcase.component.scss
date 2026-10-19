@@ -497,7 +497,26 @@
   }
 
   &.active {
-    border: 2px solid var(--app-primary-color);
+    border: 2px solid var(--app-accent-color) !important;
+    background-color: var(--app-accent-selected-bg) !important;
+    box-shadow: 0 0 0 1px var(--app-accent-color), 0 8px 20px -6px rgba(3, 147, 69, 0.25) !important;
+
+    .node-icon {
+      color: var(--app-accent-color);
+    }
+
+    .node-icon-box {
+      background-color: var(--app-accent-color);
+      border-color: var(--app-accent-color);
+
+      mat-icon {
+        color: #ffffff;
+      }
+    }
+
+    .node-meta strong {
+      color: var(--app-accent-color);
+    }
   }
 }
 
@@ -752,8 +771,15 @@
   }
 
   &.active {
-    border: 2px solid var(--app-primary-color);
-    color: var(--app-text-primary);
+    border: 2px solid var(--app-accent-color) !important;
+    background-color: var(--app-accent-selected-bg) !important;
+    color: var(--app-text-primary) !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(3, 147, 69, 0.2);
+
+    mat-icon {
+      color: var(--app-accent-color);
+    }
   }
 }
 
@@ -969,6 +995,28 @@
 
   .pipeline-connector {
     display: none;
+  }
+}
+
+@media (max-width: 768px), (hover: none) {
+  // Nested sub-elements inside main cards & showcase tiles
+  .metric-item,
+  .status-pill,
+  .session-chip,
+  .pipeline-node,
+  .pipeline-inspector,
+  .spec-pill,
+  .segmented-switch,
+  .live-user-box,
+  .live-guest-box,
+  .flag-row,
+  .workspace-tree-card,
+  .workspace-profile-card,
+  .room-pill,
+  .sandbox-item-tile,
+  .sandbox-empty-state,
+  .compliance-icon-wrap {
+    border-color: var(--app-accent-color) !important;
   }
 }
 

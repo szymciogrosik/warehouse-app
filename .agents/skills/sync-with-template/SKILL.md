@@ -1,6 +1,6 @@
 ---
 name: sync-with-template
-description: "Use this skill when syncing downstream projects with the template repository via script_sync_with_template.sh, resolving merge conflicts, adapting template styles and functionalities to the application, and ensuring a clean build without committing."
+description: "Use this skill when syncing downstream projects with the template repository via script_sync_with_template.sh, resolving merge conflicts, adapting incoming template styles, colors, and functionalities to the application's unique branding (instead of blindly copying template palettes), and ensuring a clean build without committing."
 ---
 
 # Template Synchronization & Conflict Resolution Workflow
@@ -14,7 +14,7 @@ The template accelerator provides foundational architecture, security practices,
 ## 1. Core Principles & Safety Rules
 
 - **NEVER Commit Automatically**: The sync must be executed **without commit** (`--no-commit`). Changes must remain in the working tree for developer review.
-- **Preserve Application Identity**: Keep application-specific Firebase configuration, branding colors, domain models, and custom routes.
+- **Preserve & Respect Application Branding**: Keep application-specific Firebase configuration, branding colors (`$app-primary-color`, `$app-accent-color`, etc.), custom domain models, and custom routes. **NEVER blindly copy or overwrite styles and colors from the template**. If the downstream application has custom branding or colors, all incoming template components, tokens, and visual enhancements must be adapted to fit this specific application's branding, following [`adjust-project-colors`](../adjust-project-colors/SKILL.md).
 - **Adopt Template Architecture**: Integrate upstream security fixes, new design tokens, compliance pages (Privacy Policy, Terms of Service, Cookies), UI enhancements, and dependency updates.
 - **Strict UI Guidelines Adherence**: All merged or adjusted components must strictly follow [`ui-guidelines`](../ui-guidelines/SKILL.md) (Bento card layout, CSS variables bound to SCSS, `Inter` font, `OnPush` change detection, no hardcoded texts, no card bouncing on hover, skeleton loading states).
 
@@ -70,15 +70,18 @@ Inspect conflicted and modified files using `git status`. Resolve conflicts by f
   - Add newly merged template routes using standard direct component imports (`component: PrivacyPolicyComponent`) to match codebase conventions.
 
 ### D. Styles & Theming (`src/styles.scss`, component SCSS)
-- **Token Integration**:
-  - Merge new design tokens (e.g., `--google-btn-*`, mesh gradients, footer margins, MDC dark theme overrides).
-  - Preserve the application's core brand palette if customized.
-- **Enforce UI Guidelines**:
+- **Do NOT Blindly Copy Template Brand Colors**:
+  - Distinguish between **structural architecture / neutral tokens** (e.g., `--google-btn-*`, skeleton animations, footer margins, MDC dark theme overrides, typography tokens) and **application brand identity colors** (`$app-primary-color`, `$app-accent-color`, `$main-palette`, `$accent-palette`, `$dark-background`, `$dark-surface`, mesh gradients `--mesh-blob-*`, and mobile card border tints).
+  - **Preserve Application Core Palette**: Never overwrite downstream application `$app-primary-color`, `$app-accent-color`, `$app-warn-color`, or their derived Material palettes with template default values.
+  - **Adapt Incoming Derivative Tokens**: If the template introduced new tokens or decorative elements (e.g. mesh gradients `--mesh-blob-1/2/3`, hero backdrops, badge tints, dark mode surface tints), **adapt them** to match the application's primary and accent hues as detailed in [`adjust-project-colors`](../adjust-project-colors/SKILL.md) instead of blindly accepting the template's color values.
+  - **Dark Mode Hue Cohesion**: If the template adds or updates dark mode variables, ensure dark backgrounds and surfaces remain subtly tinted with the application's primary hue rather than generic grays or template-specific tints.
+- **Enforce UI Guidelines & Token Architecture**:
   - All colors in component SCSS must consume `var(--name)` CSS variables defined in `styles.scss`.
   - In `styles.scss`, CSS variables must bind to SCSS variables using interpolation (`--color: #{$color};`).
   - No raw HEX or RGBA values in component SCSS files.
   - Bento cards: Use standard card containers (`app-page-container`, `app-card-wide`, `app-card-medium`, `app-card-narrow`).
   - Interactive states: Never apply `translateY` or position-shifting animations to cards on hover.
+  - Mobile & Touch Card Borders: Ensure `@media (max-width: 768px), (hover: none)` sets `border-color: var(--app-accent-color) !important;` on cards and nested sub-elements.
 
 ### E. Dependencies (`package.json`, `package-lock.json`)
 - Merge new packages or updated dependency versions in `package.json`, preserving downstream-specific packages while adopting template upgrades.
@@ -89,9 +92,17 @@ Inspect conflicted and modified files using `git status`. Resolve conflicts by f
 ## 4. Adjusting New Styles and Functionalities
 
 For every newly merged or updated template component:
-1. **Design System Harmony**: Ensure component templates use Material Bento card wrappers and appropriate classes (`legal-card`, `login-split-card`, etc.).
-2. **Reactivity & Change Detection**: Verify components use `ChangeDetectionStrategy.OnPush` and Angular Signals where applicable.
-3. **SPA Navigation**: Ensure all internal links use `[routerLink]="rp.SEP + rp.TARGET"` using `RedirectionEnum`.
+1. **Brand & Visual Adaptation (Non-Blind Style Adoption)**:
+   - **Audit Incoming Component SCSS**: Scan incoming or modified component SCSS files for hardcoded HEX/RGB values, template-specific colors, or hardcoded backgrounds:
+     ```powershell
+     Select-String -Path "src\app\**\*.scss" -Pattern "#[0-9a-fA-F]{3,8}|rgba?\("
+     ```
+   - **Harmonize with App Branding**: Replace any hardcoded template colors with corresponding CSS custom properties (`var(--app-primary-color)`, `var(--app-accent-color)`, `var(--separator-line)`, etc.).
+   - **Contrast & Dark Mode Legibility**: Verify that merged components look clean, legible, and consistent in both Light and Dark modes against the application's surface colors. Refer to [`adjust-project-colors`](../adjust-project-colors/SKILL.md) if new tokens or contrast tweaks are needed.
+   - **Mobile Border Enforcement**: Check that all new cards, Bento containers, and nested interactive sub-elements include mobile accent borders (`border-color: var(--app-accent-color) !important;`).
+2. **Design System Harmony**: Ensure component templates use Material Bento card wrappers and appropriate classes (`legal-card`, `login-split-card`, etc.).
+3. **Reactivity & Change Detection**: Verify components use `ChangeDetectionStrategy.OnPush` and Angular Signals where applicable.
+4. **SPA Navigation**: Ensure all internal links use `[routerLink]="rp.SEP + rp.TARGET"` using `RedirectionEnum`.
 
 ---
 
@@ -128,6 +139,7 @@ Once all conflicts are resolved, `package-lock.json` is regenerated and staged, 
 1. Run `git status` to confirm a clean, conflict-free state with staged changes (including `package-lock.json`).
 2. Provide a clear summary to the developer:
    - Summary of resolved conflicts and adopted template features.
+   - Confirmation of branding & style adaptation (highlighting any incoming template styles/colors adapted to the application's brand identity instead of blindly copied).
    - Confirmation that `package-lock.json` was removed, freshly regenerated, and added to git.
    - Confirmation of successful build (`npx ng build --configuration=local`).
    - Remind the developer to review diffs and commit manually when ready:

@@ -136,10 +136,10 @@ Select-String -Path "src\app\**\*.scss" -Pattern "#[0-9a-fA-F]{3,8}|rgba?\("
 ```
 
 Check these specific component areas during the audit:
-1. **Cards & Bento Tiles (`styles.scss`, `starter-showcase.component.scss`, `profile.component.scss`, `login.component.scss`, `legal/*.scss`)**:
+1. **Cards, Bento Tiles & Nested Sub-elements (`styles.scss`, `starter-showcase.component.scss`, `profile.component.scss`, `login.component.scss`, `legal/*.scss`)**:
    - Desktop default border: `1px solid var(--separator-line)`
    - Desktop `:hover` border: `border-color: var(--app-accent-color) !important;`
-   - Mobile & Touch (`@media (max-width: 768px), (hover: none)`): Permanent `border-color: var(--app-accent-color) !important;` in both Light and Dark mode.
+   - Mobile & Touch (`@media (max-width: 768px), (hover: none)`): Permanent `border-color: var(--app-accent-color) !important;` in both Light and Dark mode on **both main containers (cards, Bento boxes) AND all nested sub-elements** (metric items, status pills, session chips, pipeline nodes/inspectors, spec pills, segmented switch borders, live user/guest boxes, flag rows, stage displays, compliance icon wraps).
 2. **Navbar & Footer (`navbar.component.scss`, `footer.component.scss`)**:
    - Light mode background uses `$app-primary-color` and text `$navbar-element-color` / `$footer-element-color`.
    - Dark mode (`.dark-theme .mat-toolbar.mat-primary, .dark-theme .footer`) transitions to `$dark-surface` with `1px solid $dark-border-primary` separator.
@@ -157,7 +157,7 @@ Check these specific component areas during the audit:
 Before finishing any color adjustment task:
 1. **Zero Hardcoded Component Colors**: Confirm no raw HEX codes remain in `src/app/**/*.scss` outside of `src/styles.scss`.
 2. **Light & Dark Mode Parity**: Verify every new or modified variable exists in both `:root` (Standard Mode) and `.dark-theme` (Dark Mode).
-3. **Mobile Permanent Card Borders**: Confirm `@media (max-width: 768px), (hover: none)` keeps `border-color: var(--app-accent-color) !important;` on all cards/tiles in both Light and Dark mode.
+3. **Mobile Permanent Card & Sub-Element Borders**: Confirm `@media (max-width: 768px), (hover: none)` keeps `border-color: var(--app-accent-color) !important;` on all main cards/tiles **and their nested sub-elements** in both Light and Dark mode.
 4. **Build & Test Verification**:
    - Run `npx ng build --configuration=local` and confirm exit code `0` with no SCSS or budget errors.
    - Run `npm run test:ci` if any TypeScript or template logic was touched.
