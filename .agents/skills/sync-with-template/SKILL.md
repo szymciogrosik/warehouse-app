@@ -81,7 +81,7 @@ Inspect conflicted and modified files using `git status`. Resolve conflicts by f
   - No raw HEX or RGBA values in component SCSS files.
   - Bento cards: Use standard card containers (`app-page-container`, `app-card-wide`, `app-card-medium`, `app-card-narrow`).
   - Interactive states: Never apply `translateY` or position-shifting animations to cards on hover.
-  - Mobile & Touch Card Borders: Ensure `@media (max-width: 768px), (hover: none)` sets `border-color: var(--app-accent-color) !important;` on cards and nested sub-elements.
+  - Unified Primary Theme Borders: Ensure `1px solid var(--app-primary-color) !important;` is permanently applied on cards, Bento boxes, highlight tabs, and structured sub-elements across all viewports (desktop, tablet, mobile), not only when hover. Popups like cookie consent should not have container borders, and special alerts retain their semantic styling.
 
 ### E. Dependencies (`package.json`, `package-lock.json`)
 - Merge new packages or updated dependency versions in `package.json`, preserving downstream-specific packages while adopting template upgrades.
@@ -99,7 +99,8 @@ For every newly merged or updated template component:
      ```
    - **Harmonize with App Branding**: Replace any hardcoded template colors with corresponding CSS custom properties (`var(--app-primary-color)`, `var(--app-accent-color)`, `var(--separator-line)`, etc.).
    - **Contrast & Dark Mode Legibility**: Verify that merged components look clean, legible, and consistent in both Light and Dark modes against the application's surface colors. Refer to [`adjust-project-colors`](../adjust-project-colors/SKILL.md) if new tokens or contrast tweaks are needed.
-   - **Mobile Border Enforcement**: Check that all new cards, Bento containers, and nested interactive sub-elements include mobile accent borders (`border-color: var(--app-accent-color) !important;`).
+   - **Unified Primary Border Enforcement**: Check that all new cards, Bento containers, tables, and structured sub-elements include unified thin borders in the primary brand color (`border: 1px solid var(--app-primary-color) !important;`) applied at all times across all viewports (not only on hover).
+   - **Toggle Bolding Standard**: Ensure all new or updated toggle/segmented button components render selected choices in bold (`font-weight: 800 !important;`).
 2. **Design System Harmony**: Ensure component templates use Material Bento card wrappers and appropriate classes (`legal-card`, `login-split-card`, etc.).
 3. **Reactivity & Change Detection**: Verify components use `ChangeDetectionStrategy.OnPush` and Angular Signals where applicable.
 4. **SPA Navigation**: Ensure all internal links use `[routerLink]="rp.SEP + rp.TARGET"` using `RedirectionEnum`.

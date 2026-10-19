@@ -6,10 +6,6 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 600px;
-
-  @media (max-width: 768px), (hover: none) {
-    border: 1px solid var(--app-accent-color) !important;
-  }
 }
 
 .inspector-header {
@@ -68,7 +64,7 @@
   padding: 12px 16px;
   border-radius: 12px;
   background-color: var(--app-accent-selected-bg);
-  border: 1px solid var(--app-accent-color);
+  border: 1px solid var(--app-primary-color);
   margin-bottom: 20px;
 
   mat-icon {
@@ -96,21 +92,13 @@
       line-height: 1.35;
     }
   }
-
-  @media (max-width: 768px), (hover: none) {
-    border-color: var(--app-accent-color) !important;
-  }
 }
 
 .raw-data-card {
   border-radius: 14px;
-  border: 1px solid var(--separator-line);
+  border: 1px solid var(--app-primary-color) !important;
   background-color: rgba(0, 0, 0, 0.03);
   overflow: hidden;
-
-  @media (max-width: 768px), (hover: none) {
-    border-color: var(--app-accent-color) !important;
-  }
 }
 
 .raw-data-header {
@@ -119,7 +107,7 @@
   justify-content: space-between;
   padding: 10px 14px;
   background-color: rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid var(--separator-line);
+  border-bottom: 1px solid var(--app-primary-color);
 }
 
 .raw-data-label {

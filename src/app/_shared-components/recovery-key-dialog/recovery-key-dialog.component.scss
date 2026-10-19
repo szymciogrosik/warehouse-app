@@ -6,10 +6,6 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 500px;
-
-  @media (max-width: 768px), (hover: none) {
-    border: 1px solid var(--app-accent-color) !important;
-  }
 }
 
 .recovery-header {

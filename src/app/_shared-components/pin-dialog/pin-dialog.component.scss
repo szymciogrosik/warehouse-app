@@ -11,10 +11,6 @@
   width: 100%;
   max-width: 380px;
   margin: 0 auto;
-
-  @media (max-width: 768px), (hover: none) {
-    border: 1px solid var(--app-accent-color) !important;
-  }
 }
 
 .pin-close-btn {
@@ -107,7 +103,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: 1px solid var(--separator-line);
+  border: 1px solid var(--app-primary-color) !important;
   background-color: var(--app-surface-color);
   color: var(--app-text-primary);
   display: flex;
@@ -119,16 +115,12 @@
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    border-color: var(--app-accent-color);
+    border-color: var(--app-accent-color) !important;
     background-color: var(--app-accent-selected-bg);
   }
 
   &:active {
     transform: scale(0.92);
-  }
-
-  @media (max-width: 768px), (hover: none) {
-    border-color: var(--app-accent-color) !important;
   }
 }
 
