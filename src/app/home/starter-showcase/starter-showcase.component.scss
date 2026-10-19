@@ -441,10 +441,353 @@
   padding-top: 8px;
 }
 
-// --- TILE 2: WORKFLOW STEPPER ---
+// --- TILE 2: ZERO-KNOWLEDGE SECURITY LAB & PROOF ---
+.security-lab-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.security-switcher-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.security-switcher-pills {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--app-primary-color) !important;
+  background-color: var(--app-surface-color);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.security-view-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--app-primary-color) !important;
+  background-color: var(--app-surface-color);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  span {
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  &.active {
+    font-weight: 800 !important;
+    background-color: var(--app-accent-selected-bg) !important;
+    border: 2px solid var(--app-accent-color) !important;
+    box-shadow: 0 0 0 1px var(--app-accent-color), 0 8px 20px -6px rgba(3, 147, 69, 0.25) !important;
+    color: var(--app-accent-color) !important;
+
+    mat-icon {
+      color: var(--app-accent-color) !important;
+    }
+  }
+}
+
+.security-stage-container {
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid var(--app-primary-color) !important;
+  background-color: var(--app-surface-color);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.security-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  .screen-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .screen-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--app-primary-color) !important;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+
+    span {
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    &.decrypted-badge {
+      background-color: var(--app-accent-selected-bg);
+      color: var(--app-accent-color);
+    }
+
+    &.encrypted-badge {
+      background-color: var(--app-nested-surface-color);
+      color: var(--app-text-primary);
+    }
+  }
+
+  .screen-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    .screen-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+
+      &.user-icon {
+        color: var(--app-accent-color);
+      }
+
+      &.admin-icon {
+        color: var(--app-primary-color);
+      }
+    }
+
+    h3 {
+      margin: 0 0 6px 0;
+      font-size: 1.15rem;
+      color: var(--app-text-primary);
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--app-text-secondary);
+      word-break: break-word;
+      white-space: normal;
+    }
+  }
+}
+
+.sample-decrypted-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vault-sample-box {
+  border: 1px solid var(--app-primary-color) !important;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: var(--app-nested-surface-color);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .vault-box-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: var(--app-text-primary);
+
+    mat-icon {
+      color: var(--app-accent-color);
+    }
+
+    strong {
+      word-break: break-word;
+      white-space: normal;
+    }
+  }
+
+  .vault-box-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 12px;
+  }
+
+  .vault-item-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--app-primary-color) !important;
+    background-color: var(--app-surface-color);
+    font-size: 0.88rem;
+    color: var(--app-text-primary);
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--app-accent-color);
+      flex-shrink: 0;
+    }
+
+    span {
+      word-break: break-word;
+      white-space: normal;
+    }
+  }
+}
+
+.raw-ciphertext-console {
+  border-radius: 16px;
+  border: 1px solid var(--app-primary-color) !important;
+  background-color: var(--app-nested-surface-color);
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.06);
+
+  .console-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: var(--app-surface-color);
+    border-bottom: 1px solid var(--app-primary-color) !important;
+
+    .console-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+
+      &.dot-red {
+        background-color: #ef4444;
+      }
+      &.dot-yellow {
+        background-color: #f59e0b;
+      }
+      &.dot-green {
+        background-color: #10b981;
+      }
+    }
+
+    .console-title {
+      margin-left: 6px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--app-text-secondary);
+      word-break: break-all;
+    }
+  }
+
+  .console-code {
+    margin: 0;
+    padding: 18px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--app-text-primary);
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+  }
+}
+
+.admin-action-row {
+  display: flex;
+  justify-content: flex-end;
+
+  .inspect-payload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--app-primary-color) !important;
+  }
+}
+
+.security-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  .pillar-card {
+    border: 1px solid var(--app-primary-color) !important;
+    border-radius: 18px;
+    padding: 20px;
+    background-color: var(--app-surface-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: box-shadow 0.25s ease;
+
+    &:hover {
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    .pillar-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--app-primary-color) !important;
+      background-color: var(--app-accent-selected-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--app-accent-color);
+      flex-shrink: 0;
+
+      mat-icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+    }
+
+    h4 {
+      margin: 8px 0 2px 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--app-text-primary);
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--app-text-secondary);
+      word-break: break-word;
+      white-space: normal;
+    }
+  }
+}
+
+// --- TILE 3: WORKFLOW STEPPER ---
 .pipeline-diagram {
   display: grid;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
   align-items: center;
   gap: 10px;
 }
@@ -972,7 +1315,8 @@
 // --- RESPONSIVE BREAKPOINTS ---
 @media (max-width: 960px) {
   .bento-grid,
-  .comparison-grid {
+  .comparison-grid,
+  .security-pillars-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1009,7 +1353,18 @@
 .room-pill,
 .sandbox-item-tile,
 .sandbox-empty-state,
-.compliance-icon-wrap {
+.compliance-icon-wrap,
+.security-switcher-pills,
+.security-view-pill,
+.security-stage-container,
+.screen-badge,
+.vault-sample-box,
+.vault-item-chip,
+.raw-ciphertext-console,
+.console-header,
+.inspect-payload-btn,
+.pillar-card,
+.pillar-icon-wrap {
   border-color: var(--app-primary-color) !important;
 }
 

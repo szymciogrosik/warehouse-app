@@ -30,6 +30,8 @@
   color: var(--app-text-secondary);
   text-align: left;
   margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .dialog-success-image {
