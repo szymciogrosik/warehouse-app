@@ -524,12 +524,18 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .security-screen {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 
   .screen-top-bar {
     display: flex;
@@ -620,6 +626,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .vault-sample-box {
@@ -630,21 +639,35 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 
   .vault-box-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     font-size: 0.95rem;
     color: var(--app-text-primary);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
 
     mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
       color: var(--app-accent-color);
+      flex-shrink: 0 !important;
+      margin-top: 1px;
     }
 
     strong {
+      flex: 1 1 auto;
+      min-width: 0;
       word-break: break-word;
       white-space: normal;
+      line-height: 1.4;
     }
   }
 
@@ -653,11 +676,14 @@
     flex-direction: column;
     gap: 8px;
     padding-left: 12px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .vault-item-chip {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     padding: 10px 14px;
     border-radius: 12px;
@@ -665,18 +691,25 @@
     background-color: var(--app-surface-color);
     font-size: 0.88rem;
     color: var(--app-text-primary);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
 
     mat-icon {
       font-size: 18px;
       width: 18px;
       height: 18px;
       color: var(--app-accent-color);
-      flex-shrink: 0;
+      flex-shrink: 0 !important;
+      margin-top: 2px;
     }
 
     span {
+      flex: 1 1 auto;
+      min-width: 0;
       word-break: break-word;
       white-space: normal;
+      line-height: 1.4;
     }
   }
 }
@@ -1430,7 +1463,24 @@
   }
 
   .security-stage-container {
-    padding: 16px 14px;
+    padding: 16px 12px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .vault-sample-box {
+    padding: 14px 10px;
+  }
+
+  .vault-box-items {
+    padding-left: 6px;
+  }
+
+  .vault-item-chip {
+    padding: 8px 10px;
+    gap: 8px;
   }
 
   .screen-badge {
