@@ -9,7 +9,6 @@ import {EmbeddedBrowserPopupComponent} from './embedded-browser-popup/embedded-b
 import {EmbeddedBrowserWarningData} from '../_models/dialog/embedded-browser-warning/embedded-browser-warning-data';
 import {FirebaseError} from '@angular/fire/app';
 import {CustomValidators} from '../_services/validator/custom-validators';
-import {MatTabChangeEvent, MatTabsModule} from '@angular/material/tabs';
 import {PublicSettingsFacade} from '../_database/settings/public-settings.facade';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatCardModule} from '@angular/material/card';
@@ -39,7 +38,6 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
     MatInputModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatTabsModule,
     MatCheckboxModule,
     RouterModule,
     SkeletonComponent
@@ -114,8 +112,10 @@ export class LoginComponent {
     return this.registerForm.controls;
   }
 
-  onTabChange(event: MatTabChangeEvent): void {
-    this.isRegistrationMode.set(event.index === 1);
+  setRegistrationMode(isRegister: boolean): void {
+    if (this.loading()) return;
+    this.isRegistrationMode.set(isRegister);
+    this.submitted.set(false);
     this.hidePassword.set(true);
   }
 

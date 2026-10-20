@@ -52,6 +52,7 @@
   "login.promo.subtitle": "Wygodne zarządzanie magazynami, pokojami, pudełkami i przedmiotami w jednym miejscu.",
   "login.mode.login": "LOGOWANIE",
   "login.mode.register": "REJESTRACJA",
+  "login.mode.switch": "Wybierz logowanie lub rejestrację",
   "login.mode.toggleToRegister": "Nie masz jeszcze konta? Zarejestruj się",
   "login.mode.toggleToLogin": "Masz już konto? Zaloguj się",
   "login.validation.mandatoryField": "Pole jest obowiązkowe",

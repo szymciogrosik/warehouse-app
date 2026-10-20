@@ -1,9 +1,8 @@
 .login-page-wrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 150px); // Adjust accurately for navbar + footer heights
-  padding: 20px;
+  align-items: flex-start;
+  padding: var(--app-page-block) var(--app-page-gutter); // unified page spacing (ui-guidelines §14)
   box-sizing: border-box;
 }
 
@@ -118,23 +117,53 @@
   }
 }
 
-/* Fix tabs spacing */
-.login-tabs-container {
-  .mat-mdc-tab-group {
-    margin-top: -10px;
+/* Login / Register segmented control (sits ABOVE the Google button because it changes its behaviour) */
+.auth-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 24px;
+  border-radius: 14px;
+  border: 1px solid var(--app-primary-color);
+  background-color: var(--app-nested-surface-color, transparent);
+}
+
+.auth-mode-option {
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--app-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover:not(.active) {
+    color: var(--app-text-primary);
   }
 
-  ::ng-deep {
-    .mat-mdc-tab-body-wrapper,
-    .mat-mdc-tab-body,
-    .mat-mdc-tab-body-content {
-      overflow: visible;
-    }
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--app-accent-color);
+    outline-offset: 2px;
+  }
+
+  &.active {
+    font-weight: 800 !important;
+    color: var(--app-accent-color) !important;
+    background-color: var(--app-accent-selected-bg) !important;
+    border: 2px solid var(--app-accent-color) !important;
   }
 }
 
 .tab-content-padding {
-  padding-top: 24px;
+  padding-top: 0;
 }
 
 .register-button-icon {

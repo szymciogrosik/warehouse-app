@@ -4,11 +4,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 
   .filter-element,
   .add-new-user-element {
     flex: 1;
-    margin: 0 10px;
+    margin: 0;
   }
 }
 
