@@ -129,14 +129,9 @@
                 </div>
                 <div class="security-card-footer">
                   @if (hasVaultPin()) {
-                    <div class="split-buttons">
-                      <button mat-stroked-button class="app-action-button" (click)="openSetPinDialog()">
-                        {{ 'vault.pin.change' | translate }}
-                      </button>
-                      <button mat-button color="warn" class="app-action-button" (click)="onRemovePin()">
-                        {{ 'vault.pin.remove' | translate }}
-                      </button>
-                    </div>
+                    <button mat-stroked-button class="app-action-button" (click)="openSetPinDialog()">
+                      <mat-icon>edit</mat-icon>&nbsp;{{ 'vault.pin.change' | translate }}
+                    </button>
                   } @else {
                     <button mat-raised-button color="accent" class="app-action-button" (click)="openSetPinDialog()">
                       <mat-icon>add</mat-icon>&nbsp;{{ 'vault.pin.set' | translate }}

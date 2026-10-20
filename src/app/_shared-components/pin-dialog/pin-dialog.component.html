@@ -104,6 +104,11 @@
       </div>
     } @else if (mode() === 'SET') {
       <div class="pin-footer-actions">
+        @if (!vaultService.isUnlocked() && vaultService.isConfigured()) {
+          <button mat-button class="pin-recovery-link" (click)="switchToRecovery()" [disabled]="isBusy()">
+            {{ 'vault.pinDialog.useRecovery' | translate }}
+          </button>
+        }
         <button mat-button class="pin-recovery-link" (click)="close()" [disabled]="isBusy()">
           {{ 'vault.pinDialog.skipForNow' | translate }}
         </button>

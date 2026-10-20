@@ -37,7 +37,7 @@ export interface PinDialogData {
 export class PinDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<PinDialogComponent>);
   public readonly data = inject<PinDialogData>(MAT_DIALOG_DATA, { optional: true }) ?? { mode: 'UNLOCK' };
-  private readonly vaultService = inject(VaultService);
+  public readonly vaultService = inject(VaultService);
   private readonly snackbar = inject(SnackbarService);
   private readonly translate = inject(CustomTranslateService);
 
@@ -149,7 +149,7 @@ export class PinDialogComponent {
 
     this.isBusy.set(true);
     try {
-      if (!this.vaultService.isConfigured()) {
+      if (!this.vaultService.isConfigured() || (!this.vaultService.hasPin() && !this.vaultService.isUnlocked())) {
         await this.vaultService.setupVaultWithPinOnly(this.pin());
       } else {
         await this.vaultService.setPin(this.pin());
@@ -184,7 +184,12 @@ export class PinDialogComponent {
       const success = await this.vaultService.unlockWithRecoveryKey(key);
       if (success) {
         this.snackbar.openSnackBar(this.translate.get('vault.pinDialog.unlockedSuccess'));
-        this.dialogRef.close(true);
+        if (this.data.mode === 'SET') {
+          this.mode.set('SET');
+          this.errorMessage.set('');
+        } else {
+          this.dialogRef.close(true);
+        }
       } else {
         this.errorMessage.set(this.translate.get('vault.pinDialog.invalidRecovery'));
       }
