@@ -72,6 +72,7 @@ export class WarehouseViewComponent implements OnInit {
 
   readonly isVaultUnlocked = this.vaultService.isUnlocked;
   readonly isVaultLocked = () => this.vaultService.status() === 'LOCKED';
+  readonly hasVaultPin = this.vaultService.hasPin;
 
   openUnlockDialog(): void {
     this.vaultService.markUnlockPrompted();
@@ -88,7 +89,7 @@ export class WarehouseViewComponent implements OnInit {
     });
   }
 
-  private async promptPinSetup(): Promise<void> {
+  protected async promptPinSetup(): Promise<void> {
     this.vaultService.markPinPrompted();
     const dialogRef = this.dialog.open(PinDialogComponent, {
       width: '400px',
@@ -170,6 +171,7 @@ export class WarehouseViewComponent implements OnInit {
       .subscribe(user => {
         if (user) {
           this.userUid = user.uid;
+          this.checkVaultOnboarding();
           this.warehouses$ = this.warehouseDb.getByUser(user.uid);
           this.warehouses$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -272,8 +274,10 @@ export class WarehouseViewComponent implements OnInit {
     targetRoomIndex?: {warehouse: number, room: number};
   } | null> {
     if (!this.currentWarehouses) {
-      throw new Error('No warehouses state');
-    }
+        if (type !== null) {
+          throw new Error('No warehouses state');
+        }
+      }
 
     const result = await firstValueFrom(
       this.dialog.open(EditDialogComponent, {
@@ -282,7 +286,7 @@ export class WarehouseViewComponent implements OnInit {
           name,
           description,
           editType: type,
-          warehouses: this.currentWarehouses.warehouses,
+          warehouses: this.currentWarehouses ? this.currentWarehouses.warehouses : [],
           selectedWarehouseIndex: this.selectedWarehouseIndex,
           selectedRoomIndex: this.selectedRoomIndex,
           selectedBoxIndex: this.selectedBoxIndex
@@ -519,7 +523,7 @@ export class WarehouseViewComponent implements OnInit {
       rooms: []
     });
 
-    if (!this.currentWarehouses || this.currentWarehouses.warehouses.length === 0) {
+    if (!this.currentWarehouses || !this.currentWarehouses.warehouses || this.currentWarehouses.warehouses.length === 0) {
       this.currentWarehouses = new Warehouses({warehouses: [warehouse]});
     } else {
       this.currentWarehouses.warehouses.push(warehouse);

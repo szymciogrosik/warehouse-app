@@ -71,38 +71,6 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="{{ 'profile.tab.roles' | translate }}">
-          <div class="tab-content-wrapper bento-roles-container">
-            @if (isLoading()) {
-              <div class="bento-roles-grid">
-                 <app-skeleton height="120px"></app-skeleton>
-                 <app-skeleton height="120px"></app-skeleton>
-              </div>
-            } @else {
-              @if (currentUserRoles.length === 0) {
-                <div class="empty-roles-state">
-                   <mat-icon class="empty-icon">verified_user</mat-icon>
-                   <p>{{ 'profile.roles.empty' | translate }}</p>
-                </div>
-              } @else {
-                <div class="bento-roles-grid">
-                  @for (role of currentUserRoles; track role.value) {
-                    <mat-card class="bento-role-card">
-                      <mat-card-header>
-                         <mat-card-title>{{ role.viewKey | translate }}</mat-card-title>
-                         <mat-icon color="primary" class="role-icon">admin_panel_settings</mat-icon>
-                      </mat-card-header>
-                      <mat-card-content>
-                         <p class="role-desc">{{ role.viewKey + '.desc' | translate }}</p>
-                      </mat-card-content>
-                    </mat-card>
-                  }
-                </div>
-              }
-            }
-          </div>
-        </mat-tab>
-
         <mat-tab label="{{ 'profile.tab.security' | translate }}">
           <div class="tab-content-wrapper bento-vault-container">
             <!-- Header Hero Banner -->
@@ -134,11 +102,11 @@
                 </div>
                 <div class="security-card-footer">
                   @if (isVaultUnlocked()) {
-                    <button mat-stroked-button color="warn" class="app-action-button" (click)="onLockVault()">
+                    <button mat-stroked-button color="warn" class="app-action-button" [disabled]="!hasVaultPin()" (click)="onLockVault()">
                       <mat-icon>lock</mat-icon>&nbsp;{{ 'vault.lockNow' | translate }}
                     </button>
                   } @else {
-                    <button mat-raised-button color="primary" class="app-action-button" (click)="openUnlockPinDialog()">
+                    <button mat-raised-button color="primary" class="app-action-button" [disabled]="!hasVaultPin()" (click)="openUnlockPinDialog()">
                       <mat-icon>lock_open</mat-icon>&nbsp;{{ 'vault.unlockNow' | translate }}
                     </button>
                   }
@@ -192,7 +160,7 @@
                   <p>{{ 'vault.recovery.desc' | translate }}</p>
                 </div>
                 <div class="security-card-footer">
-                  <button mat-stroked-button color="primary" class="app-action-button" (click)="openRecoveryKeyDialog()">
+                  <button mat-stroked-button color="primary" class="app-action-button" [disabled]="!hasVaultPin()" (click)="openRecoveryKeyDialog()">
                     <mat-icon>vpn_key</mat-icon>&nbsp;{{ 'vault.recovery.view' | translate }}
                   </button>
                 </div>
@@ -219,6 +187,38 @@
                 </div>
               </mat-card>
             </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="{{ 'profile.tab.roles' | translate }}">
+          <div class="tab-content-wrapper bento-roles-container">
+            @if (isLoading()) {
+              <div class="bento-roles-grid">
+                 <app-skeleton height="120px"></app-skeleton>
+                 <app-skeleton height="120px"></app-skeleton>
+              </div>
+            } @else {
+              @if (currentUserRoles.length === 0) {
+                <div class="empty-roles-state">
+                   <mat-icon class="empty-icon">verified_user</mat-icon>
+                   <p>{{ 'profile.roles.empty' | translate }}</p>
+                </div>
+              } @else {
+                <div class="bento-roles-grid">
+                  @for (role of currentUserRoles; track role.value) {
+                    <mat-card class="bento-role-card">
+                      <mat-card-header>
+                         <mat-card-title>{{ role.viewKey | translate }}</mat-card-title>
+                         <mat-icon color="primary" class="role-icon">admin_panel_settings</mat-icon>
+                      </mat-card-header>
+                      <mat-card-content>
+                         <p class="role-desc">{{ role.viewKey + '.desc' | translate }}</p>
+                      </mat-card-content>
+                    </mat-card>
+                  }
+                </div>
+              }
+            }
           </div>
         </mat-tab>
       </mat-tab-group>

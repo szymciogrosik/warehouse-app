@@ -212,7 +212,8 @@
 
 // --- BENTO VAULT UI ---
 .bento-vault-container {
-  padding: 26px 0 40px 0;
+  padding: 0;
+  background: transparent !important;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -226,7 +227,7 @@
   border-radius: 20px;
   background-color: var(--app-surface-color);
   border: 1px solid var(--app-primary-color) !important;
-  margin: 0 16px;
+  margin: 0 !important;
   box-shadow: none;
   transition: box-shadow 0.25s ease;
 
@@ -276,7 +277,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
-  padding: 0 16px;
+  padding: 0 !important;
 }
 
 .bento-security-card {

@@ -135,14 +135,25 @@ describe('VaultService', () => {
     expect(service.shouldPromptPinSetup()).toBeFalse();
   });
 
-  it('should evaluate shouldPromptUnlock correctly for locked vault', () => {
+  it('should evaluate shouldPromptUnlock correctly for locked vault with PIN', () => {
     service.initForUser('user_locked_test');
     (service as any).metadataLoadedSubject.next(true);
     (service as any)._status.set('LOCKED');
+    (service as any)._metadata.set({ hasPin: true } as any);
 
     expect(service.shouldPromptUnlock()).toBeTrue();
 
     service.markUnlockPrompted();
     expect(service.shouldPromptUnlock()).toBeFalse();
+  });
+
+  it('should not prompt unlock if locked but user has no PIN and instead prompt PIN setup', () => {
+    service.initForUser('user_locked_no_pin');
+    (service as any).metadataLoadedSubject.next(true);
+    (service as any)._status.set('LOCKED');
+    (service as any)._metadata.set({ hasPin: false } as any);
+
+    expect(service.shouldPromptUnlock()).toBeFalse();
+    expect(service.shouldPromptPinSetup()).toBeTrue();
   });
 });

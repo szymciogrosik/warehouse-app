@@ -76,3 +76,30 @@ button:focus {
   border-color: $dark-border-secondary;
   color: $dark-text-primary;
 }
+
+// Burger menu avatar styling (in popup menu overlay)
+.navbar-button-burger-menu,
+::ng-deep .navbar-button-burger-menu {
+  .navbar-avatar-fallback {
+    background-color: var(--app-primary-color) !important;
+    border: 1.5px solid var(--app-primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  .navbar-avatar-image {
+    border: 1.5px solid var(--app-primary-color) !important;
+  }
+}
+
+:host-context(.dark-theme) .navbar-button-burger-menu,
+::ng-deep .dark-theme .navbar-button-burger-menu {
+  .navbar-avatar-fallback {
+    background-color: var(--app-nested-surface-color) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+    color: var(--app-text-primary) !important;
+  }
+
+  .navbar-avatar-image {
+    border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  }
+}
