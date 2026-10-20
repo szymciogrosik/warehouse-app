@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, HostListener, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener, inject, signal, computed} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
@@ -15,6 +15,7 @@ export type PinDialogMode = 'UNLOCK' | 'SET' | 'RECOVERY';
 
 export interface PinDialogData {
   mode?: PinDialogMode;
+  canSkip?: boolean;
 }
 
 @Component({
@@ -48,6 +49,16 @@ export class PinDialogComponent {
   readonly recoveryKeyInput = signal<string>('');
   readonly errorMessage = signal<string>('');
   readonly isBusy = signal<boolean>(false);
+
+  readonly canShowSkip = computed(() => {
+    if (this.data.canSkip === false) {
+      return false;
+    }
+    if (this.vaultService.hasPin()) {
+      return false;
+    }
+    return true;
+  });
 
   readonly digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'backspace'];
 

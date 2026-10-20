@@ -182,6 +182,25 @@
                 </div>
               </mat-card>
             </div>
+            <!-- Danger Zone: Reset All Vault & Warehouse Data -->
+            <div class="vault-danger-zone">
+              <mat-card class="vault-danger-zone-card">
+                <div class="danger-zone-header">
+                  <div class="danger-zone-icon-badge">
+                    <mat-icon>delete_forever</mat-icon>
+                  </div>
+                  <div class="danger-zone-titles">
+                    <h4>{{ 'vault.resetAll.title' | translate }}</h4>
+                    <p>{{ 'vault.resetAll.desc' | translate }}</p>
+                  </div>
+                </div>
+                <div class="danger-zone-action">
+                  <button mat-flat-button color="warn" class="app-action-button danger-reset-btn" (click)="onResetAllVaultAndWarehouseData()">
+                    <mat-icon>delete_forever</mat-icon>&nbsp;{{ 'vault.resetAll.button' | translate }}
+                  </button>
+                </div>
+              </mat-card>
+            </div>
           </div>
         </mat-tab>
 

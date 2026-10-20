@@ -9,6 +9,8 @@ import {DialogService} from '../_services/util/dialog.service';
 import {PublicSettingsFacade} from '../_database/settings/public-settings.facade';
 import {StorageService} from '../_services/storage/storage.service';
 import {VaultService} from '../_services/security/vault.service';
+import {WarehouseDbService} from '../_database/warehouse/warehouse.service';
+import {VaultMetaDbService} from '../_database/security/vault-meta-db.service';
 import {provideTranslateService} from '@ngx-translate/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {provideZonelessChangeDetection, signal} from '@angular/core';
@@ -19,6 +21,8 @@ describe('ProfileComponent', () => {
   let fixture: ComponentFixture<ProfileComponent>;
   let mockDialog: jasmine.SpyObj<MatDialog>;
   let mockVaultService: any;
+  let mockWarehouseDb: any;
+  let mockVaultMetaDb: any;
 
   beforeEach(async () => {
     mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
@@ -26,12 +30,20 @@ describe('ProfileComponent', () => {
       afterClosed: () => of(true)
     } as any);
 
+    mockWarehouseDb = jasmine.createSpyObj('WarehouseDbService', ['delete']);
+    mockWarehouseDb.delete.and.returnValue(Promise.resolve());
+
+    mockVaultMetaDb = jasmine.createSpyObj('VaultMetaDbService', ['deleteMetadata']);
+    mockVaultMetaDb.deleteMetadata.and.returnValue(Promise.resolve());
+
     mockVaultService = {
       status: signal('UNLOCKED'),
       isUnlocked: signal(true),
       hasPin: signal(true),
       isConfigured: signal(true),
       lockVault: jasmine.createSpy('lockVault'),
+      clearSession: jasmine.createSpy('clearSession'),
+      initForUser: jasmine.createSpy('initForUser'),
       removePin: jasmine.createSpy('removePin').and.returnValue(Promise.resolve()),
       refreshRecoveryKey: jasmine.createSpy('refreshRecoveryKey').and.returnValue(Promise.resolve('WMS-1234-5678-9012-3456'))
     };
@@ -75,7 +87,9 @@ describe('ProfileComponent', () => {
         { provide: DialogService, useValue: mockDialogService },
         { provide: PublicSettingsFacade, useValue: mockFacade },
         { provide: StorageService, useValue: jasmine.createSpyObj('StorageService', ['extractAndValidateFile']) },
-        { provide: VaultService, useValue: mockVaultService }
+        { provide: VaultService, useValue: mockVaultService },
+        { provide: WarehouseDbService, useValue: mockWarehouseDb },
+        { provide: VaultMetaDbService, useValue: mockVaultMetaDb }
       ]
     })
       .overrideComponent(ProfileComponent, {
@@ -108,6 +122,14 @@ describe('ProfileComponent', () => {
   it('should open raw inspector dialog', () => {
     component.openRawInspectorDialog();
     expect(mockDialog.open).toHaveBeenCalled();
+  });
+
+  it('should reset all vault and warehouse data when confirmed', async () => {
+    await component.onResetAllVaultAndWarehouseData();
+    expect(mockWarehouseDb.delete).toHaveBeenCalledWith('user_1');
+    expect(mockVaultMetaDb.deleteMetadata).toHaveBeenCalledWith('user_1');
+    expect(mockVaultService.clearSession).toHaveBeenCalled();
+    expect(mockVaultService.initForUser).toHaveBeenCalledWith('user_1');
   });
 
   it('should refresh and open recovery key dialog', async () => {
