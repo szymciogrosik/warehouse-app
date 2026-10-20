@@ -52,6 +52,7 @@
   "login.promo.subtitle": "Easily organize and manage your warehouses, rooms, boxes, and items in one place.",
   "login.mode.login": "LOGIN",
   "login.mode.register": "REGISTER",
+  "login.mode.switch": "Choose login or registration",
   "login.mode.toggleToRegister": "Don't have an account? Register",
   "login.mode.toggleToLogin": "Already have an account? Log in",
   "login.validation.mandatoryField": "Field is mandatory",
@@ -95,6 +96,11 @@
   "wh.search.placeholder": "E.g. cable",
   "wh.search.noResult": "No data matching the phrase searched",
   "wh.search.roomFilter": "Select room",
+  "wh.empty.title": "Your workspace is empty",
+  "wh.empty.desc": "No warehouse has been created yet. Add your first warehouse to start cataloging items.",
+  "wh.empty.button": "Add warehouse",
+  "wh.button.delete": "Delete",
+  "wh.button.cancel": "Cancel",
   "admin.panel.header": "Admin panel",
   "admin.panel.helloMessage": "Hello, ",
   "admin.panel.tab.header.settings": "Settings",
@@ -373,5 +379,12 @@
   "vault.badge.tooltip": "Protected with AES-256-GCM. Decrypted only in your browser memory.",
   "vault.lockedState.title": "Inventory Vault is Locked",
   "vault.lockedState.desc": "Enter your 4-digit PIN or master password to view and manage your items.",
-  "vault.lockedState.unlockButton": "Unlock Inventory"
+  "vault.lockedState.unlockButton": "Unlock Inventory",
+  "vault.resetAll.title": "Reset Warehouse & Encryption Data",
+  "vault.resetAll.desc": "Permanently deletes all warehouses, rooms, boxes, items, and encryption keys (PIN, salt, and metadata). This action cannot be undone.",
+  "vault.resetAll.button": "Delete all data and reset vault",
+  "vault.resetAll.confirmTitle": "Irreversible Data Deletion",
+  "vault.resetAll.confirmMessage": "Are you sure you want to delete all warehouses and encryption data (PIN, salt, keys)? All items will be permanently deleted from the database, and the vault will return to its initial state.",
+  "vault.resetAll.confirmButton": "Yes, permanently delete all",
+  "vault.resetAll.success": "All warehouse and encryption data have been successfully deleted."
 }

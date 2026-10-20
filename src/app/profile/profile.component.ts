@@ -28,6 +28,8 @@ import {VaultService} from '../_services/security/vault.service';
 import {PinDialogComponent} from '../_shared-components/pin-dialog/pin-dialog.component';
 import {RawInspectorDialogComponent} from '../_shared-components/raw-inspector-dialog/raw-inspector-dialog.component';
 import {RecoveryKeyDialogComponent} from '../_shared-components/recovery-key-dialog/recovery-key-dialog.component';
+import {WarehouseDbService} from '../_database/warehouse/warehouse.service';
+import {VaultMetaDbService} from '../_database/security/vault-meta-db.service';
 
 @Component({
   selector: 'app-profile',
@@ -62,6 +64,8 @@ export class ProfileComponent {
   private readonly facade = inject(PublicSettingsFacade);
   private readonly storageService = inject(StorageService);
   private readonly vaultService = inject(VaultService);
+  private readonly warehouseDb = inject(WarehouseDbService);
+  private readonly vaultMetaDb = inject(VaultMetaDbService);
 
   readonly user = this.authService.currentUser;
   readonly isLoading = this.authService.isLoading;
@@ -202,22 +206,35 @@ export class ProfileComponent {
     this.snackbarService.openSnackBar(this.translateService.get('vault.lockedState.title'));
   }
 
-  async onRemovePin(): Promise<void> {
-    const confirmed = await firstValueFrom(
-      this.dialogService.openConfirmDialogWithData({
-        title: this.translateService.get('vault.pin.remove'),
-        popupType: null,
-        message: this.translateService.get('vault.pin.removeConfirm'),
-        icon: 'lock_open',
-        iconColor: 'warn',
-        confirmButtonText: this.translateService.get('wh.button.delete'),
-        cancelButtonText: this.translateService.get('wh.button.cancel')
-      }).afterClosed()
-    );
+  async onResetAllVaultAndWarehouseData(): Promise<void> {
+    const dialogRef = this.dialogService.openConfirmDialogWithData({
+      title: this.translateService.get('vault.resetAll.confirmTitle'),
+      popupType: DialogType.WARNING,
+      message: this.translateService.get('vault.resetAll.confirmMessage'),
+      cancelButtonText: this.translateService.get('wh.button.cancel'),
+      confirmButtonText: this.translateService.get('vault.resetAll.confirmButton'),
+      icon: 'delete_forever',
+      iconColor: 'warn'
+    });
 
-    if (confirmed) {
-      await this.vaultService.removePin();
-      this.snackbarService.openSnackBar(this.translateService.get('vault.pinDialog.pinRemovedSuccess'));
+    const confirmed = await firstValueFrom(dialogRef.afterClosed());
+    if (!confirmed) return;
+
+    const currentUser = this.user();
+    if (!currentUser?.uid) return;
+
+    try {
+      this.isLoading.set(true);
+      await this.warehouseDb.delete(currentUser.uid);
+      await this.vaultMetaDb.deleteMetadata(currentUser.uid);
+      this.vaultService.clearSession();
+      this.vaultService.initForUser(currentUser.uid);
+      this.snackbarService.openSnackBar(this.translateService.get('vault.resetAll.success'));
+    } catch (error) {
+      console.error('Failed to reset all vault and warehouse data', error);
+      this.snackbarService.openLongSnackBar(this.translateService.get('login.error.internal'));
+    } finally {
+      this.isLoading.set(false);
     }
   }
 

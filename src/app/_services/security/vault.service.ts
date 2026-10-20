@@ -68,7 +68,7 @@ export class VaultService {
     if (!this.metadataLoadedSubject.value) {
       return false;
     }
-    return (this._status() === 'UNLOCKED' && !this.hasPin()) || (this._status() === 'NOT_CONFIGURED');
+    return !this.hasPin();
   }
 
   public markPinPrompted(): void {
@@ -85,7 +85,7 @@ export class VaultService {
     if (!this.metadataLoadedSubject.value) {
       return false;
     }
-    return this._status() === 'LOCKED';
+    return this._status() === 'LOCKED' && this.hasPin();
   }
 
   public markUnlockPrompted(): void {
@@ -419,6 +419,8 @@ export class VaultService {
 
     await this.vaultMetaDb.saveMetadata(this.currentUid, updatedMeta);
     this._metadata.set(updatedMeta);
+    this.hasPromptedPinThisSession = false;
+    this.lockVault();
   }
 
   /**

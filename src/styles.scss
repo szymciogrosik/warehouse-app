@@ -229,8 +229,8 @@ h1, h2, h3, h4, h5, h6 {
 
 // Soft UI Cards
 mat-card {
-  margin: clamp(5px, 5cqi, 20px);
-  padding: clamp(1rem, 5cqi, 2rem) clamp(0.5rem, 5cqi, 2rem);
+  margin: 0;
+  padding: var(--app-card-padding);
   background-color: $app-surface-color !important;
   border-radius: 20px !important; // Bento style
   border: 1px solid var(--app-primary-color) !important;
@@ -321,39 +321,50 @@ mat-hint, mat-error { font-size: 0.85rem; }
   margin-right: auto;
   width: 100%;
 }
+// --- PAGE LAYOUT SPACING SYSTEM (single source of truth, see ui-guidelines §14) ---
+// 8pt grid. Every routed page wraps its content in `.app-page-container`, so the distance
+// between navbar/footer and the main element, and the side gutters, are identical everywhere.
+:root {
+  --app-page-gutter: clamp(16px, 4vw, 32px);       // left/right edge of the page
+  --app-page-block: clamp(24px, 4vw, 48px);        // top/bottom gap to navbar & footer
+  --app-section-gap: clamp(16px, 2.5vw, 24px);     // vertical gap between stacked sections/cards
+  --app-card-padding: clamp(20px, 3vw, 32px);      // inner padding of main page cards
+  --app-tab-content-gap: 24px;                     // gap between a tab header and its content
+}
+
 .app-page-container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px 0;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-section-gap);
+  padding: var(--app-page-block) var(--app-page-gutter);
+  box-sizing: border-box;
+  width: 100%;
 }
 .app-card-wide, .app-card-medium, .app-card-narrow {
-  width: calc(100% - 40px);
+  width: 100%;
   box-sizing: border-box;
-  margin-bottom: 24px;
+  margin: 0 !important;
+  padding: var(--app-card-padding) !important;
 }
 .app-card-wide { max-width: 1200px; }
 .app-card-medium { max-width: 800px; }
 .app-card-narrow { max-width: 500px; }
 
-@media (max-width: 600px) {
-  .app-page-container {
-    padding: 4px 0;
-  }
-  .app-card-wide, .app-card-medium, .app-card-narrow {
-    width: calc(100% - 20px);
-    margin-top: 6px;
-    margin-bottom: 12px;
-    padding: 12px 10px;
-  }
+.mat-mdc-tab-body-content {
+  box-sizing: border-box;
+}
+.mat-mdc-tab-body-content:not(:has(.mat-mdc-tab-group)) {
+  padding-top: var(--app-tab-content-gap);
+  box-sizing: border-box;
 }
 
 // Tabs
 .highlight-tab-content {
   border: 1px solid var(--app-primary-color) !important;
   border-radius: 16px;
-  padding: 24px;
-  margin-top: 16px;
+  padding: var(--app-card-padding);
+  margin-top: 0;
   background-color: #ffffff;
   box-shadow: 0 4px 20px -5px rgba(0,0,0,0.04);
 }

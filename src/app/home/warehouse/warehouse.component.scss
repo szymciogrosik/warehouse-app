@@ -9,10 +9,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 0 14px 0;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--app-primary-color);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--separator-line);
   gap: 12px;
-  flex-wrap: wrap;
 }
 
 .nav-left {
@@ -31,26 +30,43 @@
   white-space: normal;
 }
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.mat-icon-class {
+  color: var(--app-text-primary);
+}
+
+.wh-security-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
 .security-badge-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  margin-left: 8px;
-  border-radius: 20px;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
   border: 1px solid var(--app-primary-color);
   background-color: var(--app-accent-selected-bg);
   color: var(--app-accent-color);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  flex-shrink: 0;
+  white-space: nowrap;
 
   mat-icon {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
   }
 
   &:hover {
@@ -68,7 +84,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 56px 20px;
+  padding: 48px 24px;
   text-align: center;
   border-radius: 20px;
   background-color: var(--app-surface-color);
@@ -115,17 +131,6 @@
   max-width: 260px;
 }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.mat-icon-class {
-  color: var(--app-text-primary);
-}
-
 // --- MODERN BENTO TILES GRID ---
 .wh-tiles-grid {
   display: grid;
@@ -135,14 +140,14 @@
 }
 
 .wh-tile {
-  padding: 20px;
+  padding: 24px;
   border-radius: 18px;
   border: 1px solid var(--app-primary-color) !important;
   background-color: var(--app-surface-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
   box-sizing: border-box;
   transition: box-shadow 0.25s ease;
 
@@ -244,7 +249,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border-radius: 12px;
   border: 1px solid var(--app-primary-color) !important;
   font-size: 0.82rem;
@@ -268,7 +273,7 @@
 }
 
 .wh-tile-footer {
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px solid var(--app-primary-color) !important;
   display: flex;
   align-items: center;
@@ -305,4 +310,56 @@
   .wh-tile {
     padding: 16px;
   }
+}
+
+
+.wh-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  border-radius: 20px;
+  background-color: var(--app-surface-color);
+  border: 1px dashed var(--app-primary-color);
+  margin: 16px 0;
+}
+
+.wh-empty-icon-badge {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background-color: var(--app-accent-selected-bg);
+  border: 1px solid var(--app-primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    color: var(--app-accent-color);
+  }
+}
+
+.wh-empty-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--app-text-primary);
+  margin: 0 0 8px 0;
+}
+
+.wh-empty-desc {
+  max-width: 440px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--app-text-secondary);
+  margin: 0 0 24px 0;
+}
+
+.wh-empty-add-btn {
+  max-width: 240px;
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, HostListener, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener, inject, signal, computed} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
@@ -15,6 +15,7 @@ export type PinDialogMode = 'UNLOCK' | 'SET' | 'RECOVERY';
 
 export interface PinDialogData {
   mode?: PinDialogMode;
+  canSkip?: boolean;
 }
 
 @Component({
@@ -37,7 +38,7 @@ export interface PinDialogData {
 export class PinDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<PinDialogComponent>);
   public readonly data = inject<PinDialogData>(MAT_DIALOG_DATA, { optional: true }) ?? { mode: 'UNLOCK' };
-  private readonly vaultService = inject(VaultService);
+  public readonly vaultService = inject(VaultService);
   private readonly snackbar = inject(SnackbarService);
   private readonly translate = inject(CustomTranslateService);
 
@@ -48,6 +49,16 @@ export class PinDialogComponent {
   readonly recoveryKeyInput = signal<string>('');
   readonly errorMessage = signal<string>('');
   readonly isBusy = signal<boolean>(false);
+
+  readonly canShowSkip = computed(() => {
+    if (this.data.canSkip === false) {
+      return false;
+    }
+    if (this.vaultService.hasPin()) {
+      return false;
+    }
+    return true;
+  });
 
   readonly digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'backspace'];
 
@@ -149,7 +160,7 @@ export class PinDialogComponent {
 
     this.isBusy.set(true);
     try {
-      if (!this.vaultService.isConfigured()) {
+      if (!this.vaultService.isConfigured() || (!this.vaultService.hasPin() && !this.vaultService.isUnlocked())) {
         await this.vaultService.setupVaultWithPinOnly(this.pin());
       } else {
         await this.vaultService.setPin(this.pin());
@@ -184,7 +195,12 @@ export class PinDialogComponent {
       const success = await this.vaultService.unlockWithRecoveryKey(key);
       if (success) {
         this.snackbar.openSnackBar(this.translate.get('vault.pinDialog.unlockedSuccess'));
-        this.dialogRef.close(true);
+        if (this.data.mode === 'SET') {
+          this.mode.set('SET');
+          this.errorMessage.set('');
+        } else {
+          this.dialogRef.close(true);
+        }
       } else {
         this.errorMessage.set(this.translate.get('vault.pinDialog.invalidRecovery'));
       }

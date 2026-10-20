@@ -16,6 +16,18 @@
             <app-skeleton height="36px" style="margin-top: 10px;"></app-skeleton>
           </div>
         } @else {
+          @if (allowForRegistering()) {
+            <div class="auth-mode-switch" role="tablist" [attr.aria-label]="'login.mode.switch' | translate">
+              <button type="button" role="tab" class="auth-mode-option" [class.active]="!isRegistrationMode()"
+                      [attr.aria-selected]="!isRegistrationMode()" (click)="setRegistrationMode(false)">
+                {{ 'login.mode.login' | translate }}
+              </button>
+              <button type="button" role="tab" class="auth-mode-option" [class.active]="isRegistrationMode()"
+                      [attr.aria-selected]="isRegistrationMode()" (click)="setRegistrationMode(true)">
+                {{ 'login.mode.register' | translate }}
+              </button>
+            </div>
+          }
           <!-- Google SSO Top -->
           @if (!loading()) {
             <button class="google-sso-btn" (click)="openPopupIfEmbeddedBrowserOpenOtherwiseOpenPopup()" type="button">
@@ -36,8 +48,7 @@
 
           <div class="login-tabs-container">
             @if (allowForRegistering()) {
-              <mat-tab-group (selectedTabChange)="onTabChange($event)" dynamicHeight>
-                <mat-tab label="{{ 'login.mode.login' | translate }}">
+              @if (!isRegistrationMode()) {
                   <div class="tab-content-padding">
                     <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()">
                       <p>
@@ -71,8 +82,7 @@
                       </div>
                     </form>
                   </div>
-                </mat-tab>
-                <mat-tab label="{{ 'login.mode.register' | translate }}">
+                } @else {
                   <div class="tab-content-padding">
                     <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
                       <p>
@@ -132,8 +142,7 @@
                       </div>
                     </form>
                   </div>
-                </mat-tab>
-              </mat-tab-group>
+                }
             } @else {
               <!-- Registration not allowed, show only Login Form -->
               <div class="tab-content-padding">

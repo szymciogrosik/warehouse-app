@@ -52,6 +52,7 @@
   "login.promo.subtitle": "Wygodne zarządzanie magazynami, pokojami, pudełkami i przedmiotami w jednym miejscu.",
   "login.mode.login": "LOGOWANIE",
   "login.mode.register": "REJESTRACJA",
+  "login.mode.switch": "Wybierz logowanie lub rejestrację",
   "login.mode.toggleToRegister": "Nie masz jeszcze konta? Zarejestruj się",
   "login.mode.toggleToLogin": "Masz już konto? Zaloguj się",
   "login.validation.mandatoryField": "Pole jest obowiązkowe",
@@ -95,6 +96,11 @@
   "wh.search.placeholder": "Np. kabel",
   "wh.search.noResult": "Brak danych pasujących do wyszukiwanej frazy",
   "wh.search.roomFilter": "Wybierz pokój",
+  "wh.empty.title": "Twój magazyn jest pusty",
+  "wh.empty.desc": "Nie utworzono jeszcze żadnego magazynu. Dodaj swój pierwszy magazyn, aby rozpocząć katalogowanie przedmiotów.",
+  "wh.empty.button": "Dodaj magazyn",
+  "wh.button.delete": "Usuń",
+  "wh.button.cancel": "Anuluj",
   "admin.panel.header": "Panel administratora",
   "admin.panel.helloMessage": "Witaj, ",
   "admin.panel.tab.header.settings": "Ustawienia",
@@ -373,5 +379,12 @@
   "vault.badge.tooltip": "Zabezpieczono AES-256-GCM. Deszyfrowanie wyłącznie w pamięci Twojej przeglądarki.",
   "vault.lockedState.title": "Magazyn jest zablokowany",
   "vault.lockedState.desc": "Wprowadź 4-cyfrowy PIN lub hasło główne, aby uzyskać dostęp do swoich przedmiotów.",
-  "vault.lockedState.unlockButton": "Odblokuj magazyn"
+  "vault.lockedState.unlockButton": "Odblokuj magazyn",
+  "vault.resetAll.title": "Zresetuj dane magazynu i szyfrowania",
+  "vault.resetAll.desc": "Całkowicie usuwa wszystkie dane magazynów, pokoi, pudełek i przedmiotów oraz klucze szyfrujące (PIN, sól i metadane). Operacja jest nieodwracalna.",
+  "vault.resetAll.button": "Usuń wszystkie dane i zresetuj sejf",
+  "vault.resetAll.confirmTitle": "Nieodwracalne usunięcie danych",
+  "vault.resetAll.confirmMessage": "Czy na pewno chcesz usunąć wszystkie magazyny oraz dane szyfrowania (PIN, sól, klucze)? Wszystkie przedmioty zostaną bezpowrotnie skasowane z bazy danych, a sejf powróci do stanu początkowego.",
+  "vault.resetAll.confirmButton": "Tak, usuń wszystko bezpowrotnie",
+  "vault.resetAll.success": "Wszystkie dane magazynu i szyfrowania zostały pomyślnie usunięte."
 }

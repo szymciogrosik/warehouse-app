@@ -244,6 +244,19 @@ describe('WarehouseViewComponent', () => {
       expect(mockWarehouseDb.save).toHaveBeenCalled();
     });
 
+    it('should create new Warehouses and add warehouse when currentWarehouses is null', async () => {
+      component.currentWarehouses = null;
+      (component as any).openEditDialog = jasmine.createSpy().and.returnValue(
+        Promise.resolve({ name: 'First Warehouse', description: 'Brand new' })
+      );
+
+      await (component as any).add();
+
+      expect((component.currentWarehouses as any)?.warehouses.length).toBe(1);
+      expect((component.currentWarehouses as any)?.warehouses[0].name).toBe('First Warehouse');
+      expect(mockWarehouseDb.save).toHaveBeenCalled();
+    });
+
     it('should add a new room at viewLevel 1 and save to Firestore', async () => {
       component.enterWarehouse(0);
       (component as any).openEditDialog = jasmine.createSpy().and.returnValue(
