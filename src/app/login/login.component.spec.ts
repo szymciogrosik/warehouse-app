@@ -164,18 +164,27 @@ describe('LoginComponent', () => {
   });
 
   describe('setRegistrationMode', () => {
-    it('should switch to registration mode on true and reset hidePassword', () => {
+    it('should switch to registration mode and reset hidePassword and submitted', () => {
       component.hidePassword.set(false);
+      component.submitted.set(true);
       component.setRegistrationMode(true);
       expect(component.isRegistrationMode()).toBe(true);
       expect(component.hidePassword()).toBe(true);
+      expect(component.submitted()).toBe(false);
     });
 
-    it('should switch to login mode on false', () => {
+    it('should switch to login mode', () => {
       component.isRegistrationMode.set(true);
       component.setRegistrationMode(false);
       expect(component.isRegistrationMode()).toBe(false);
       expect(component.hidePassword()).toBe(true);
+    });
+
+    it('should do nothing if loading is true', () => {
+      component.loading.set(true);
+      component.isRegistrationMode.set(false);
+      component.setRegistrationMode(true);
+      expect(component.isRegistrationMode()).toBe(false);
     });
   });
 
